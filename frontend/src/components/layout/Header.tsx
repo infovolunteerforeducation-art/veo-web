@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 
 const navLinks = [
   { label: "Du lịch tình nguyện", href: "/tours" },
-  { label: "Workcamp", href: "#" },
+  { label: "Trại hè tình nguyện", href: "/trai-he-tinh-nguyen" },
   { label: "CSR", href: "#" },
   { label: "SLP", href: "https://www.slp.edu.vn/", external: true },
   { label: "Tin tức", href: "/tin-tuc" },
@@ -33,7 +33,6 @@ export default function Header() {
       }`}
     >
       <div className="flex justify-between items-center h-20 px-4 sm:px-6 max-w-[1200px] mx-auto">
-        {/* Logo */}
         <Link href="/" className="flex items-center gap-2">
           <img
             src="/veo-logo.png"
@@ -42,7 +41,6 @@ export default function Header() {
           />
         </Link>
 
-        {/* Desktop Nav */}
         <nav className="hidden lg:flex items-center gap-8">
           {navLinks.map((link) => {
             const isActive = !link.external && link.href !== "#" && (
@@ -65,7 +63,6 @@ export default function Header() {
           })}
         </nav>
 
-        {/* Auth + Mobile toggle */}
         <div className="flex items-center gap-2">
           <Link
             href="/dang-nhap"
@@ -80,6 +77,7 @@ export default function Header() {
             Đăng ký
           </Link>
           <button
+            type="button"
             className="lg:hidden p-2"
             onClick={() => setMobileOpen(!mobileOpen)}
             aria-label="Toggle menu"
@@ -91,7 +89,6 @@ export default function Header() {
         </div>
       </div>
 
-      {/* Mobile Nav */}
       {mobileOpen && (
         <div className="lg:hidden bg-pure-white border-t border-surface-variant px-4 sm:px-6 py-4 flex flex-col gap-4">
           {navLinks.map((link) => {

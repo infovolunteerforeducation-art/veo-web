@@ -1,5 +1,9 @@
 @import "tailwindcss";
 
+html {
+  scroll-behavior: smooth;
+}
+
 @theme inline {
   --font-heading: var(--font-be-vietnam);
   --font-body: var(--font-be-vietnam);
