@@ -1,0 +1,118 @@
+@import "tailwindcss";
+
+@theme inline {
+  --font-heading: var(--font-be-vietnam);
+  --font-body: var(--font-be-vietnam);
+}
+
+@theme {
+  /* Primary */
+  --color-primary: #530b71;
+  --color-primary-container: #6c2a8a;
+  --color-on-primary: #ffffff;
+  --color-on-primary-container: #e39eff;
+  --color-on-primary-fixed-variant: #692787;
+  --color-inverse-primary: #eab2ff;
+
+  /* Secondary */
+  --color-secondary: #835400;
+  --color-on-secondary: #ffffff;
+  --color-secondary-container: #fdb242;
+  --color-on-secondary-container: #6e4600;
+
+  /* Tertiary */
+  --color-tertiary: #451e6b;
+  --color-on-tertiary: #ffffff;
+  --color-tertiary-container: #5d3784;
+  --color-on-tertiary-container: #d2a7fd;
+
+  /* Error */
+  --color-error: #ba1a1a;
+  --color-on-error: #ffffff;
+  --color-error-container: #ffdad6;
+  --color-on-error-container: #93000a;
+
+  /* Surface */
+  --color-surface: #f9f9f9;
+  --color-surface-dim: #dadada;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-low: #f3f3f3;
+  --color-surface-container: #eeeeee;
+  --color-surface-container-high: #e8e8e8;
+  --color-surface-container-highest: #e2e2e2;
+  --color-surface-variant: #e2e2e2;
+  --color-on-surface: #1a1c1c;
+  --color-on-surface-variant: #4d4350;
+  --color-outline: #7f7381;
+  --color-outline-variant: #d0c2d1;
+  --color-background: #f9f9f9;
+  --color-on-background: #1a1c1c;
+
+  /* Brand */
+  --color-deep-amethyst: #451e6b;
+  --color-solar-orange: #fbb040;
+  --color-pure-white: #ffffff;
+  --color-action-hover: #e89b2d;
+}
+
+body {
+  font-family: var(--font-body, "Be Vietnam Pro", sans-serif);
+  background-color: #f9f9f9;
+  color: #1a1c1c;
+  overflow-y: scroll;
+}
+
+html {
+  scrollbar-gutter: stable;
+}
+
+button:not(:disabled), [role="button"]:not([aria-disabled="true"]), a, summary, label[for], select {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading, "Be Vietnam Pro", sans-serif);
+}
+
+.material-symbols-outlined {
+  font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+}
+
+.hero-gradient {
+  background: linear-gradient(rgba(69, 30, 107, 0.4), rgba(69, 30, 107, 0.7));
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.card-hover-shadow {
+  transition: all 0.3s ease;
+}
+
+.card-hover-shadow:hover {
+  box-shadow: 0px 10px 30px rgba(108, 42, 138, 0.08);
+  transform: translateY(-4px);
+}
+
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
