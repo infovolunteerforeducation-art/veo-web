@@ -312,7 +312,7 @@ export default function SchedulesTab({ tours, setTours }: Props) {
                 <th className="px-5 py-3 whitespace-nowrap">
                   <SortBtn field="isoDate" current={sortField} dir={sortDir} onClick={() => handleSort("isoDate")} />
                 </th>
-                <th className="text-center px-5 py-3 text-xs font-semibold text-on-surface-variant whitespace-nowrap">Chỗ còn / Tổng</th>
+                <th className="text-center px-5 py-3 text-xs font-semibold text-on-surface-variant whitespace-nowrap">Đã đặt / Tổng</th>
                 <th className="px-5 py-3 whitespace-nowrap">
                   <SortBtn field="status" current={sortField} dir={sortDir} onClick={() => handleSort("status")} />
                 </th>
@@ -347,8 +347,16 @@ export default function SchedulesTab({ tours, setTours }: Props) {
                     <td className="px-5 py-3 text-on-surface-variant whitespace-nowrap">{computeScheduleLabel(s.isoDate, s.tourDuration)}</td>
                     <td className="px-5 py-3 text-on-surface-variant whitespace-nowrap">{fmtDate(s.isoDate)}</td>
                     <td className="px-5 py-3 text-center font-semibold whitespace-nowrap">
-                      <span className={s.spotsLeft <= 3 ? "text-error" : "text-green-600"}>{s.spotsLeft}</span>
-                      <span className="text-on-surface-variant font-normal">/{s.spotsTotal}</span>
+                      {(() => {
+                        const paid = bookings.filter((b) => b.scheduleId === s.id && b.status === "paid").reduce((sum, b) => sum + b.numPeople, 0);
+                        const remaining = s.spotsTotal - paid;
+                        return (
+                          <>
+                            <span className={remaining <= 3 ? "text-error" : "text-green-600"}>{paid}</span>
+                            <span className="text-on-surface-variant font-normal">/{s.spotsTotal}</span>
+                          </>
+                        );
+                      })()}
                     </td>
                     <td className="px-5 py-3"><StatusBadge status={s.status} small /></td>
                     <td className="px-5 py-3 text-xs text-on-surface-variant whitespace-nowrap">{s.createdAt ? fmtDateTime(s.createdAt) : "—"}</td>

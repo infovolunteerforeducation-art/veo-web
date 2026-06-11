@@ -88,7 +88,7 @@ export default function ToursSection() {
             <Link
               key={tour.slug}
               href={`/tours/${tour.slug}`}
-              className="shrink-0 snap-start w-[82%] sm:w-[44%] xl:w-[calc(25%-18px)] bg-pure-white rounded-xl overflow-hidden card-hover-shadow group block"
+              className="shrink-0 snap-start w-[82%] sm:w-[44%] xl:w-[calc(25%-18px)] bg-pure-white rounded-xl overflow-hidden card-hover-shadow border border-surface-variant group block"
             >
               <div className="relative h-44 sm:h-52 overflow-hidden">
                 <img
@@ -101,17 +101,17 @@ export default function ToursSection() {
                 <span className={`mb-2 inline-flex w-fit rounded-full px-2.5 py-0.5 text-xs font-bold ${region.className}`}>
                   {region.label}
                 </span>
-                <h3 className="text-sm font-semibold text-primary mb-3 line-clamp-2 leading-snug">
+                <h3 className="text-base font-semibold text-primary mb-3 line-clamp-2">
                   {tour.title}
                 </h3>
                 <div className="space-y-2 text-xs mb-4">
-                  <div className="flex items-start gap-2">
-                    <span className="material-symbols-outlined text-base leading-none text-primary shrink-0 mt-px">location_on</span>
-                    <span className="font-medium text-on-surface line-clamp-1">{tour.destinationName}</span>
+                  <div className="flex h-5 items-center gap-2">
+                    <span className="material-symbols-outlined w-[18px] text-[18px] leading-none text-primary">location_on</span>
+                    <span className="font-semibold leading-5 text-on-surface line-clamp-1">{tour.destinationName}</span>
                   </div>
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <span className="material-symbols-outlined text-base leading-none text-primary shrink-0">calendar_today</span>
-                    <span className="font-medium text-on-surface">
+                  <div className="flex h-5 items-center gap-2">
+                    <span className="material-symbols-outlined w-[18px] text-[18px] leading-none text-primary">calendar_today</span>
+                    <span className="font-semibold leading-5 text-on-surface">
                       {nearestSchedule ? nearestSchedule.label : "Chưa có lịch"}
                     </span>
                     {extraScheduleCount > 0 && (
@@ -120,14 +120,14 @@ export default function ToursSection() {
                       </span>
                     )}
                   </div>
-                  <div className="flex items-center gap-2">
-                    <span className="material-symbols-outlined text-base leading-none text-primary shrink-0">schedule</span>
-                    <span className="font-medium text-on-surface">{tour.duration}</span>
+                  <div className="flex h-5 items-center gap-2">
+                    <span className="material-symbols-outlined w-[18px] text-[18px] leading-none text-primary">schedule</span>
+                    <span className="font-semibold leading-5 text-on-surface">{tour.duration}</span>
                   </div>
                 </div>
-                <div className="pt-3 border-t border-surface-variant">
-                  <p className="text-[11px] text-outline mb-0.5">Chi phí từ</p>
-                  <p className="text-sm font-bold text-secondary leading-snug">{formatPricePerPerson(tour.priceNumber)}</p>
+                <div className="mt-auto pt-4 border-t border-surface-variant">
+                  <p className="text-xs text-outline mb-0.5">Chi phí từ</p>
+                  <p className="text-base font-bold text-secondary">{formatPricePerPerson(tour.priceNumber)}</p>
                 </div>
               </div>
             </Link>

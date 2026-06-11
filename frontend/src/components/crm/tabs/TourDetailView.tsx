@@ -63,25 +63,27 @@ function AttendedToggle({ attended, onChange }: { attended: boolean | null | und
 }
 
 export default function TourDetailView({ tour, bookings, onBack, onToggleAttended }: Props) {
-  // Sort by schedule isoDate descending (newest first)
-  const sortedBookings = [...bookings]
+  // Only attended bookings, sorted by schedule isoDate descending
+  const attendedBookings = [...bookings]
+    .filter((b) => b.attended === true)
     .map((b) => {
       const sched = tour.schedules.find((s) => s.id === b.scheduleId);
       return { ...b, _isoDate: sched?.isoDate ?? "" };
     })
     .sort((a, b) => b._isoDate.localeCompare(a._isoDate));
 
-  const totalSchedules = tour.schedules.length;
-  const totalBookings = bookings.length;
-  const attendedPeople = bookings.filter((b) => b.attended === true).reduce((s, b) => s + b.numPeople, 0);
-  const totalRevenue = bookings.filter((b) => b.status === "paid").reduce((s, b) => s + b.totalAmount, 0);
-  const paidCount = bookings.filter((b) => b.status === "paid").length;
+  const totalSchedules  = tour.schedules.length;
+  const totalRegistered = bookings.reduce((s, b) => s + b.numPeople, 0);
+  const attendedPeople  = bookings.filter((b) => b.attended === true).reduce((s, b) => s + b.numPeople, 0);
+  const absentPeople    = bookings.filter((b) => b.attended === false).reduce((s, b) => s + b.numPeople, 0);
+  const totalRevenue    = bookings.filter((b) => b.status === "paid").reduce((s, b) => s + b.totalAmount, 0);
 
   const stats = [
-    { label: "Số lịch chuyến",  value: totalSchedules, sub: `${formatDuration(tour.duration)} / chuyến`,  color: "text-primary",      isText: false },
-    { label: "Tổng đăng ký",    value: totalBookings,  sub: `${bookings.reduce((s, b) => s + b.numPeople, 0)} người đăng ký`, color: "text-blue-600", isText: false },
-    { label: "Tổng người TG",   value: attendedPeople, sub: "xác nhận tham gia",          color: "text-green-600",    isText: false },
-    { label: "Doanh thu",       value: fmt(totalRevenue), sub: `${paidCount} đơn đã TT`,  color: "text-solar-orange", isText: true  },
+    { label: "Tổng số lịch chuyến",  value: totalSchedules,     color: "text-primary",      isText: false },
+    { label: "Tổng đăng ký",         value: totalRegistered,    color: "text-blue-600",     isText: false },
+    { label: "Tổng người tham gia",  value: attendedPeople,     color: "text-green-600",    isText: false },
+    { label: "Tổng người vắng mặt",  value: absentPeople,       color: "text-red-500",      isText: false },
+    { label: "Doanh thu",            value: fmt(totalRevenue),  color: "text-solar-orange", isText: true  },
   ];
 
   return (
@@ -124,27 +126,26 @@ export default function TourDetailView({ tour, bookings, onBack, onToggleAttende
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
         {stats.map((s) => (
           <div key={s.label} className="bg-white rounded-2xl border border-outline-variant/30 p-4">
             <p className="text-xs text-on-surface-variant font-medium">{s.label}</p>
             <p className={`font-bold mt-1 ${s.isText ? "text-xl" : "text-2xl"} ${s.color}`}>{s.value}</p>
-            <p className="text-xs text-on-surface-variant mt-0.5">{s.sub}</p>
           </div>
         ))}
       </div>
 
-      {/* Bookings table */}
+      {/* Attended bookings table */}
       <div className="bg-white rounded-2xl border border-outline-variant/30 overflow-hidden">
         <div className="px-5 py-4 border-b border-outline-variant/20">
-          <h3 className="text-base font-bold text-on-surface">Danh sách khách đăng ký</h3>
+          <h3 className="text-base font-bold text-on-surface">Danh sách khách đã tham gia</h3>
           <p className="text-sm text-on-surface-variant mt-0.5">
-            {sortedBookings.length} đơn đăng ký · sắp xếp theo lịch khởi hành mới nhất
+            {attendedPeople} người · {attendedBookings.length} lượt đặt đã tham gia
           </p>
         </div>
 
-        {sortedBookings.length === 0 ? (
-          <div className="text-center py-16 text-sm text-on-surface-variant">Chưa có đơn đăng ký nào</div>
+        {attendedBookings.length === 0 ? (
+          <div className="text-center py-16 text-sm text-on-surface-variant">Chưa có khách nào được xác nhận tham gia</div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
@@ -157,11 +158,10 @@ export default function TourDetailView({ tour, bookings, onBack, onToggleAttende
                   <th className="text-right px-5 py-3 text-xs font-semibold text-on-surface-variant whitespace-nowrap">Tổng tiền</th>
                   <th className="text-left px-5 py-3 text-xs font-semibold text-on-surface-variant whitespace-nowrap">Đăng ký lúc</th>
                   <th className="text-center px-5 py-3 text-xs font-semibold text-on-surface-variant whitespace-nowrap">Thanh toán</th>
-                  <th className="text-left px-5 py-3 text-xs font-semibold text-on-surface-variant whitespace-nowrap">Tham gia</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-outline-variant/10">
-                {sortedBookings.map((b, i) => (
+                {attendedBookings.map((b, i) => (
                   <tr key={b.id} className="hover:bg-surface-container-low/50 transition-colors">
                     <td className="px-5 py-3 text-on-surface-variant text-xs">{i + 1}</td>
                     <td className="px-5 py-3">
@@ -173,12 +173,6 @@ export default function TourDetailView({ tour, bookings, onBack, onToggleAttende
                     <td className="px-5 py-3 text-right font-semibold text-on-surface whitespace-nowrap">{fmt(b.totalAmount)}</td>
                     <td className="px-5 py-3 text-xs text-on-surface-variant whitespace-nowrap">{fmtDateTime(b.createdAt)}</td>
                     <td className="px-5 py-3 text-center"><BookingStatusBadge status={b.status} /></td>
-                    <td className="px-5 py-3">
-                      <AttendedToggle
-                        attended={b.attended}
-                        onChange={(v) => onToggleAttended(b.id, v)}
-                      />
-                    </td>
                   </tr>
                 ))}
               </tbody>
