@@ -162,7 +162,7 @@ export default function DashboardTab() {
         {[
           { label: revLabel, value: fmt(totalRevenue), icon: "account_balance" },
           { label: bkLabel, value: `${totalBookings} đơn`, icon: "receipt_long" },
-          { label: "Tổng khách hàng", value: "8 người", icon: "group" },
+          { label: "Người đăng ký", value: "8 người", icon: "group" },
           { label: "Tour đang hoạt động", value: "3 tour", icon: "hiking" },
         ].map((s) => (
           <div key={s.label} className="bg-white rounded-xl border border-outline-variant/30 px-4 py-3 flex items-center gap-3">

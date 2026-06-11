@@ -90,7 +90,7 @@ export default function BookingsTab() {
             <table className="w-full text-sm">
               <thead className="bg-surface-container-low border-b border-outline-variant/30">
                 <tr>
-                  {["Mã đặt chỗ", "Khách hàng", "Tour", "Lịch khởi hành", "Người", "Tổng tiền", "Thanh toán", "Trạng thái", ""].map((h) => (
+                  {["Mã đặt chỗ", "Người đăng ký", "Tour", "Lịch khởi hành", "Người", "Tổng tiền", "Thanh toán", "Trạng thái", ""].map((h) => (
                     <th key={h} className="px-4 py-3 text-left text-xs font-bold text-on-surface-variant whitespace-nowrap">{h}</th>
                   ))}
                 </tr>
@@ -159,12 +159,12 @@ export default function BookingsTab() {
               <div className="p-3 bg-surface-container-low rounded-xl">
                 <p className="font-mono font-bold text-primary text-sm">{selected.bookingCode}</p>
                 <p className="text-on-surface-variant mt-0.5">
-                  {new Date(selected.createdAt).toLocaleString("vi-VN")}
+                  {new Date(selected.createdAt).toLocaleString("vi-VN", { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit" })}
                 </p>
               </div>
 
               {[
-                { label: "Khách hàng", value: selected.customerName },
+                { label: "Người đăng ký", value: selected.customerName },
                 { label: "Điện thoại", value: selected.phone },
                 { label: "Email", value: selected.email },
                 { label: "Tour", value: selected.tourName },

@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useMemo } from "react";
-import { ManagedTour, TourSchedule, FlatSchedule, Booking, mockBookings, computeScheduleLabel, formatDuration } from "@/lib/crm-data";
+import { useState, useMemo, useEffect } from "react";
+import { ManagedTour, TourSchedule, FlatSchedule, Booking, mockBookings, computeScheduleLabel, formatDuration, fmtDate, fmtDateTime } from "@/lib/crm-data";
 import DateInput from "../DateInput";
 import SelectInput from "../SelectInput";
 import { StatusBadge } from "./DashboardTab";
@@ -12,6 +12,8 @@ import ScheduleParticipantsView from "./ScheduleParticipantsView";
 type Props = {
   tours: ManagedTour[];
   setTours: React.Dispatch<React.SetStateAction<ManagedTour[]>>;
+  deepLinkScheduleId?: string | null;
+  onDeepLinkConsumed?: () => void;
 };
 
 type SortField = "createdAt" | "isoDate" | "status";
@@ -27,16 +29,6 @@ const MONTH_NAMES = [
 const MONTH_SHORT = ["Th.1","Th.2","Th.3","Th.4","Th.5","Th.6","Th.7","Th.8","Th.9","Th.10","Th.11","Th.12"];
 const DOW_LABELS = ["T2","T3","T4","T5","T6","T7","CN"];
 
-function fmtDate(iso: string) {
-  return new Date(iso + "T00:00:00").toLocaleDateString("vi-VN", { day: "2-digit", month: "2-digit", year: "numeric" });
-}
-
-function fmtDateTime(iso: string) {
-  try {
-    const d = new Date(iso);
-    return d.toLocaleString("vi-VN", { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit" });
-  } catch { return iso; }
-}
 
 function SortBtn({ field, current, dir, onClick }: { field: SortField; current: SortField; dir: SortDir; onClick: () => void }) {
   return (
@@ -49,7 +41,7 @@ function SortBtn({ field, current, dir, onClick }: { field: SortField; current: 
   );
 }
 
-export default function SchedulesTab({ tours, setTours }: Props) {
+export default function SchedulesTab({ tours, setTours, deepLinkScheduleId, onDeepLinkConsumed }: Props) {
   const [calYear, setCalYear] = useState(2025);
   const [calMonth, setCalMonth] = useState(9);
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
@@ -71,6 +63,14 @@ export default function SchedulesTab({ tours, setTours }: Props) {
     }))),
     [tours]
   );
+
+  useEffect(() => {
+    if (!deepLinkScheduleId) return;
+    const found = allSchedules.find((s) => s.id === deepLinkScheduleId);
+    if (found) setDetailSchedule(found);
+    onDeepLinkConsumed?.();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [deepLinkScheduleId]);
 
   function handleSort(field: SortField) {
     if (sortField === field) setSortDir((d) => d === "asc" ? "desc" : "asc");
@@ -307,11 +307,11 @@ export default function SchedulesTab({ tours, setTours }: Props) {
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-outline-variant/20 bg-surface-container-low">
-                <th className="text-left px-5 py-3 text-xs font-semibold text-on-surface-variant whitespace-nowrap">Chương trình</th>
                 <th className="text-left px-5 py-3 text-xs font-semibold text-on-surface-variant whitespace-nowrap">Thời gian đi</th>
                 <th className="px-5 py-3 whitespace-nowrap">
                   <SortBtn field="isoDate" current={sortField} dir={sortDir} onClick={() => handleSort("isoDate")} />
                 </th>
+                <th className="text-left px-5 py-3 text-xs font-semibold text-on-surface-variant whitespace-nowrap">Chương trình</th>
                 <th className="text-center px-5 py-3 text-xs font-semibold text-on-surface-variant whitespace-nowrap">Đã đặt / Tổng</th>
                 <th className="px-5 py-3 whitespace-nowrap">
                   <SortBtn field="status" current={sortField} dir={sortDir} onClick={() => handleSort("status")} />
@@ -334,18 +334,20 @@ export default function SchedulesTab({ tours, setTours }: Props) {
               ) : (
                 displayedSchedules.map((s) => (
                   <tr key={`${s.tourId}-${s.id}`} className="hover:bg-surface-container-low/50 transition-colors">
-                    <td className="px-5 py-3 font-medium text-on-surface max-w-[200px]">
+                    <td className="px-5 py-3 font-semibold whitespace-nowrap">
                       <button
                         type="button"
                         onClick={() => setDetailSchedule(s)}
-                        className="block truncate text-left text-primary hover:underline cursor-pointer"
+                        className="text-left text-primary hover:underline cursor-pointer"
                         title={`Xem danh sách đăng ký: ${s.tourTitle}`}
                       >
-                        {s.tourTitle}
+                        {computeScheduleLabel(s.isoDate, s.tourDuration)}
                       </button>
                     </td>
-                    <td className="px-5 py-3 text-on-surface-variant whitespace-nowrap">{computeScheduleLabel(s.isoDate, s.tourDuration)}</td>
                     <td className="px-5 py-3 text-on-surface-variant whitespace-nowrap">{fmtDate(s.isoDate)}</td>
+                    <td className="px-5 py-3 font-medium text-on-surface max-w-[200px]">
+                      <span className="block truncate">{s.tourTitle}</span>
+                    </td>
                     <td className="px-5 py-3 text-center font-semibold whitespace-nowrap">
                       {(() => {
                         const paid = bookings.filter((b) => b.scheduleId === s.id && b.status === "paid").reduce((sum, b) => sum + b.numPeople, 0);

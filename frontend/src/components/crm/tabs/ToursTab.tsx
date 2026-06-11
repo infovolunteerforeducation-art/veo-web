@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { Booking, mockBookings, mockDestinations, ManagedTour, fmt, formatDuration } from "@/lib/crm-data";
 import SelectInput from "../SelectInput";
 import { StatusBadge } from "./DashboardTab";
@@ -15,9 +15,12 @@ type EnrichedTour = ManagedTour & { region: "north" | "south"; province: string 
 type Props = {
   tours: ManagedTour[];
   setTours: React.Dispatch<React.SetStateAction<ManagedTour[]>>;
+  onNavigateToSchedule?: (scheduleId: string) => void;
+  deepLinkTourId?: string | null;
+  onDeepLinkTourConsumed?: () => void;
 };
 
-export default function ToursTab({ tours, setTours }: Props) {
+export default function ToursTab({ tours, setTours, onNavigateToSchedule, deepLinkTourId, onDeepLinkTourConsumed }: Props) {
   const [bookings, setBookings] = useState<Booking[]>(mockBookings);
   const [detailTour, setDetailTour] = useState<ManagedTour | null>(null);
   const [contentTour, setContentTour] = useState<ManagedTour | null>(null);
@@ -32,6 +35,14 @@ export default function ToursTab({ tours, setTours }: Props) {
   const [regionFilter, setRegionFilter] = useState<"all" | "north" | "south">("all");
   const [provinceFilter, setProvinceFilter] = useState("");
   const [page, setPage] = useState(1);
+
+  useEffect(() => {
+    if (!deepLinkTourId) return;
+    const tour = tours.find((t) => t.id === deepLinkTourId);
+    if (tour) setDetailTour(tour);
+    onDeepLinkTourConsumed?.();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [deepLinkTourId]);
 
   const enriched = useMemo<EnrichedTour[]>(() =>
     tours.map((t) => {
@@ -134,6 +145,7 @@ export default function ToursTab({ tours, setTours }: Props) {
         onToggleAttended={(bookingId, attended) =>
           setBookings((prev) => prev.map((b) => b.id === bookingId ? { ...b, attended } : b))
         }
+        onViewSchedule={onNavigateToSchedule}
       />
     );
   }
@@ -215,7 +227,7 @@ export default function ToursTab({ tours, setTours }: Props) {
                     className="cursor-pointer transition-colors hover:bg-primary/[0.03] active:bg-primary/[0.06]"
                   >
                     <td className="px-4 py-3 font-semibold text-on-surface max-w-[200px]">
-                      <span className="block truncate">{tour.title}</span>
+                      <span className="block truncate text-primary hover:underline cursor-pointer">{tour.title}</span>
                     </td>
                     <td className="px-4 py-3 text-on-surface-variant whitespace-nowrap">{tour.destinationName}</td>
                     <td className="px-4 py-3 text-on-surface-variant whitespace-nowrap">{tour.province}</td>

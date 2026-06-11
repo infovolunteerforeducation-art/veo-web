@@ -16,7 +16,7 @@ export function clearSession() {
   sessionStorage.removeItem("veo_registration");
 }
 
-export default function SessionTimer({ tourSlug }: { tourSlug: string }) {
+export default function SessionTimer({ tourSlug, returnPath }: { tourSlug: string; returnPath?: string }) {
   const router = useRouter();
   const [remaining, setRemaining] = useState<number | null>(null);
   const [expired, setExpired] = useState(false);
@@ -55,7 +55,7 @@ export default function SessionTimer({ tourSlug }: { tourSlug: string }) {
           </p>
           <button
             type="button"
-            onClick={() => router.push(`/tours/${tourSlug}`)}
+            onClick={() => router.push(returnPath ?? `/tours/${tourSlug}`)}
             className="w-full bg-primary text-white py-3 rounded-xl font-bold hover:bg-primary/90 transition-colors"
           >
             Quay lại trang tour

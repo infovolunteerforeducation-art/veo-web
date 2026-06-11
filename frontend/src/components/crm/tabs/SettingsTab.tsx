@@ -334,7 +334,7 @@ function getRolePermissions(role: StaffRole) {
   return [
     { label: "Xem dashboard & báo cáo", allowed: role !== "sale" },
     { label: "Quản lý đặt chỗ", allowed: role !== "staff" },
-    { label: "Quản lý khách hàng", allowed: role === "admin" || role === "coordinator" || role === "sale" },
+    { label: "Quản lý người đăng ký", allowed: role === "admin" || role === "coordinator" || role === "sale" },
     { label: "Tạo & sửa chuyến đi DLTN", allowed: role === "admin" || role === "coordinator" },
     { label: "Quản lý điểm đến", allowed: role === "admin" || role === "coordinator" },
     { label: "Phân quyền nhân viên", allowed: role === "admin" },

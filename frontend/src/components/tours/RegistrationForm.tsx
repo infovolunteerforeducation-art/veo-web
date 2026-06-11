@@ -18,7 +18,7 @@ const inputClass =
 const labelClass = "block text-xs font-semibold text-on-surface-variant mb-1.5";
 const errorClass = "text-xs text-error mt-1";
 
-export default function RegistrationForm({ tour, selectedDate }: { tour: Tour; selectedDate: string }) {
+export default function RegistrationForm({ tour, selectedDate, paymentPath }: { tour: Tour; selectedDate: string; paymentPath?: string }) {
   const router = useRouter();
 
   const [registrant, setRegistrant] = useState({
@@ -73,7 +73,7 @@ export default function RegistrationForm({ tour, selectedDate }: { tour: Tour; s
     e.preventDefault();
     if (!validate()) return;
     sessionStorage.setItem("veo_registration", JSON.stringify({ registrant: { ...registrant, departureDate: selectedDate }, participants }));
-    router.push(`/tours/${tour.slug}/thanh-toan`);
+    router.push(paymentPath ?? `/tours/${tour.slug}/thanh-toan`);
   }
 
   return (

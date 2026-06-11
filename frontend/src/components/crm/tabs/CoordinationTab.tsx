@@ -184,7 +184,7 @@ export default function CoordinationTab() {
               <thead>
                 <tr className="border-b border-outline-variant/20 bg-surface-container-low">
                   <th className="text-left px-5 py-3 text-xs font-semibold text-on-surface-variant whitespace-nowrap">#</th>
-                  <th className="text-left px-5 py-3 text-xs font-semibold text-on-surface-variant whitespace-nowrap">Khách hàng</th>
+                  <th className="text-left px-5 py-3 text-xs font-semibold text-on-surface-variant whitespace-nowrap">Người đăng ký</th>
                   <th className="text-left px-5 py-3 text-xs font-semibold text-on-surface-variant whitespace-nowrap">Chuyến đi</th>
                   <th className="text-center px-5 py-3 text-xs font-semibold text-on-surface-variant whitespace-nowrap">Người</th>
                   <th className="text-right px-5 py-3 text-xs font-semibold text-on-surface-variant whitespace-nowrap">Số tiền</th>

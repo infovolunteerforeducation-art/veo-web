@@ -3,6 +3,7 @@ import Link from "next/link";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import FAQAccordion from "@/components/trai-he/FAQAccordion";
+import { camps } from "@/lib/trai-he-data";
 
 const heroImage = "/trai-he/volunteer-summer-camp-hero.png";
 const youtubeVideoId = "LCJqDRXphLk";
@@ -51,67 +52,6 @@ const highlights = [
   { icon: "volunteer_activism", value: "120K+", label: "cộng đồng VEO" },
 ];
 
-const camps = [
-  {
-    location: "Mai Châu · Hoà Bình",
-    title: "Bảo tồn và phát huy văn hoá dân tộc Thái",
-    dates: ["20/06 – 25/06/2026", "25/07 – 30/07/2026"],
-    price: "8,890,000 đồng",
-    image: "/trai-he/maichau-1.png",
-    volunteer: [
-      "Tổ chức lớp học tiếng Anh và kỹ năng sống, phiên chợ 0 đồng cho trẻ em",
-      "Hỗ trợ cải tạo cơ sở vật chất tại địa phương",
-      "Thử thách Vua đầu bếp: Nấu ăn cho các hộ gia đình khó khăn",
-      "Thử thách Nông dân thực thụ: Hỗ trợ người đồng việc đồng áng",
-    ],
-    experience: [
-      "Tham gia Village Tour: Khám phá ffi bản Mai Châu",
-      "Tham gia Cooking Tour: Làm cơm lam hướng đồng",
-      "Tìm hiểu văn hóa dân tộc Thái: múa xoè Thái, đan nơ tăm, làm vòng tay...",
-      "Trải nghiệm nhuộm vải và tìm hiểu hoa văn dân tộc Thái",
-      "Vui chơi tại thác Gò Lào, hồ Ba Khan (hồ thuỷ điện Hoà Bình)",
-    ],
-  },
-  {
-    location: "Bản Cối · Phú Thọ",
-    title: "Phát triển kỹ năng sinh tồn trong tự nhiên",
-    dates: ["04/07 – 09/07/2026"],
-    price: "8,890,000 đồng",
-    image: "/trai-he/phutho-1.png",
-    volunteer: [
-      "Tổ chức các lớp học tiếng Anh và kỹ năng sống",
-      "Tổ chức phiên chợ 0 đồng với chủ đề môi trường",
-      "Hỗ trợ cải tạo cơ sở vật chất tại địa phương",
-    ],
-    experience: [
-      "Tham gia các buổi học và thực hành kỹ năng sinh tồn",
-      "Tìm hiểu về môi trường rừng, trồng và chăm sóc cây rừng",
-      "Trekking khám phá VQG Xuân Sơn, tìm hiểu hệ động thực vật phong phú",
-      "Tìm hiểu trang phục truyền thống người dân tộc Dao",
-      "Học tết vòng tay dân tộc Dao hoặc thêu thổ cẩm",
-      "Tham gia Cooking Tour: làm cơm lam, nộm rau dớn",
-    ],
-  },
-  {
-    location: "Tả Vạn · Sa Pa",
-    title: "Trải nghiệm cuộc sống trường học vùng cao",
-    dates: ["12/07 – 17/07/2026"],
-    price: "9,990,000 đồng",
-    image: "/trai-he/sapa-1.png",
-    volunteer: [
-      "Tổ chức các lớp học tiếng Anh và kỹ năng sống",
-      "Làm bánh, chuẩn bị bữa trưa dành tặng học sinh tại điểm trường",
-      "Hỗ trợ cải tạo cơ sở vật chất tại địa phương",
-      "Thăm hỏi, nấu ăn tặng hộ gia đình có hoàn cảnh khó khăn",
-    ],
-    experience: [
-      "Khám phá Núi Hàm Rồng và trung tâm thị xã Sapa",
-      "Trải nghiệm làm hương thảo mộc; tết vòng tay may mắn",
-      "Trải nghiệm vẽ sáp ong nhuộm chàm của dân tộc Mông",
-      "Học múa truyền thống của dân tộc Giáy",
-    ],
-  },
-];
 
 const pillars = [
   {
@@ -407,13 +347,13 @@ function CampListingsSection() {
                 </div>
                 <div className="flex flex-col justify-between p-4 sm:p-6">
                   <div>
-                    <p className="mb-1 text-xs font-bold uppercase tracking-wide text-solar-orange">{camp.location}</p>
-                    <h3 className="text-lg font-black uppercase leading-snug text-primary sm:text-xl">{camp.title}</h3>
+                    <p className="mb-2 text-xs font-bold uppercase tracking-wide text-primary">{camp.location}</p>
+                    <h3 className="mt-1 text-lg font-black uppercase leading-snug text-primary sm:text-xl">{camp.title}</h3>
                     <div className="mt-3 flex flex-wrap gap-2">
                       {camp.dates.map((d) => (
-                        <span key={d} className="inline-flex items-center gap-1.5 rounded-full bg-primary/8 px-3 py-1 text-xs font-semibold text-primary">
+                        <span key={d.isoDate} className="inline-flex items-center gap-1.5 rounded-full bg-primary/8 px-3 py-1 text-xs font-semibold text-primary">
                           <span className="material-symbols-outlined text-[14px]">calendar_month</span>
-                          {d}
+                          {d.label}
                         </span>
                       ))}
                     </div>
@@ -422,8 +362,8 @@ function CampListingsSection() {
                         <p className="mb-2 text-[11px] font-bold uppercase tracking-wider text-on-surface-variant">Hoạt động tình nguyện</p>
                         <ul className="space-y-1.5">
                           {camp.volunteer.map((item) => (
-                            <li key={item} className="flex items-start gap-2 text-xs leading-snug text-on-surface-variant">
-                              <span className="material-symbols-outlined shrink-0 text-solar-orange" style={{fontSize: 13, lineHeight: "1.4"}}>favorite</span>
+                            <li key={item} className="flex items-start gap-2 text-[14px] leading-snug text-on-surface-variant">
+                              <span className="material-symbols-outlined shrink-0 text-solar-orange" style={{fontSize: 14, lineHeight: "1.4"}}>favorite</span>
                               {item}
                             </li>
                           ))}
@@ -433,8 +373,8 @@ function CampListingsSection() {
                         <p className="mb-2 text-[11px] font-bold uppercase tracking-wider text-on-surface-variant">Hoạt động trải nghiệm</p>
                         <ul className="space-y-1.5">
                           {camp.experience.map((item) => (
-                            <li key={item} className="flex items-start gap-2 text-xs leading-snug text-on-surface-variant">
-                              <span className="material-symbols-outlined shrink-0 text-primary" style={{fontSize: 13, lineHeight: "1.4"}}>auto_awesome</span>
+                            <li key={item} className="flex items-start gap-2 text-[14px] leading-snug text-on-surface-variant">
+                              <span className="material-symbols-outlined shrink-0 text-primary" style={{fontSize: 14, lineHeight: "1.4"}}>auto_awesome</span>
                               {item}
                             </li>
                           ))}
@@ -445,13 +385,13 @@ function CampListingsSection() {
                   <div className="mt-4 flex items-center justify-between border-t border-outline-variant/30 pt-4">
                     <div>
                       <p className="text-xs text-outline">Chi phí từ</p>
-                      <p className="text-base font-black text-secondary sm:text-lg">{camp.price}</p>
+                      <p className="text-base font-black text-secondary sm:text-lg">{camp.price} / người</p>
                     </div>
                     <Link
-                      href="/lien-he"
+                      href={`/trai-he-tinh-nguyen/${camp.slug}`}
                       className="inline-flex items-center gap-1.5 rounded-full bg-solar-orange px-4 py-2 text-sm font-bold text-pure-white transition-colors hover:bg-action-hover sm:gap-2 sm:px-5 sm:py-2.5"
                     >
-                      Đăng ký ngay
+                      Xem chi tiết
                       <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
                     </Link>
                   </div>
@@ -476,7 +416,7 @@ export default function TraiHeTinhNguyenPage() {
           <div className="absolute inset-0 bg-[linear-gradient(to_top,rgba(69,30,107,0.92)_0%,rgba(69,30,107,0.55)_50%,rgba(69,30,107,0.18)_100%)] sm:bg-[linear-gradient(90deg,rgba(69,30,107,0.86),rgba(69,30,107,0.54)_45%,rgba(69,30,107,0.16))]" />
           <div className="relative mx-auto w-full max-w-[1200px] px-4 pb-8 sm:px-6 sm:pb-14">
             <div className="max-w-2xl">
-              <span className="mb-3 inline-flex w-fit rounded-full bg-white px-3 py-1 text-xs font-bold text-primary sm:mb-4">
+              <span className="mb-3 inline-flex w-fit rounded-full bg-white px-3 py-1 text-[14px] font-bold text-primary sm:mb-4">
                 Trại hè tình nguyện VEO 2026
               </span>
               <h1 className="text-3xl font-black leading-tight text-white sm:text-4xl lg:text-5xl xl:text-6xl">
@@ -500,9 +440,16 @@ export default function TraiHeTinhNguyenPage() {
 
         {/* Highlights strip */}
         <section className="border-b border-outline-variant/30 bg-white">
-          <div className="mx-auto grid max-w-[1200px] grid-cols-2 divide-x divide-y divide-outline-variant/30 px-4 sm:grid-cols-4 sm:divide-y-0 sm:px-6">
-            {highlights.map((item) => (
-              <div key={item.label} className="py-5 text-center sm:py-6">
+          <div className="mx-auto grid max-w-[1200px] grid-cols-2 px-4 sm:grid-cols-4 sm:px-6">
+            {highlights.map((item, i) => (
+              <div
+                key={item.label}
+                className={[
+                  "py-5 text-center sm:py-6 border-outline-variant/30",
+                  i % 2 === 0 ? "border-r" : i === 1 ? "sm:border-r" : "",
+                  i < 2 ? "border-b sm:border-b-0" : "",
+                ].filter(Boolean).join(" ")}
+              >
                 <span className="material-symbols-outlined text-primary" style={{ fontSize: 26 }}>
                   {item.icon}
                 </span>

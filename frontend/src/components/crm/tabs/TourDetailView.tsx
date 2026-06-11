@@ -1,6 +1,6 @@
 "use client";
 
-import { ManagedTour, Booking, fmt, formatDuration } from "@/lib/crm-data";
+import { ManagedTour, Booking, fmt, formatDuration, fmtDateTime } from "@/lib/crm-data";
 import { StatusBadge } from "./DashboardTab";
 
 type Props = {
@@ -8,16 +8,8 @@ type Props = {
   bookings: Booking[];
   onBack: () => void;
   onToggleAttended: (bookingId: string, attended: boolean | null) => void;
+  onViewSchedule?: (scheduleId: string) => void;
 };
-
-function fmtDateTime(iso: string) {
-  try {
-    return new Date(iso).toLocaleString("vi-VN", {
-      day: "2-digit", month: "2-digit", year: "numeric",
-      hour: "2-digit", minute: "2-digit",
-    });
-  } catch { return iso; }
-}
 
 function BookingStatusBadge({ status }: { status: Booking["status"] }) {
   const map: Record<Booking["status"], { label: string; className: string }> = {
@@ -62,7 +54,7 @@ function AttendedToggle({ attended, onChange }: { attended: boolean | null | und
   );
 }
 
-export default function TourDetailView({ tour, bookings, onBack, onToggleAttended }: Props) {
+export default function TourDetailView({ tour, bookings, onBack, onToggleAttended, onViewSchedule }: Props) {
   // Only attended bookings, sorted by schedule isoDate descending
   const attendedBookings = [...bookings]
     .filter((b) => b.attended === true)
@@ -75,14 +67,12 @@ export default function TourDetailView({ tour, bookings, onBack, onToggleAttende
   const totalSchedules  = tour.schedules.length;
   const totalRegistered = bookings.reduce((s, b) => s + b.numPeople, 0);
   const attendedPeople  = bookings.filter((b) => b.attended === true).reduce((s, b) => s + b.numPeople, 0);
-  const absentPeople    = bookings.filter((b) => b.attended === false).reduce((s, b) => s + b.numPeople, 0);
   const totalRevenue    = bookings.filter((b) => b.status === "paid").reduce((s, b) => s + b.totalAmount, 0);
 
   const stats = [
     { label: "Tổng số lịch chuyến",  value: totalSchedules,     color: "text-primary",      isText: false },
     { label: "Tổng đăng ký",         value: totalRegistered,    color: "text-blue-600",     isText: false },
     { label: "Tổng người tham gia",  value: attendedPeople,     color: "text-green-600",    isText: false },
-    { label: "Tổng người vắng mặt",  value: absentPeople,       color: "text-red-500",      isText: false },
     { label: "Doanh thu",            value: fmt(totalRevenue),  color: "text-solar-orange", isText: true  },
   ];
 
@@ -126,7 +116,7 @@ export default function TourDetailView({ tour, bookings, onBack, onToggleAttende
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         {stats.map((s) => (
           <div key={s.label} className="bg-white rounded-2xl border border-outline-variant/30 p-4">
             <p className="text-xs text-on-surface-variant font-medium">{s.label}</p>
@@ -135,51 +125,87 @@ export default function TourDetailView({ tour, bookings, onBack, onToggleAttende
         ))}
       </div>
 
-      {/* Attended bookings table */}
-      <div className="bg-white rounded-2xl border border-outline-variant/30 overflow-hidden">
-        <div className="px-5 py-4 border-b border-outline-variant/20">
-          <h3 className="text-base font-bold text-on-surface">Danh sách khách đã tham gia</h3>
-          <p className="text-sm text-on-surface-variant mt-0.5">
-            {attendedPeople} người · {attendedBookings.length} lượt đặt đã tham gia
-          </p>
-        </div>
+      {/* Attended bookings table — expanded per participant */}
+      {(() => {
+        const rows = attendedBookings.flatMap((b) => {
+          const pts = b.participants && b.participants.length > 0
+            ? b.participants
+            : [{ name: b.customerName, phone: b.phone, email: b.email }];
+          return pts.map((p) => ({ booking: b, participantName: p.name, participantPhone: p.phone, participantEmail: p.email }));
+        });
 
-        {attendedBookings.length === 0 ? (
-          <div className="text-center py-16 text-sm text-on-surface-variant">Chưa có khách nào được xác nhận tham gia</div>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-outline-variant/20 bg-surface-container-low">
-                  <th className="text-left px-5 py-3 text-xs font-semibold text-on-surface-variant whitespace-nowrap">#</th>
-                  <th className="text-left px-5 py-3 text-xs font-semibold text-on-surface-variant whitespace-nowrap">Khách hàng</th>
-                  <th className="text-left px-5 py-3 text-xs font-semibold text-on-surface-variant whitespace-nowrap">Lịch chuyến</th>
-                  <th className="text-center px-5 py-3 text-xs font-semibold text-on-surface-variant whitespace-nowrap">Số người</th>
-                  <th className="text-right px-5 py-3 text-xs font-semibold text-on-surface-variant whitespace-nowrap">Tổng tiền</th>
-                  <th className="text-left px-5 py-3 text-xs font-semibold text-on-surface-variant whitespace-nowrap">Đăng ký lúc</th>
-                  <th className="text-center px-5 py-3 text-xs font-semibold text-on-surface-variant whitespace-nowrap">Thanh toán</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-outline-variant/10">
-                {attendedBookings.map((b, i) => (
-                  <tr key={b.id} className="hover:bg-surface-container-low/50 transition-colors">
-                    <td className="px-5 py-3 text-on-surface-variant text-xs">{i + 1}</td>
-                    <td className="px-5 py-3">
-                      <p className="font-semibold text-on-surface">{b.customerName}</p>
-                      <p className="text-xs text-on-surface-variant mt-0.5">{b.phone} · {b.email}</p>
-                    </td>
-                    <td className="px-5 py-3 text-on-surface-variant text-xs whitespace-nowrap">{b.scheduleLabel}</td>
-                    <td className="px-5 py-3 text-center font-semibold text-on-surface">{b.numPeople}</td>
-                    <td className="px-5 py-3 text-right font-semibold text-on-surface whitespace-nowrap">{fmt(b.totalAmount)}</td>
-                    <td className="px-5 py-3 text-xs text-on-surface-variant whitespace-nowrap">{fmtDateTime(b.createdAt)}</td>
-                    <td className="px-5 py-3 text-center"><BookingStatusBadge status={b.status} /></td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+        return (
+          <div className="bg-white rounded-2xl border border-outline-variant/30 overflow-hidden">
+            <div className="px-5 py-4 border-b border-outline-variant/20">
+              <h3 className="text-base font-bold text-on-surface">Danh sách khách đã tham gia</h3>
+              <p className="text-sm text-on-surface-variant mt-0.5">
+                {rows.length} người · {attendedBookings.length} lượt đặt đã tham gia
+              </p>
+            </div>
+
+            {rows.length === 0 ? (
+              <div className="text-center py-16 text-sm text-on-surface-variant">Chưa có khách nào được xác nhận tham gia</div>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="border-b border-outline-variant/20 bg-surface-container-low">
+                      <th className="text-left px-5 py-3 text-xs font-semibold text-on-surface-variant whitespace-nowrap">#</th>
+                      <th className="text-left px-5 py-3 text-xs font-semibold text-on-surface-variant whitespace-nowrap">Khách hàng</th>
+                      <th className="text-left px-5 py-3 text-xs font-semibold text-on-surface-variant whitespace-nowrap">Người đăng ký</th>
+                      <th className="text-left px-5 py-3 text-xs font-semibold text-on-surface-variant whitespace-nowrap">Mã đặt</th>
+                      <th className="text-left px-5 py-3 text-xs font-semibold text-on-surface-variant whitespace-nowrap">Lịch chuyến</th>
+                      <th className="text-left px-5 py-3 text-xs font-semibold text-on-surface-variant whitespace-nowrap">Đăng ký lúc</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-outline-variant/10">
+                    {rows.map(({ booking: b, participantName, participantPhone, participantEmail }, i) => (
+                      <tr key={`${b.id}-${i}`} className="hover:bg-surface-container-low/50 transition-colors">
+                        <td className="px-5 py-3 text-on-surface-variant text-xs">{i + 1}</td>
+                        <td className="px-5 py-3">
+                          <p className="font-semibold text-on-surface">{participantName}</p>
+                          {(participantPhone || participantEmail) && (
+                            <p className="text-xs text-on-surface-variant mt-0.5">
+                              {[participantPhone, participantEmail].filter(Boolean).join(" · ")}
+                            </p>
+                          )}
+                        </td>
+                        <td className="px-5 py-3">
+                          <div className="flex items-center gap-2">
+                            <p className="font-medium text-on-surface">{b.customerName}</p>
+                            {b.numPeople > 1 && (
+                              <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full bg-blue-100 text-blue-700 text-[10px] font-bold shrink-0">
+                                <span className="material-symbols-outlined" style={{ fontSize: 11 }}>group</span>
+                                {b.numPeople}
+                              </span>
+                            )}
+                          </div>
+                          <p className="text-xs text-on-surface-variant mt-0.5">{b.phone} · {b.email}</p>
+                        </td>
+                        <td className="px-5 py-3 text-xs text-on-surface-variant font-mono whitespace-nowrap">{b.bookingCode}</td>
+                        <td className="px-5 py-3 whitespace-nowrap">
+                          {onViewSchedule ? (
+                            <button
+                              type="button"
+                              onClick={() => onViewSchedule(b.scheduleId)}
+                              className="text-xs text-primary hover:underline cursor-pointer"
+                            >
+                              {b.scheduleLabel}
+                            </button>
+                          ) : (
+                            <span className="text-xs text-on-surface-variant">{b.scheduleLabel}</span>
+                          )}
+                        </td>
+                        <td className="px-5 py-3 text-xs text-on-surface-variant whitespace-nowrap">{fmtDateTime(b.createdAt)}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
           </div>
-        )}
-      </div>
+        );
+      })()}
     </div>
   );
 }

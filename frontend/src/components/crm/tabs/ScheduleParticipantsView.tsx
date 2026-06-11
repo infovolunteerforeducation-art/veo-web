@@ -1,6 +1,6 @@
 "use client";
 
-import { Booking, BookingParticipant, FlatSchedule, computeScheduleLabel } from "@/lib/crm-data";
+import { Booking, BookingParticipant, FlatSchedule, computeScheduleLabel, fmtDateTime } from "@/lib/crm-data";
 import { StatusBadge } from "./DashboardTab";
 
 type Props = {
@@ -9,15 +9,6 @@ type Props = {
   onBack: () => void;
   onToggleAttended: (bookingId: string, attended: boolean | null) => void;
 };
-
-function fmtDateTime(iso: string) {
-  try {
-    return new Date(iso).toLocaleString("vi-VN", {
-      day: "2-digit", month: "2-digit", year: "numeric",
-      hour: "2-digit", minute: "2-digit",
-    });
-  } catch { return iso; }
-}
 
 function AttendedToggle({
   attended,
@@ -163,7 +154,8 @@ export default function ScheduleParticipantsView({ schedule, bookings, onBack, o
                       <div className="flex items-center gap-2">
                         <p className="font-semibold text-on-surface">{row.booking.customerName}</p>
                         {row.booking.numPeople > 1 && (
-                          <span className="text-[11px] font-bold bg-blue-500 text-white w-5 h-5 flex items-center justify-center rounded-full shrink-0">
+                          <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full bg-blue-100 text-blue-700 text-[10px] font-bold shrink-0">
+                            <span className="material-symbols-outlined" style={{ fontSize: 11 }}>group</span>
                             {row.booking.numPeople}
                           </span>
                         )}

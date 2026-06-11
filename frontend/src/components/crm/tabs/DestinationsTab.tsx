@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { mockDestinations, mockTours, mockBookings, Destination, fmt } from "@/lib/crm-data";
+import { mockDestinations, mockTours, mockBookings, Destination, fmt, fmtDate } from "@/lib/crm-data";
 import { StatusBadge } from "./DashboardTab";
 import Pagination from "../Pagination";
 import SelectInput from "../SelectInput";
@@ -16,10 +16,6 @@ const REGION_FILTERS: { value: RegionFilter; label: string }[] = [
   { value: "north", label: "Miền Bắc" },
   { value: "south", label: "Miền Nam" },
 ];
-
-function fmtDate(d: string) {
-  return new Date(d).toLocaleDateString("vi-VN", { day: "2-digit", month: "2-digit", year: "numeric" });
-}
 
 function emptyForm(): EmptyForm {
   return { name: "", province: "", region: "north" };

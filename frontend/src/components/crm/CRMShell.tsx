@@ -65,6 +65,8 @@ export default function CRMShell() {
   const [previewRole, setPreviewRole] = useState<StaffRole | null>(null);
   const [expandedGroup, setExpandedGroup] = useState<string | null>(null);
   const [tours, setTours] = useState<ManagedTour[]>(mockTours);
+  const [scheduleDeepLink, setScheduleDeepLink] = useState<string | null>(null);
+  const [tourDeepLink, setTourDeepLink] = useState<string | null>(null);
 
   if (!signedInUser) {
     return <SignInPage onSignIn={(name) => setSignedInUser(name)} />;
@@ -297,9 +299,9 @@ export default function CRMShell() {
         <main className="flex-1 overflow-y-auto p-4 lg:p-6">
           {activeTab === "dashboard"    && <DashboardTab />}
           {activeTab === "bookings"     && <BookingsTab />}
-          {activeTab === "customers"    && <CustomersTab />}
-          {activeTab === "tours"        && <ToursTab tours={tours} setTours={setTours} />}
-          {activeTab === "schedules"    && <SchedulesTab tours={tours} setTours={setTours} />}
+          {activeTab === "customers"    && <CustomersTab onNavigateToTour={(id) => { setTourDeepLink(id); switchTab("tours"); }} onNavigateToSchedule={(id) => { setScheduleDeepLink(id); switchTab("schedules"); }} />}
+          {activeTab === "tours"        && <ToursTab tours={tours} setTours={setTours} onNavigateToSchedule={(id) => { setScheduleDeepLink(id); switchTab("schedules"); }} deepLinkTourId={tourDeepLink} onDeepLinkTourConsumed={() => setTourDeepLink(null)} />}
+          {activeTab === "schedules"    && <SchedulesTab tours={tours} setTours={setTours} deepLinkScheduleId={scheduleDeepLink} onDeepLinkConsumed={() => setScheduleDeepLink(null)} />}
           {activeTab === "coordination" && <CoordinationTab />}
           {activeTab === "destinations" && <DestinationsTab />}
           {activeTab === "settings"     && <SettingsTab />}

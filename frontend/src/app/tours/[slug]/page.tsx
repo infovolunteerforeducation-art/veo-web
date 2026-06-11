@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
+import Link from "next/link";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { getTourBySlug, tours } from "@/lib/tours";
@@ -69,10 +70,22 @@ export default async function TourDetailPage({
         </section>
 
         {/* ── Main content ── */}
-        <section className="max-w-[1200px] mx-auto px-4 sm:px-6 py-8 sm:py-10 grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <section className="max-w-[1200px] mx-auto px-4 sm:px-6 pt-5 sm:pt-6 pb-16">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-x-6">
 
           {/* ── Left column ── */}
-          <div className="lg:col-span-8 space-y-10 sm:space-y-12 order-last lg:order-none">
+          <div className="lg:col-span-8 order-last lg:order-none">
+
+            {/* Breadcrumb */}
+            <nav className="flex items-center gap-2 text-sm text-on-surface-variant mb-8 sm:mb-10">
+              <Link href="/" className="hover:text-primary transition-colors">Trang chủ</Link>
+              <span className="material-symbols-outlined text-base">chevron_right</span>
+              <Link href="/tours" className="hover:text-primary transition-colors">Du lịch tình nguyện</Link>
+              <span className="material-symbols-outlined text-base">chevron_right</span>
+              <span className="text-primary font-semibold line-clamp-1">{tour.title}</span>
+            </nav>
+
+            <div className="space-y-10 sm:space-y-12">
 
             {/* Mục tiêu chương trình */}
             <div id="muc-tieu">
@@ -194,7 +207,8 @@ export default async function TourDetailPage({
                 </div>
               )}
             </div>
-          </div>
+            </div>{/* end space-y-10 */}
+          </div>{/* end left col */}
 
           {/* ── Right column: sticky sidebar ── */}
           <div className="lg:col-span-4 order-first lg:order-none">
@@ -246,6 +260,7 @@ export default async function TourDetailPage({
 
             </div>
           </div>
+          </div>{/* end grid */}
         </section>
       </main>
       <Footer />
