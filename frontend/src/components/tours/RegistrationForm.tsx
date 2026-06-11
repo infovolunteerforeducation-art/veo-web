@@ -309,6 +309,13 @@ export default function RegistrationForm({ tour, selectedDate, paymentPath }: { 
         <span className="material-symbols-outlined">arrow_forward</span>
         Xác nhận và tiếp tục
       </button>
+      <p className="text-center text-xs text-on-surface-variant mt-3 leading-relaxed">
+        Bằng việc bấm &ldquo;Xác nhận và tiếp tục&rdquo;, bạn đã đồng ý với{" "}
+        <a href="/dieu-khoan-su-dung" target="_blank" rel="noopener noreferrer" className="text-primary underline hover:text-primary/80 transition-colors font-medium">
+          Điều khoản sử dụng
+        </a>{" "}
+        của chúng tôi.
+      </p>
 
       {/* Group size dialog */}
       {showGroupDialog && (

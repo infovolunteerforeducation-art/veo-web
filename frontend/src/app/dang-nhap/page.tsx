@@ -2,21 +2,28 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/context/AuthContext";
 
 export default function LoginPage() {
+  const { login } = useAuth();
+  const router = useRouter();
   const [form, setForm] = useState({ email: "", password: "" });
   const [showPass, setShowPass] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
     setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-      setError("Tính năng đăng nhập đang được phát triển.");
-    }, 1000);
+    const result = await login(form.email, form.password);
+    setLoading(false);
+    if (result.ok) {
+      router.push("/tai-khoan");
+    } else {
+      setError(result.error ?? "Đăng nhập thất bại.");
+    }
   };
 
   return (
@@ -141,10 +148,13 @@ export default function LoginPage() {
             <div className="flex-1 h-px bg-outline-variant/40" />
           </div>
 
+          {/* SSO buttons — disabled until backend SSO is implemented */}
           <div className="grid grid-cols-2 gap-3">
             <button
               type="button"
-              className="h-11 flex items-center justify-center gap-2 rounded-xl border border-outline-variant/60 text-on-surface text-sm font-semibold hover:bg-surface-container transition"
+              disabled
+              title="Tính năng SSO sẽ được hỗ trợ sớm"
+              className="h-11 flex items-center justify-center gap-2 rounded-xl border border-outline-variant/60 text-on-surface text-sm font-semibold opacity-50 cursor-not-allowed transition"
             >
               <svg className="w-5 h-5" viewBox="0 0 24 24">
                 <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -156,7 +166,9 @@ export default function LoginPage() {
             </button>
             <button
               type="button"
-              className="h-11 flex items-center justify-center gap-2 rounded-xl border border-outline-variant/60 text-on-surface text-sm font-semibold hover:bg-surface-container transition"
+              disabled
+              title="Tính năng SSO sẽ được hỗ trợ sớm"
+              className="h-11 flex items-center justify-center gap-2 rounded-xl border border-outline-variant/60 text-on-surface text-sm font-semibold opacity-50 cursor-not-allowed transition"
             >
               <svg className="w-5 h-5" viewBox="0 0 24 24" fill="#1877F2">
                 <path d="M24 12.073C24 5.405 18.627 0 12 0S0 5.405 0 12.073C0 18.1 4.388 23.094 10.125 24v-8.437H7.078v-3.49h3.047V9.41c0-3.025 1.792-4.697 4.533-4.697 1.312 0 2.686.236 2.686.236v2.97h-1.513c-1.491 0-1.956.93-1.956 1.886v2.267h3.328l-.532 3.49h-2.796V24C19.612 23.094 24 18.1 24 12.073z"/>
