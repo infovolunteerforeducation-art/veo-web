@@ -165,6 +165,34 @@ export default async function TourDetailPage({
                   </ul>
                 </div>
               </div>
+
+              {/* Chính sách chuyến đi */}
+              {tour.policies && tour.policies.length > 0 && (
+                <div className="mt-4 sm:mt-6 bg-white border border-outline-variant/30 rounded-xl p-5 sm:p-6">
+                  <h3 className="text-lg font-semibold text-primary mb-5 flex items-center gap-2">
+                    <span className="material-symbols-outlined text-primary">policy</span>
+                    Chính sách chuyến đi
+                  </h3>
+                  <div className="space-y-5">
+                    {tour.policies.map((policy) => (
+                      <div key={policy.title}>
+                        <h4 className="text-base font-bold text-on-surface mb-3 flex items-center gap-2">
+                          <span className="material-symbols-outlined text-solar-orange shrink-0" style={{ fontSize: 18 }}>{policy.icon}</span>
+                          {policy.title}
+                        </h4>
+                        <ul className="space-y-2">
+                          {policy.items.map((item) => (
+                            <li key={item} className="flex items-start gap-2 text-base text-on-surface-variant">
+                              <span className="w-1.5 h-1.5 rounded-full bg-solar-orange shrink-0 mt-2" />
+                              {item}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 

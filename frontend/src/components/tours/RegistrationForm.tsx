@@ -9,6 +9,7 @@ type Participant = {
   name: string;
   useSamePhone: boolean;
   phone: string;
+  email: string;
   isSelf?: boolean;
 };
 
@@ -26,7 +27,9 @@ export default function RegistrationForm({ tour, selectedDate }: { tour: Tour; s
     email: "",
     numPeople: 1,
   });
-  const [participants, setParticipants] = useState<Participant[]>([]);
+  const [participants, setParticipants] = useState<Participant[]>([
+    { name: "", useSamePhone: false, phone: "", email: "", isSelf: false },
+  ]);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [showGroupDialog, setShowGroupDialog] = useState(false);
 
@@ -40,8 +43,8 @@ export default function RegistrationForm({ tour, selectedDate }: { tour: Tour; s
       Array.from(
         { length: num },
         (_, i) => participants[i] ?? (i === 0
-          ? { name: "", useSamePhone: false, phone: "", isSelf: false }
-          : { name: "", useSamePhone: false, phone: "" })
+          ? { name: "", useSamePhone: false, phone: "", email: "", isSelf: false }
+          : { name: "", useSamePhone: false, phone: "", email: "" })
       )
     );
   }
@@ -258,18 +261,20 @@ export default function RegistrationForm({ tour, selectedDate }: { tour: Tour; s
                           Dùng số của người đăng ký
                         </div>
                       )}
-                      <label className="flex items-start gap-2 mt-2 cursor-pointer select-none">
-                        <input
-                          type="checkbox"
-                          checked={p.useSamePhone}
-                          onChange={(e) => handleParticipant(i, "useSamePhone", e.target.checked)}
-                          className="w-4 h-4 rounded accent-primary mt-0.5 shrink-0"
-                        />
-                        <span className="text-xs text-on-surface-variant">
-                          Sử dụng số điện thoại của người đăng ký
-                        </span>
-                      </label>
-                      {p.useSamePhone && (
+                      {i > 0 && (
+                        <label className="flex items-start gap-2 mt-2 cursor-pointer select-none">
+                          <input
+                            type="checkbox"
+                            checked={p.useSamePhone}
+                            onChange={(e) => handleParticipant(i, "useSamePhone", e.target.checked)}
+                            className="w-4 h-4 rounded accent-primary mt-0.5 shrink-0"
+                          />
+                          <span className="text-xs text-on-surface-variant">
+                            Sử dụng số điện thoại của người đăng ký
+                          </span>
+                        </label>
+                      )}
+                      {i > 0 && p.useSamePhone && (
                         <div className="flex items-start gap-1.5 mt-2 px-3 py-2 bg-solar-orange/10 rounded-lg">
                           <span className="material-symbols-outlined text-solar-orange shrink-0" style={{ fontSize: 14, marginTop: 1 }}>info</span>
                           <p className="text-xs text-on-surface-variant">
@@ -277,6 +282,17 @@ export default function RegistrationForm({ tour, selectedDate }: { tour: Tour; s
                           </p>
                         </div>
                       )}
+                    </div>
+
+                    <div>
+                      <label className={labelClass}>Email</label>
+                      <input
+                        type="email"
+                        placeholder="example@email.com"
+                        value={p.email}
+                        onChange={(e) => handleParticipant(i, "email", e.target.value)}
+                        className={inputClass}
+                      />
                     </div>
                   </div>
                 )}

@@ -51,7 +51,7 @@ export default function TourItinerary({ itinerary }: { itinerary: ItineraryDay[]
               <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-primary text-white flex items-center justify-center font-bold text-sm shrink-0">
                 {String(day.day).padStart(2, "0")}
               </div>
-              <h3 className="flex-1 text-sm sm:text-base font-bold text-primary leading-snug">{day.title}</h3>
+              <h3 className="flex-1 text-base font-bold text-primary leading-snug">{day.title}</h3>
               <span
                 className="material-symbols-outlined text-primary transition-transform duration-200"
                 style={{ transform: expanded ? "rotate(180deg)" : "rotate(0deg)" }}
@@ -85,12 +85,12 @@ export default function TourItinerary({ itinerary }: { itinerary: ItineraryDay[]
                                 {act.timeFrom}{act.timeTo ? ` – ${act.timeTo}` : ""}
                               </span>
                             )}
-                            <span className="font-semibold text-on-surface text-sm">{act.name}</span>
+                            <span className="font-semibold text-on-surface text-base">{act.name}</span>
                           </div>
 
                           {/* Description */}
                           {act.description && (
-                            <p className="text-sm text-on-surface-variant leading-relaxed mb-3">{act.description}</p>
+                            <p className="text-base text-on-surface-variant leading-relaxed mb-3">{act.description}</p>
                           )}
 
                           {/* Images */}

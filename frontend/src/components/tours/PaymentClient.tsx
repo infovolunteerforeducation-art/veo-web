@@ -12,7 +12,7 @@ type RegistrationData = {
     departureDate: string;
     numPeople: number;
   };
-  participants: Array<{ name: string; useSamePhone: boolean; phone: string }>;
+  participants: Array<{ name: string; useSamePhone: boolean; phone: string; email: string; isSelf?: boolean }>;
 };
 
 type Voucher = {
@@ -329,6 +329,42 @@ export default function PaymentClient({ tour }: { tour: Tour }) {
             </div>
           </div>
         </div>
+
+        {regData && (
+          <>
+            <div className="h-px bg-outline-variant/50 my-4" />
+            <p className="text-xs font-bold text-on-surface-variant uppercase tracking-wide mb-3">Thông tin người đặt &amp; tham gia</p>
+            <div className="space-y-2 text-sm">
+              {/* Registrant */}
+              <div className="flex items-start gap-3 p-3 bg-surface-container-low rounded-xl">
+                <span className="material-symbols-outlined text-primary shrink-0" style={{ fontSize: 18, marginTop: 1 }}>person</span>
+                <div className="min-w-0">
+                  <p className="text-xs text-on-surface-variant font-medium">Người đăng ký</p>
+                  <p className="font-semibold text-on-surface truncate">{regData.registrant.name}</p>
+                  <p className="text-xs text-on-surface-variant">{regData.registrant.phone} · {regData.registrant.email}</p>
+                </div>
+              </div>
+              {/* Participants */}
+              {regData.participants.map((p, i) => {
+                const displayName = p.isSelf ? regData.registrant.name : p.name;
+                const displayPhone = p.isSelf ? regData.registrant.phone : p.useSamePhone ? regData.registrant.phone : p.phone;
+                return (
+                  <div key={i} className="flex items-start gap-3 p-3 bg-surface-container-low rounded-xl">
+                    <span className="material-symbols-outlined text-on-surface-variant shrink-0" style={{ fontSize: 18, marginTop: 1 }}>person_outline</span>
+                    <div className="min-w-0">
+                      <p className="text-xs text-on-surface-variant font-medium flex items-center gap-1.5">
+                        Người tham gia {i + 1}
+                        {p.isSelf && <span className="text-[10px] bg-primary/10 text-primary px-1.5 py-0.5 rounded-full font-semibold">Người đăng ký</span>}
+                      </p>
+                      <p className="font-semibold text-on-surface truncate">{displayName}</p>
+                      <p className="text-xs text-on-surface-variant">{displayPhone}{p.email && ` · ${p.email}`}</p>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </>
+        )}
       </div>
 
       {/* Payment method */}

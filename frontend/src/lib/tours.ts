@@ -39,6 +39,7 @@ export type Tour = {
   requirements: { icon: string; label: string; description: string }[];
   included: string[];
   notIncluded: string[];
+  policies?: { icon: string; title: string; items: string[] }[];
   impactMetrics: { label: string; percent: number }[];
   miniTestimonial: { quote: string; name: string; role: string };
 };
@@ -131,6 +132,35 @@ export const tours: Tour[] = [
       "Chứng nhận tình nguyện viên VEO",
     ],
     notIncluded: ["Chi phí cá nhân", "Đồ uống ngoài bữa chính", "Thuốc cá nhân"],
+    policies: [
+      {
+        icon: "event_busy",
+        title: "Hủy đặt chỗ",
+        items: [
+          "Hủy trước 14 ngày khởi hành: hoàn 80% phí chương trình.",
+          "Hủy từ 7–13 ngày trước khởi hành: hoàn 50% phí chương trình.",
+          "Hủy dưới 7 ngày hoặc không tham gia: không hoàn phí.",
+        ],
+      },
+      {
+        icon: "bookmark_add",
+        title: "Bảo lưu",
+        items: [
+          "Có thể bảo lưu phí sang chuyến khác trong vòng 6 tháng kể từ ngày hủy.",
+          "Chỉ áp dụng khi thông báo hủy trước ít nhất 5 ngày khởi hành.",
+          "Phí bảo lưu áp dụng tối đa 1 lần.",
+        ],
+      },
+      {
+        icon: "rule",
+        title: "Quy định tham gia",
+        items: [
+          "Tôn trọng văn hóa, phong tục địa phương trong suốt hành trình.",
+          "Tuân thủ lịch trình và hướng dẫn của ban tổ chức.",
+          "Không sử dụng chất kích thích, đồ uống có cồn trong giờ hoạt động tình nguyện.",
+        ],
+      },
+    ],
     impactMetrics: [
       { label: "Gây quỹ xây trường", percent: 75 },
       { label: "Tình nguyện viên đăng ký", percent: 60 },
@@ -214,6 +244,35 @@ export const tours: Tour[] = [
       "Bảo hiểm tai nạn",
     ],
     notIncluded: ["Vé máy bay đến Đà Nẵng", "Chi phí cá nhân"],
+    policies: [
+      {
+        icon: "event_busy",
+        title: "Hủy đặt chỗ",
+        items: [
+          "Hủy trước 14 ngày khởi hành: hoàn 80% phí chương trình.",
+          "Hủy từ 7–13 ngày trước khởi hành: hoàn 50% phí chương trình.",
+          "Hủy dưới 7 ngày hoặc không tham gia: không hoàn phí.",
+        ],
+      },
+      {
+        icon: "bookmark_add",
+        title: "Bảo lưu",
+        items: [
+          "Có thể bảo lưu phí sang chuyến khác trong vòng 6 tháng kể từ ngày hủy.",
+          "Chỉ áp dụng khi thông báo hủy trước ít nhất 5 ngày khởi hành.",
+          "Phí bảo lưu áp dụng tối đa 1 lần.",
+        ],
+      },
+      {
+        icon: "rule",
+        title: "Quy định tham gia",
+        items: [
+          "Tôn trọng văn hóa, phong tục địa phương trong suốt hành trình.",
+          "Tuân thủ lịch trình và hướng dẫn của ban tổ chức.",
+          "Không sử dụng chất kích thích, đồ uống có cồn trong giờ hoạt động tình nguyện.",
+        ],
+      },
+    ],
     impactMetrics: [
       { label: "Mục tiêu thu gom rác", percent: 40 },
       { label: "Tình nguyện viên đăng ký", percent: 40 },
@@ -297,6 +356,35 @@ export const tours: Tour[] = [
       "Chứng nhận giảng viên tình nguyện",
     ],
     notIncluded: ["Chi phí cá nhân", "Quà tặng cho học sinh"],
+    policies: [
+      {
+        icon: "event_busy",
+        title: "Hủy đặt chỗ",
+        items: [
+          "Hủy trước 14 ngày khởi hành: hoàn 80% phí chương trình.",
+          "Hủy từ 7–13 ngày trước khởi hành: hoàn 50% phí chương trình.",
+          "Hủy dưới 7 ngày hoặc không tham gia: không hoàn phí.",
+        ],
+      },
+      {
+        icon: "bookmark_add",
+        title: "Bảo lưu",
+        items: [
+          "Có thể bảo lưu phí sang chuyến khác trong vòng 6 tháng kể từ ngày hủy.",
+          "Chỉ áp dụng khi thông báo hủy trước ít nhất 5 ngày khởi hành.",
+          "Phí bảo lưu áp dụng tối đa 1 lần.",
+        ],
+      },
+      {
+        icon: "rule",
+        title: "Quy định tham gia",
+        items: [
+          "Tôn trọng văn hóa, phong tục địa phương trong suốt hành trình.",
+          "Tuân thủ lịch trình và hướng dẫn của ban tổ chức.",
+          "Không sử dụng chất kích thích, đồ uống có cồn trong giờ hoạt động tình nguyện.",
+        ],
+      },
+    ],
     impactMetrics: [
       { label: "Mục tiêu học sinh", percent: 67 },
       { label: "Tình nguyện viên đăng ký", percent: 67 },
@@ -377,6 +465,35 @@ export const tours: Tour[] = [
       "Chứng nhận tình nguyện viên",
     ],
     notIncluded: ["Chi phí cá nhân", "Đồ dùng chống nắng cá nhân"],
+    policies: [
+      {
+        icon: "event_busy",
+        title: "Hủy đặt chỗ",
+        items: [
+          "Hủy trước 14 ngày khởi hành: hoàn 80% phí chương trình.",
+          "Hủy từ 7–13 ngày trước khởi hành: hoàn 50% phí chương trình.",
+          "Hủy dưới 7 ngày hoặc không tham gia: không hoàn phí.",
+        ],
+      },
+      {
+        icon: "bookmark_add",
+        title: "Bảo lưu",
+        items: [
+          "Có thể bảo lưu phí sang chuyến khác trong vòng 6 tháng kể từ ngày hủy.",
+          "Chỉ áp dụng khi thông báo hủy trước ít nhất 5 ngày khởi hành.",
+          "Phí bảo lưu áp dụng tối đa 1 lần.",
+        ],
+      },
+      {
+        icon: "rule",
+        title: "Quy định tham gia",
+        items: [
+          "Tôn trọng văn hóa, phong tục địa phương trong suốt hành trình.",
+          "Tuân thủ lịch trình và hướng dẫn của ban tổ chức.",
+          "Không sử dụng chất kích thích, đồ uống có cồn trong giờ hoạt động tình nguyện.",
+        ],
+      },
+    ],
     impactMetrics: [
       { label: "Mục tiêu trồng cây", percent: 55 },
       { label: "Tình nguyện viên đăng ký", percent: 45 },
