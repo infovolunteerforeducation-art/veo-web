@@ -102,7 +102,7 @@ export default function LoginPage() {
             <div>
               <div className="flex justify-between mb-1.5">
                 <label className="text-sm font-semibold text-on-surface">Mật khẩu</label>
-                <Link href="#" className="text-sm text-solar-orange hover:underline font-medium">
+                <Link href="/quen-mat-khau" className="text-sm text-solar-orange hover:underline font-medium">
                   Quên mật khẩu?
                 </Link>
               </div>

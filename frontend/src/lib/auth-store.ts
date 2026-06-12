@@ -111,3 +111,22 @@ export function authChangePassword(
   saveUsers(users);
   return { ok: true };
 }
+
+export function authVerifyIdentity(email: string, phone: string): boolean {
+  const users = getUsers();
+  return users.some(
+    (u) => u.email.toLowerCase() === email.toLowerCase() && u.phone === phone
+  );
+}
+
+export function authSetNewPassword(
+  email: string,
+  newPassword: string
+): { ok: boolean; error?: string } {
+  const users = getUsers();
+  const idx = users.findIndex((u) => u.email.toLowerCase() === email.toLowerCase());
+  if (idx === -1) return { ok: false, error: "Không tìm thấy tài khoản." };
+  users[idx] = { ...users[idx], password: newPassword };
+  saveUsers(users);
+  return { ok: true };
+}
