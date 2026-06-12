@@ -7,11 +7,6 @@ import { getTourBySlug, tours } from "@/lib/tours";
 import BookingSidebar from "@/components/tours/BookingSidebar";
 import TourItinerary from "@/components/tours/TourItinerary";
 
-function regionMeta(region: "north" | "south") {
-  return region === "north"
-    ? { label: "Miền Bắc", className: "bg-blue-100 text-blue-700" }
-    : { label: "Miền Nam", className: "bg-green-100 text-green-700" };
-}
 
 export async function generateStaticParams() {
   return tours.map((t) => ({ slug: t.slug }));
@@ -39,8 +34,6 @@ export default async function TourDetailPage({
   const { slug } = await params;
   const tour = getTourBySlug(slug);
   if (!tour) notFound();
-  const region = regionMeta(tour.region);
-
   return (
     <>
       <Header />
@@ -55,8 +48,8 @@ export default async function TourDetailPage({
           <div className="absolute inset-0 hero-gradient flex items-end">
             <div className="max-w-[1200px] mx-auto w-full px-4 sm:px-6 pb-10 sm:pb-14 lg:pb-16">
               <div className="flex gap-2 mb-4">
-                <span className={`${region.className} text-xs font-bold px-3 py-1 rounded-full`}>
-                  {region.label}
+                <span className="bg-solar-orange text-white text-xs font-bold px-3 py-1 rounded-full">
+                  Du lịch tình nguyện
                 </span>
               </div>
               <h1 className="text-white text-4xl sm:text-5xl font-bold mb-4 leading-tight">

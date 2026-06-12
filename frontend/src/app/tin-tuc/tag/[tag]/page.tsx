@@ -1,16 +1,27 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { notFound } from "next/navigation";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
-import { articles, allCategories, type Article } from "./articles";
+import { articles, allCategories, categoryMap, type Article } from "../../articles";
 
-export const metadata: Metadata = {
-  title: "Tin tức & Sự kiện – VEO Travel",
-  description:
-    "Cập nhật tin tức mới nhất về các chuyến đi tình nguyện, câu chuyện cảm hứng từ tình nguyện viên và các sự kiện sắp diễn ra của VEO.",
-};
+type Props = { params: Promise<{ tag: string }>; searchParams: Promise<{ page?: string }> };
 
 const PAGE_SIZE = 9;
+
+export async function generateStaticParams() {
+  return Object.keys(categoryMap).map((tag) => ({ tag }));
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { tag } = await params;
+  const cat = categoryMap[tag];
+  if (!cat) return {};
+  return {
+    title: `${cat.name} – Tin tức VEO`,
+    description: `Các bài viết về ${cat.name} từ VEO Travel.`,
+  };
+}
 
 function ArticleCard({ article: a }: { article: Article }) {
   return (
@@ -107,22 +118,22 @@ function Pagination({
   );
 }
 
-export default async function NewsPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ page?: string }>;
-}) {
+export default async function TagPage({ params, searchParams }: Props) {
+  const { tag } = await params;
   const { page } = await searchParams;
+
+  const cat = categoryMap[tag];
+  if (!cat) notFound();
+
   const currentPage = Math.max(1, parseInt(page || "1"));
-
-  const featured = articles.find((a) => a.featured);
-  const rest = articles.filter((a) => !a.featured);
-
-  const totalPages = Math.ceil(rest.length / PAGE_SIZE);
-  const paginated = rest.slice(
+  const filtered = articles.filter((a) => a.categorySlug === tag);
+  const totalPages = Math.ceil(filtered.length / PAGE_SIZE);
+  const paginated = filtered.slice(
     (currentPage - 1) * PAGE_SIZE,
     currentPage * PAGE_SIZE
   );
+
+  const baseUrl = `/tin-tuc/tag/${tag}`;
 
   return (
     <>
@@ -131,14 +142,23 @@ export default async function NewsPage({
         {/* Hero */}
         <section className="bg-deep-amethyst py-20 px-6">
           <div className="max-w-[1200px] mx-auto text-center">
-            <p className="text-solar-orange font-semibold text-sm uppercase tracking-widest mb-3">
-              Cập nhật mới nhất
-            </p>
-            <h1 className="text-4xl md:text-5xl font-bold text-pure-white mb-5 leading-tight">
-              Tin tức & Sự kiện
+            <Link
+              href="/tin-tuc"
+              className="inline-flex items-center gap-1 text-pure-white/60 text-sm hover:text-pure-white transition-colors mb-4"
+            >
+              <span className="material-symbols-outlined text-base">arrow_back</span>
+              Tất cả tin tức
+            </Link>
+            <div className="flex justify-center mb-4">
+              <span className={`text-xs font-bold px-4 py-1.5 rounded-full ${cat.class}`}>
+                {cat.name}
+              </span>
+            </div>
+            <h1 className="text-4xl md:text-5xl font-bold text-pure-white mb-4 leading-tight">
+              {cat.name}
             </h1>
-            <p className="text-pure-white/80 text-lg max-w-2xl mx-auto leading-relaxed">
-              Câu chuyện từ những hành trình, thông tin về các sự kiện sắp diễn ra và cập nhật hoạt động mới nhất từ cộng đồng VEO.
+            <p className="text-pure-white/70 text-sm">
+              {filtered.length} bài viết
             </p>
           </div>
         </section>
@@ -146,71 +166,46 @@ export default async function NewsPage({
         <section className="max-w-[1200px] mx-auto px-6 py-12">
           {/* Category filter */}
           <div className="flex flex-wrap gap-2 mb-10">
-            {allCategories.map((cat) => (
+            {allCategories.map((c) => (
               <Link
-                key={cat.name}
-                href={cat.slug ? `/tin-tuc/tag/${cat.slug}` : "/tin-tuc"}
+                key={c.name}
+                href={c.slug ? `/tin-tuc/tag/${c.slug}` : "/tin-tuc"}
                 className={`px-4 py-2 rounded-full text-sm font-semibold transition-colors ${
-                  !cat.slug
+                  c.slug === tag
                     ? "bg-deep-amethyst text-pure-white"
                     : "bg-surface-container text-on-surface-variant hover:bg-surface-container-high"
                 }`}
               >
-                {cat.name}
+                {c.name}
               </Link>
             ))}
           </div>
 
-          {/* Featured article */}
-          {featured && currentPage === 1 && (
-            <div className="group mb-10 rounded-2xl overflow-hidden border border-outline-variant/30 bg-white shadow-sm hover:shadow-md transition-shadow">
-              <div className="grid grid-cols-1 md:grid-cols-2">
-                <Link
-                  href={`/tin-tuc/${featured.slug}`}
-                  className="block h-64 md:h-auto overflow-hidden"
-                >
-                  <img
-                    src={featured.image}
-                    alt={featured.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                  />
-                </Link>
-                <div className="p-8 flex flex-col justify-center">
-                  <Link
-                    href={`/tin-tuc/tag/${featured.categorySlug}`}
-                    className={`text-xs font-bold px-3 py-1 rounded-full self-start mb-4 hover:opacity-80 transition-opacity ${featured.categoryClass}`}
-                  >
-                    {featured.category}
-                  </Link>
-                  <Link href={`/tin-tuc/${featured.slug}`}>
-                    <h2 className="text-2xl font-bold text-primary leading-snug mb-2 group-hover:text-solar-orange transition-colors">
-                      {featured.title}
-                    </h2>
-                  </Link>
-                  <p className="text-xs text-on-surface-variant mb-4">{featured.date}</p>
-                  <p className="text-on-surface-variant leading-relaxed mb-6">
-                    {featured.excerpt}
-                  </p>
-                  <Link
-                    href={`/tin-tuc/${featured.slug}`}
-                    className="inline-flex items-center gap-1 text-solar-orange font-semibold text-sm"
-                  >
-                    Đọc tiếp
-                    <span className="material-symbols-outlined text-base">arrow_forward</span>
-                  </Link>
-                </div>
-              </div>
+          {paginated.length === 0 ? (
+            <div className="text-center py-24 text-on-surface-variant">
+              <span
+                className="material-symbols-outlined text-5xl mb-4 block"
+                style={{ fontVariationSettings: "'FILL' 0" }}
+              >
+                article
+              </span>
+              <p className="text-lg font-semibold mb-2">Chưa có bài viết nào</p>
+              <p className="text-sm">Quay lại sau nhé!</p>
             </div>
+          ) : (
+            <>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {paginated.map((article) => (
+                  <ArticleCard key={article.slug} article={article} />
+                ))}
+              </div>
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                baseUrl={baseUrl}
+              />
+            </>
           )}
-
-          {/* Article grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {paginated.map((article) => (
-              <ArticleCard key={article.slug} article={article} />
-            ))}
-          </div>
-
-          <Pagination currentPage={currentPage} totalPages={totalPages} baseUrl="/tin-tuc" />
         </section>
       </main>
       <Footer />

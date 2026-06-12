@@ -8,16 +8,16 @@ const programs = [
 ];
 
 const about = [
-  { label: "Về VEO", href: "#" },
+  { label: "Về VEO", href: "/ve-veo" },
   { label: "Tin tức", href: "/tin-tuc" },
   { label: "Liên hệ", href: "/lien-he" },
 ];
 
 const support = [
-  "Hướng dẫn tham gia",
-  "Chính sách bảo mật",
-  "Chính sách hoàn hủy",
-  "Điều khoản sử dụng",
+  { label: "Hướng dẫn tham gia", href: "/huong-dan-tham-gia" },
+  { label: "Chính sách bảo mật", href: "/chinh-sach-bao-mat" },
+  { label: "Chính sách hoàn hủy", href: "/chinh-sach-hoan-huy" },
+  { label: "Điều khoản sử dụng", href: "/dieu-khoan-su-dung" },
 ];
 
 const socials = [
@@ -139,12 +139,12 @@ export default function Footer() {
           <h4 className="text-base font-semibold text-pure-white">Hỗ trợ</h4>
           <ul className="space-y-2">
             {support.map((item) => (
-              <li key={item}>
+              <li key={item.label}>
                 <Link
-                  href="#"
+                  href={item.href}
                   className="text-sm text-pure-white/80 hover:text-solar-orange transition-colors"
                 >
-                  {item}
+                  {item.label}
                 </Link>
               </li>
             ))}
@@ -153,10 +153,23 @@ export default function Footer() {
       </div>
 
       <div className="border-t border-pure-white/10 py-6 px-6">
-        <div className="max-w-[1200px] mx-auto text-center">
+        <div className="max-w-[1200px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-sm text-pure-white/60">
             © 2026 Volunteer For Education (VEO). All rights reserved.
           </p>
+          <a
+            href="http://online.gov.vn/"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Đã thông báo Bộ Công Thương"
+            className="shrink-0 transition-opacity hover:opacity-85"
+          >
+            <img
+              src="/bct.png"
+              alt="Đã thông báo Bộ Công Thương"
+              className="h-[40px] w-auto object-contain"
+            />
+          </a>
         </div>
       </div>
     </footer>

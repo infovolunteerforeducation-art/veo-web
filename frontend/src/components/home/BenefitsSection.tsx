@@ -1,21 +1,27 @@
 const benefits = [
   {
-    icon: "travel_explore",
-    title: "Du lịch trải nghiệm",
+    icon: "handshake",
+    title: "Hỗ trợ cộng đồng",
     description:
-      "Khám phá những vùng đất mới, văn hóa bản địa độc đáo qua góc nhìn của một người đồng hành thực thụ.",
+      "Mỗi tour du lịch tình nguyện VEO được xây dựng với tầm nhìn dài hạn, để những đóng góp của bạn không chỉ là một chuyến đi, mà còn trở thành động lực giúp cộng đồng địa phương phát triển bền vững hơn từng ngày.",
   },
   {
-    icon: "volunteer_activism",
-    title: "Tác động xã hội",
+    icon: "public",
+    title: "Kết nối toàn cầu",
     description:
-      "Mỗi đóng góp của bạn đều được thiết kế để mang lại sự thay đổi tích cực, dài hạn cho giáo dục và môi trường.",
+      "Tham gia du lịch tình nguyện VEO, bạn trở thành một phần của mạng lưới hơn 120.000 tình nguyện viên toàn cầu, mở rộng kết nối và trải nghiệm văn hóa với bạn bè quốc tế.",
   },
   {
-    icon: "psychology",
-    title: "Phát triển bản thân",
+    icon: "landscape",
+    title: "Trải nghiệm độc đáo",
     description:
-      "Rèn luyện kỹ năng mềm, mở rộng mối quan hệ và tìm thấy ý nghĩa mới trong cuộc sống sau mỗi chuyến đi.",
+      "Mỗi chuyến du lịch tình nguyện cùng VEO là hành trình hòa mình vào đời sống bản địa, nơi bạn có thể trở thành thầy cô giáo hoặc người nông dân, cùng lao động, sinh hoạt và gắn bó với đồng bào các dân tộc Việt Nam.",
+  },
+  {
+    icon: "workspace_premium",
+    title: "Chứng nhận tình nguyện",
+    description:
+      "Tham gia du lịch tình nguyện VEO, bạn được cộng 48 giờ hoạt động xã hội và nhận chứng nhận tình nguyện quốc tế, điểm cộng cho hồ sơ du học, học bổng.",
   },
 ];
 
@@ -33,11 +39,11 @@ export default function BenefitsSection() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
           {benefits.map((benefit) => (
             <div key={benefit.title} className="text-center">
               <div className="w-20 h-20 bg-primary-container/10 text-primary rounded-full flex items-center justify-center mx-auto mb-6">
-                <span className="material-symbols-outlined text-4xl">
+                <span className="material-symbols-outlined text-5xl">
                   {benefit.icon}
                 </span>
               </div>

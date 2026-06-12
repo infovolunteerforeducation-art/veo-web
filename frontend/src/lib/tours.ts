@@ -51,8 +51,7 @@ export const tours: Tour[] = [
     destinationName: "Mèo Vạc – Hà Giang",
     category: "Giáo dục",
     categoryClass: "bg-solar-orange text-pure-white",
-    image:
-      "https://lh3.googleusercontent.com/aida-public/AB6AXuBFHyoeAAzXiUFmGWEI5n1Xuiqq3a1oBAMi-3AIu0NwmwcPkzmyWfWQafW9TO6WbkIynPrSInBkNUEE2vSvd0n-3icwEN7RTB_Ir5akNvhMKq9Kb308UDU_E7Fv4P3Dxi8ttrCajoDP_gNEuF4Yf97FftlsN-KkfNPrRk58jWr0I2gLhNJ5hQK9isdPMMOzSyPQ4ceONkco4mWeJcv6pDzppAX275d0-OygG2-WluT7MwlpbFtnLUMhp_IixDSC3kO0euNfI6Th9_w",
+    image: "/tours/meo-vac-school-volunteer.webp",
     gallery: [
       "https://lh3.googleusercontent.com/aida-public/AB6AXuDD6CxYZAUaASxNFTY3S6WA060YTMg4Czut9HCzM_oRbPwjyf0-g1KlxeX-oZr9mHXzQRc0emb4DmHDWMGdcfaoBHlwCafDLyryvdLZvSd1LuWEj5BOGsk_p1o7p3D6ruhdG03tFHSyhwfs96HOsFkNLDvL1X4zvh_NOwwbLAt1Dth-2izUHQxd5-w3IvyClYrwkT18s9WXxyX_Lfa88a-U4ETugmC3CdtM4N2Kg7hkoGS09znfU88uj1hq-h8FUubAX_TAVUSRXrY",
       "https://lh3.googleusercontent.com/aida-public/AB6AXuARoxIiN14kvJCedbsGF_65xL0ubO1q72LK9pSPA_ejQITn-wf7s4UCvRv5aqJOtbH6BdgpNbWErN-7vOcTBLnlbtt5rt4vgaeerbWgBx4wGR_DxgyDHs2-EFQKpFu25Rrg2W0AmkqowuhMuNnBZynxntxzSfOXhc-ZnAKkb2F_IeQfZ7i8rKpaAVZNcjCNIrYKFEAHalo-rVN1_Jwnaq_y1tVlaZHOsYE_4Xbrh4FdgO6L-GRaVEiJCGuO6RMIyQGf0o_CuXJsSeU",
@@ -178,8 +177,7 @@ export const tours: Tour[] = [
     destinationName: "Đảo Lý Sơn",
     category: "Môi trường",
     categoryClass: "bg-tertiary-container text-pure-white",
-    image:
-      "https://lh3.googleusercontent.com/aida-public/AB6AXuBjUk4TId8QkTzVLLcaukZHEuWFnUV2Q6TcGu4lHrke9aIbx9KCv4oZsaNseqvxVU19V86TWlSdxbJ_DbXvV0-5GrxLaDAVEQXiaG5OuVy0wsBnnxmYiz8TxKzRp6Zjtu9T8UDXlR7HqM-lUTR7EvyDs8aP00bGvcz9rUfulW53Zttu01i_qlfXzEx1XzqajQBScVtgli_pRq0z7qE-1JM-7qjs1BNB384HRk_9iLZSo3cLKKDNUZULeQudro0UiJqTQVUXmi6iQbU",
+    image: "/tours/ly-son-ocean-cleanup.webp",
     gallery: [],
     dateRange: "22/10 - 24/10",
     date: "Nov 02",
@@ -289,8 +287,7 @@ export const tours: Tour[] = [
     destinationName: "Đà Lạt – Lâm Đồng",
     category: "Kỹ năng",
     categoryClass: "bg-solar-orange text-pure-white",
-    image:
-      "https://lh3.googleusercontent.com/aida-public/AB6AXuBLCy6JXBhPzAmy4s11n4jZ308SYPogdRu_FJS3MdGz-EjQlof-6WtB7MIBLWuS6PYmsebBL6IgYa1_aEBtpo9y3s9FXIPDe6cjwiyx2XcSKeKdqTAxNVh1aT5EEeGhpYvekeRTtXibvjopH4MpjJJ3U3b5WM_cmZqmAyJo40Hy-t9bsCWB2OhzH1IsybPiLO48pXPCvB1Wee0hl_S-MkMqyLUgZY5L_yaPCWSlKanC8xtliGyYTDG3nCzpwc-bZLiEMWBb-sgWvh0",
+    image: "/tours/da-lat-life-skills-class.webp",
     gallery: [],
     dateRange: "05/11 - 07/11",
     date: "Dec 12",
@@ -401,8 +398,7 @@ export const tours: Tour[] = [
     destinationName: "Cần Giờ – TP.HCM",
     category: "Môi trường",
     categoryClass: "bg-tertiary-container text-pure-white",
-    image:
-      "https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=1200&q=80",
+    image: "/tours/can-gio-mangrove-volunteer.webp",
     gallery: [],
     dateRange: "29/07 - 31/07",
     date: "2026-07-29",

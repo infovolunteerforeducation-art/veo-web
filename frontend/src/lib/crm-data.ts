@@ -394,6 +394,155 @@ export function formatDuration(days: number): string {
   return `${days} Ngày ${days - 1} Đêm`;
 }
 
+// ── Promo codes ──────────────────────────────────────────────────────────────
+
+export type DiscountType = "percent" | "amount";
+export type PromoCodeStatus = "active" | "inactive" | "expired";
+export type PromoCodeVisibility = "public" | "private";
+export type PromoApplicableScope = "all" | "dltn" | "traihè" | "specific";
+
+export type PromoCode = {
+  id: string;
+  code: string;
+  description?: string;
+  discountType: DiscountType;
+  discountValue: number;          // % (0-100) or VNĐ
+  maxDiscount?: number;           // VNĐ cap, only for percent type
+  minOrderValue?: number;         // minimum order to apply
+  visibility: PromoCodeVisibility;
+  status: PromoCodeStatus;
+  applicableScope: PromoApplicableScope;
+  applicableTourIds?: string[];   // only when scope = "specific"
+  usageLimit?: number;            // undefined = unlimited
+  usedCount: number;
+  validFrom: string;              // YYYY-MM-DD
+  validTo: string;                // YYYY-MM-DD
+  createdAt: string;
+  createdBy: string;
+};
+
+export const mockPromoCodes: PromoCode[] = [
+  {
+    id: "pc-001",
+    code: "SUMMER2026",
+    description: "Ưu đãi hè 2026 cho tất cả tour",
+    discountType: "percent",
+    discountValue: 20,
+    maxDiscount: 500000,
+    minOrderValue: 2000000,
+    visibility: "public",
+    status: "active",
+    applicableScope: "all",
+    usageLimit: 200,
+    usedCount: 47,
+    validFrom: "2026-06-01",
+    validTo: "2026-08-31",
+    createdAt: "2026-05-20T09:00:00Z",
+    createdBy: "Admin",
+  },
+  {
+    id: "pc-002",
+    code: "VEO10",
+    description: "Mã thường trực 10% cho khách mới",
+    discountType: "percent",
+    discountValue: 10,
+    minOrderValue: 1000000,
+    visibility: "public",
+    status: "active",
+    applicableScope: "dltn",
+    usedCount: 128,
+    validFrom: "2026-01-01",
+    validTo: "2026-12-31",
+    createdAt: "2026-01-01T00:00:00Z",
+    createdBy: "Admin",
+  },
+  {
+    id: "pc-003",
+    code: "VIPONLY",
+    description: "Dành riêng cho khách VIP – giảm 500k",
+    discountType: "amount",
+    discountValue: 500000,
+    minOrderValue: 3000000,
+    visibility: "private",
+    status: "active",
+    applicableScope: "specific",
+    applicableTourIds: ["tour-1", "tour-2"],
+    usageLimit: 50,
+    usedCount: 12,
+    validFrom: "2026-04-01",
+    validTo: "2026-12-31",
+    createdAt: "2026-03-28T10:30:00Z",
+    createdBy: "Admin",
+  },
+  {
+    id: "pc-004",
+    code: "WELCOME200",
+    description: "Chào mừng thành viên mới – giảm 200k",
+    discountType: "amount",
+    discountValue: 200000,
+    minOrderValue: 1000000,
+    visibility: "public",
+    status: "active",
+    applicableScope: "all",
+    usedCount: 89,
+    validFrom: "2026-01-01",
+    validTo: "2026-12-31",
+    createdAt: "2026-01-01T00:00:00Z",
+    createdBy: "Admin",
+  },
+  {
+    id: "pc-005",
+    code: "CORP2026",
+    description: "Dành riêng cho doanh nghiệp CSR – 15%",
+    discountType: "percent",
+    discountValue: 15,
+    maxDiscount: 2000000,
+    minOrderValue: 5000000,
+    visibility: "private",
+    status: "active",
+    applicableScope: "traihè",
+    usageLimit: 30,
+    usedCount: 8,
+    validFrom: "2026-01-01",
+    validTo: "2026-12-31",
+    createdAt: "2026-01-15T08:00:00Z",
+    createdBy: "Admin",
+  },
+  {
+    id: "pc-006",
+    code: "FLASH50",
+    description: "Flash sale 50% – đã hết hạn",
+    discountType: "percent",
+    discountValue: 50,
+    maxDiscount: 1000000,
+    minOrderValue: 2000000,
+    visibility: "public",
+    status: "expired",
+    applicableScope: "dltn",
+    usageLimit: 100,
+    usedCount: 100,
+    validFrom: "2026-03-01",
+    validTo: "2026-03-03",
+    createdAt: "2026-02-28T00:00:00Z",
+    createdBy: "Admin",
+  },
+  {
+    id: "pc-007",
+    code: "INACTIVE01",
+    description: "Mã tạm ngưng – chưa kích hoạt",
+    discountType: "amount",
+    discountValue: 300000,
+    visibility: "private",
+    status: "inactive",
+    applicableScope: "all",
+    usedCount: 0,
+    validFrom: "2026-07-01",
+    validTo: "2026-09-30",
+    createdAt: "2026-06-10T14:00:00Z",
+    createdBy: "Admin",
+  },
+];
+
 export function computeScheduleLabel(isoStart: string, durationDays: number): string {
   const start = new Date(isoStart + "T00:00:00");
   const end = new Date(start);

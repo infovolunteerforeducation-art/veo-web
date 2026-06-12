@@ -9,12 +9,13 @@ import SchedulesTab from "./tabs/SchedulesTab";
 import CoordinationTab from "./tabs/CoordinationTab";
 import DestinationsTab from "./tabs/DestinationsTab";
 import SettingsTab from "./tabs/SettingsTab";
+import PromoCodesTab from "./tabs/PromoCodesTab";
 import SignInPage from "./SignInPage";
 import { StaffRole, ManagedTour, mockTours, mockBookings } from "@/lib/crm-data";
 
 const pendingCount = mockBookings.filter((b) => b.status === "pending").length;
 
-type Tab = "dashboard" | "bookings" | "customers" | "tours" | "schedules" | "coordination" | "destinations" | "settings";
+type Tab = "dashboard" | "bookings" | "customers" | "tours" | "schedules" | "coordination" | "destinations" | "promoCodes" | "settings";
 
 // Leaf = single tab link; Group = collapsible parent with child tabs
 type NavLeaf  = { kind: "leaf";  id: Tab;    label: string; icon: string };
@@ -31,11 +32,12 @@ const NAV: NavEntry[] = [
     { id: "coordination", label: "Điều phối" },
   ]},
   { kind: "leaf",  id: "destinations", label: "Điểm đến",         icon: "location_on" },
+  { kind: "leaf",  id: "promoCodes",   label: "Mã KM",            icon: "local_offer" },
   { kind: "leaf",  id: "settings",     label: "Cài đặt",          icon: "settings" },
 ];
 
 const ROLE_ALLOWED_TABS: Record<StaffRole, Tab[]> = {
-  admin:       ["dashboard", "bookings", "customers", "tours", "schedules", "coordination", "destinations", "settings"],
+  admin:       ["dashboard", "bookings", "customers", "tours", "schedules", "coordination", "destinations", "promoCodes", "settings"],
   coordinator: ["dashboard", "bookings", "customers", "tours", "schedules", "coordination", "destinations"],
   sale:        ["bookings", "customers"],
   staff:       ["dashboard", "bookings", "customers", "coordination"],
@@ -303,6 +305,7 @@ export default function CRMShell() {
           {activeTab === "schedules"    && <SchedulesTab tours={tours} setTours={setTours} deepLinkScheduleId={scheduleDeepLink} onDeepLinkConsumed={() => setScheduleDeepLink(null)} onNavigateToBooking={(id) => { setBookingDeepLink(id); switchTab("bookings"); }} />}
           {activeTab === "coordination" && <CoordinationTab />}
           {activeTab === "destinations" && <DestinationsTab />}
+          {activeTab === "promoCodes"   && <PromoCodesTab />}
           {activeTab === "settings"     && <SettingsTab />}
         </main>
       </div>
