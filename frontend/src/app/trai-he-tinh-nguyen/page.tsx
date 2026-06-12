@@ -516,7 +516,7 @@ export default function TraiHeTinhNguyenPage() {
             />
             <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 md:grid-cols-3">
               {programs.map((program) => (
-                <article key={program.title} className="overflow-hidden rounded-xl border border-outline-variant/30 bg-white">
+                <article key={program.title} className="overflow-hidden rounded-xl border border-white bg-white shadow-[0_10px_30px_rgba(108,42,138,0.10)]">
                   <img src={program.image} alt={program.title} className="h-44 w-full object-cover sm:h-52" />
                   <div className="p-4 sm:p-5">
                     <span className="inline-flex rounded-full bg-solar-orange/15 px-3 py-1 text-xs font-bold text-secondary">

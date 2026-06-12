@@ -47,8 +47,8 @@ export default async function TourDetailPage({
           />
           <div className="absolute inset-0 hero-gradient flex items-end">
             <div className="max-w-[1200px] mx-auto w-full px-4 sm:px-6 pb-10 sm:pb-14 lg:pb-16">
-              <div className="flex gap-2 mb-4">
-                <span className="bg-solar-orange text-white text-xs font-bold px-3 py-1 rounded-full">
+              <div className="mb-4 flex gap-2">
+                <span className="inline-flex w-fit rounded-full bg-white px-3 py-1 text-[14px] font-bold text-primary">
                   Du lịch tình nguyện
                 </span>
               </div>

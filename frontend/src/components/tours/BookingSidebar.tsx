@@ -9,6 +9,12 @@ function spotsColor(n: number) {
   return n <= 3 ? "text-error" : "text-green-600";
 }
 
+function regionMeta(region: Tour["region"]) {
+  return region === "north"
+    ? { label: "Miền Bắc", className: "bg-blue-100 text-blue-700" }
+    : { label: "Miền Nam", className: "bg-green-100 text-green-700" };
+}
+
 export default function BookingSidebar({ tour }: { tour: Tour }) {
   const router = useRouter();
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
@@ -23,11 +29,20 @@ export default function BookingSidebar({ tour }: { tour: Tour }) {
   const selectedSchedule = schedules.find((s) => s.isoDate === selectedDate);
   const canRegister = !!selectedDate && !!selectedSchedule && isRegistrationOpen(selectedDate);
   const deadline = selectedDate ? calcDeadline(selectedDate) : null;
+  const region = regionMeta(tour.region);
 
   const meta = [
     { icon: "calendar_today", label: "Độ tuổi:", value: tour.ageRange },
     { icon: "schedule", label: "Thời gian:", value: tour.duration },
-    { icon: "location_on", label: "Khởi hành:", value: tour.departureCity },
+    {
+      icon: "map",
+      label: "Miền:",
+      value: (
+        <span className={`inline-flex rounded-full px-2.5 py-0.5 text-xs font-bold ${region.className}`}>
+          {region.label}
+        </span>
+      ),
+    },
   ];
 
   function handleRegister() {
