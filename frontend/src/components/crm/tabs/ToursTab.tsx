@@ -16,11 +16,12 @@ type Props = {
   tours: ManagedTour[];
   setTours: React.Dispatch<React.SetStateAction<ManagedTour[]>>;
   onNavigateToSchedule?: (scheduleId: string) => void;
+  onNavigateToBooking?: (bookingId: string) => void;
   deepLinkTourId?: string | null;
   onDeepLinkTourConsumed?: () => void;
 };
 
-export default function ToursTab({ tours, setTours, onNavigateToSchedule, deepLinkTourId, onDeepLinkTourConsumed }: Props) {
+export default function ToursTab({ tours, setTours, onNavigateToSchedule, onNavigateToBooking, deepLinkTourId, onDeepLinkTourConsumed }: Props) {
   const [bookings, setBookings] = useState<Booking[]>(mockBookings);
   const [detailTour, setDetailTour] = useState<ManagedTour | null>(null);
   const [contentTour, setContentTour] = useState<ManagedTour | null>(null);
@@ -146,6 +147,7 @@ export default function ToursTab({ tours, setTours, onNavigateToSchedule, deepLi
           setBookings((prev) => prev.map((b) => b.id === bookingId ? { ...b, attended } : b))
         }
         onViewSchedule={onNavigateToSchedule}
+        onViewBooking={onNavigateToBooking}
       />
     );
   }

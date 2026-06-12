@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { mockBookings, Booking, BookingStatus, fmt } from "@/lib/crm-data";
 import { StatusBadge } from "./DashboardTab";
 import Pagination from "../Pagination";
+import BookingDetailView from "./BookingDetailView";
 
 const PAGE_SIZE = 20;
 
@@ -14,12 +15,46 @@ const STATUS_FILTERS: { value: BookingStatus | "all"; label: string }[] = [
   { value: "cancelled", label: "Đã hủy" },
 ];
 
-export default function BookingsTab() {
+type Props = {
+  deepLinkBookingId?: string | null;
+  onDeepLinkBookingConsumed?: () => void;
+  onNavigateToCustomer?: (customerId: string) => void;
+  onNavigateToTour?: (tourId: string) => void;
+  onNavigateToSchedule?: (scheduleId: string) => void;
+};
+
+export default function BookingsTab({ deepLinkBookingId, onDeepLinkBookingConsumed, onNavigateToCustomer, onNavigateToTour, onNavigateToSchedule }: Props = {}) {
   const [statusFilter, setStatusFilter] = useState<BookingStatus | "all">("all");
   const [search, setSearch] = useState("");
-  const [selected, setSelected] = useState<Booking | null>(null);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
   const [bookings, setBookings] = useState<Booking[]>(mockBookings);
   const [page, setPage] = useState(1);
+
+  useEffect(() => {
+    if (!deepLinkBookingId) return;
+    setSelectedId(deepLinkBookingId);
+    onDeepLinkBookingConsumed?.();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [deepLinkBookingId]);
+
+  const selected = bookings.find((b) => b.id === selectedId) ?? null;
+
+  function updateStatus(id: string, status: BookingStatus) {
+    setBookings((prev) => prev.map((b) => (b.id === id ? { ...b, status } : b)));
+  }
+
+  if (selected) {
+    return (
+      <BookingDetailView
+        booking={selected}
+        onBack={() => setSelectedId(null)}
+        onUpdateStatus={updateStatus}
+        onViewCustomer={onNavigateToCustomer}
+        onViewTour={onNavigateToTour}
+        onViewSchedule={onNavigateToSchedule}
+      />
+    );
+  }
 
   const filtered = bookings.filter((b) => {
     const matchStatus = statusFilter === "all" || b.status === statusFilter;
@@ -35,11 +70,6 @@ export default function BookingsTab() {
 
   const pageCount = Math.ceil(filtered.length / PAGE_SIZE);
   const paged = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
-
-  function updateStatus(id: string, status: BookingStatus) {
-    setBookings((prev) => prev.map((b) => (b.id === id ? { ...b, status } : b)));
-    if (selected?.id === id) setSelected((s) => s ? { ...s, status } : s);
-  }
 
   return (
     <div className="space-y-4">
@@ -83,9 +113,7 @@ export default function BookingsTab() {
         </div>
       </div>
 
-      <div className="flex gap-4">
-        {/* Table */}
-        <div className="flex-1 bg-white rounded-2xl border border-outline-variant/30 overflow-hidden">
+      <div className="bg-white rounded-2xl border border-outline-variant/30 overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead className="bg-surface-container-low border-b border-outline-variant/30">
@@ -104,8 +132,8 @@ export default function BookingsTab() {
                   paged.map((b) => (
                     <tr
                       key={b.id}
-                      onClick={() => setSelected(b)}
-                      className={`hover:bg-surface-container-low cursor-pointer transition-colors ${selected?.id === b.id ? "bg-primary/5" : ""}`}
+                      onClick={() => setSelectedId(b.id)}
+                      className="hover:bg-surface-container-low cursor-pointer transition-colors"
                     >
                       <td className="px-4 py-3">
                         <span className="font-mono text-xs font-bold text-primary">{b.bookingCode}</span>
@@ -129,9 +157,7 @@ export default function BookingsTab() {
                         <StatusBadge status={b.status} />
                       </td>
                       <td className="px-4 py-3">
-                        <button type="button" className="text-on-surface-variant hover:text-primary transition-colors" onClick={(e) => { e.stopPropagation(); setSelected(b); }}>
-                          <span className="material-symbols-outlined" style={{ fontSize: 18 }}>chevron_right</span>
-                        </button>
+                        <span className="material-symbols-outlined text-on-surface-variant" style={{ fontSize: 18 }}>chevron_right</span>
                       </td>
                     </tr>
                   ))
@@ -143,69 +169,6 @@ export default function BookingsTab() {
           <div className="px-4 py-3 border-t border-outline-variant/20 text-xs text-on-surface-variant">
             {filtered.length} / {bookings.length} đơn
           </div>
-        </div>
-
-        {/* Detail panel */}
-        {selected && (
-          <div className="w-72 shrink-0 bg-white rounded-2xl border border-outline-variant/30 p-5 self-start sticky top-0">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-base font-bold text-on-surface">Chi tiết đơn</h3>
-              <button type="button" onClick={() => setSelected(null)} className="text-on-surface-variant hover:text-on-surface">
-                <span className="material-symbols-outlined" style={{ fontSize: 18 }}>close</span>
-              </button>
-            </div>
-
-            <div className="space-y-3 text-sm">
-              <div className="p-3 bg-surface-container-low rounded-xl">
-                <p className="font-mono font-bold text-primary text-sm">{selected.bookingCode}</p>
-                <p className="text-on-surface-variant mt-0.5">
-                  {new Date(selected.createdAt).toLocaleString("vi-VN", { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit" })}
-                </p>
-              </div>
-
-              {[
-                { label: "Người đăng ký", value: selected.customerName },
-                { label: "Điện thoại", value: selected.phone },
-                { label: "Email", value: selected.email },
-                { label: "Tour", value: selected.tourName },
-                { label: "Lịch", value: selected.scheduleLabel },
-                { label: "Số người", value: `${selected.numPeople} người` },
-                { label: "Thanh toán", value: selected.paymentMethod === "transfer" ? "Chuyển khoản" : "Tại văn phòng" },
-                { label: "Tổng tiền", value: fmt(selected.totalAmount) },
-              ].map((row) => (
-                <div key={row.label} className="flex justify-between gap-2">
-                  <span className="text-on-surface-variant">{row.label}</span>
-                  <span className="font-semibold text-right">{row.value}</span>
-                </div>
-              ))}
-
-              <div className="flex justify-between items-center">
-                <span className="text-on-surface-variant">Trạng thái</span>
-                <StatusBadge status={selected.status} />
-              </div>
-            </div>
-
-            {/* Actions */}
-            <div className="mt-4 pt-4 border-t border-outline-variant/20 space-y-2">
-              <p className="text-sm font-semibold text-on-surface-variant mb-2">Cập nhật trạng thái</p>
-              <div className="grid grid-cols-2 gap-2">
-                {(["pending", "paid", "cancelled"] as BookingStatus[]).map((s) => (
-                  <button
-                    key={s}
-                    type="button"
-                    onClick={() => updateStatus(selected.id, s)}
-                    disabled={selected.status === s}
-                    className={`py-1.5 rounded-lg text-xs font-semibold transition-colors disabled:opacity-40 disabled:cursor-not-allowed ${
-                      selected.status === s ? "bg-primary/10 text-primary" : "bg-surface-container hover:bg-surface-container-high text-on-surface"
-                    }`}
-                  >
-                    <StatusBadge status={s} small />
-                  </button>
-                ))}
-              </div>
-            </div>
-          </div>
-        )}
       </div>
     </div>
   );

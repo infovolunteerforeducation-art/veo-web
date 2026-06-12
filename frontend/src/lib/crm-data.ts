@@ -8,6 +8,15 @@ export type BookingParticipant = {
   email?: string;
 };
 
+export type BookingActivityLog = {
+  id: string;
+  timestamp: string;
+  actor: string;
+  actorRole?: string;
+  action: string;
+  icon?: string;
+};
+
 export type Booking = {
   id: string;
   bookingCode: string;
@@ -20,15 +29,21 @@ export type Booking = {
   phone: string;
   email: string;
   numPeople: number;
+  originalAmount?: number;
+  discountCode?: string;
+  discountAmount?: number;
   totalAmount: number;
   paymentMethod: PaymentMethod;
   status: BookingStatus;
   createdAt: string;
+  tourType?: TourType;
+  paidAt?: string;
   note?: string;
   attended?: boolean | null;
   coordinationStatus?: CoordinationStatus;
   reservationNote?: string;
   participants?: BookingParticipant[];
+  activityLog?: BookingActivityLog[];
 };
 
 export type Customer = {
@@ -71,6 +86,8 @@ export type ItineraryDay = {
   activities: ItineraryActivity[];
 };
 
+export type TourType = "dltn" | "traihè";
+
 export type ManagedTour = {
   id: string;
   slug: string;
@@ -80,6 +97,7 @@ export type ManagedTour = {
   price: number;
   duration: number; // number of days; nights = duration - 1
   ageRange?: string;
+  tourType?: TourType;
   schedules: TourSchedule[];
   status: "active" | "draft" | "archived";
   // Page content
@@ -134,6 +152,7 @@ export const mockTours: ManagedTour[] = [
     id: "tour-1",
     slug: "sapa-xay-truong-hau-thao",
     title: "Xây trường cho em tại Mèo Vạc",
+    tourType: "dltn",
     destinationId: "dest-1",
     destinationName: "Mèo Vạc – Hà Giang",
     price: 2500000,
@@ -183,6 +202,7 @@ export const mockTours: ManagedTour[] = [
     id: "tour-2",
     slug: "ly-son-lam-sach-dai-duong",
     title: "Làm sạch đại dương tại Lý Sơn",
+    tourType: "dltn",
     destinationId: "dest-2",
     destinationName: "Đảo Lý Sơn",
     price: 3200000,
@@ -230,6 +250,7 @@ export const mockTours: ManagedTour[] = [
     id: "tour-3",
     slug: "da-lat-ky-nang-song-vung-cao",
     title: "Kỹ năng sống tại Đà Lạt",
+    tourType: "traihè",
     destinationId: "dest-3",
     destinationName: "Đà Lạt – Lâm Đồng",
     price: 1800000,
@@ -288,19 +309,19 @@ export const mockCustomers: Customer[] = [
 ];
 
 export const mockBookings: Booking[] = [
-  { id: "bk-01", bookingCode: "VEO-SAPA-A3X7K", tourId: "tour-1", tourName: "Xây trường cho em tại Mèo Vạc", scheduleId: "sch-1a", scheduleLabel: "15/10 – 17/10/2025", customerId: "cust-1", customerName: "Nguyễn Văn An", phone: "0912345678", email: "an.nguyen@gmail.com", numPeople: 2, totalAmount: 5000000, paymentMethod: "transfer", status: "paid", createdAt: "2025-10-01T09:15:00", attended: true, coordinationStatus: "attended", participants: [{ name: "Nguyễn Văn An", phone: "0912345678", email: "an.nguyen@gmail.com" }, { name: "Trần Thị Bình", phone: "0987654321", email: "binh.tran@gmail.com" }] },
-  { id: "bk-02", bookingCode: "VEO-SAPA-B8Y2M", tourId: "tour-1", tourName: "Xây trường cho em tại Mèo Vạc", scheduleId: "sch-1b", scheduleLabel: "22/10 – 24/10/2025", customerId: "cust-3", customerName: "Lê Hoàng Cường", phone: "0901234567", email: "cuong.le@gmail.com", numPeople: 1, totalAmount: 2500000, paymentMethod: "transfer", status: "pending", createdAt: "2025-10-05T14:30:00", attended: false },
-  { id: "bk-03", bookingCode: "VEO-LYSO-C4Z9N", tourId: "tour-2", tourName: "Làm sạch đại dương tại Lý Sơn", scheduleId: "sch-2a", scheduleLabel: "22/10 – 24/10/2025", customerId: "cust-2", customerName: "Trần Thị Bình", phone: "0987654321", email: "binh.tran@gmail.com", numPeople: 2, totalAmount: 6400000, paymentMethod: "office", status: "paid", createdAt: "2025-10-08T10:00:00", attended: true, coordinationStatus: "absent_reserved", reservationNote: "Bảo lưu cho chuyến 12/11 – 14/11", participants: [{ name: "Trần Thị Bình", phone: "0987654321", email: "binh.tran@gmail.com" }, { name: "Lưu Quang Hải", phone: "0987112233", email: "hai.lq@gmail.com" }] },
-  { id: "bk-04", bookingCode: "VEO-DALA-D5W1P", tourId: "tour-3", tourName: "Kỹ năng sống tại Đà Lạt", scheduleId: "sch-3a", scheduleLabel: "05/11 – 07/11/2025", customerId: "cust-4", customerName: "Phạm Minh Đức", phone: "0978123456", email: "duc.pham@gmail.com", numPeople: 3, totalAmount: 5400000, paymentMethod: "transfer", status: "paid", createdAt: "2025-10-10T16:45:00", attended: true, coordinationStatus: "attended", participants: [{ name: "Phạm Minh Đức", phone: "0978123456", email: "duc.pham@gmail.com" }, { name: "Phạm Thị Thu", phone: "0978112233", email: "thu.pham@gmail.com" }, { name: "Nguyễn Quốc Bảo", phone: "0912334455", email: "bao.nq@gmail.com" }] },
-  { id: "bk-05", bookingCode: "VEO-SAPA-E6Q3R", tourId: "tour-1", tourName: "Xây trường cho em tại Mèo Vạc", scheduleId: "sch-1c", scheduleLabel: "05/11 – 07/11/2025", customerId: "cust-5", customerName: "Hoàng Thị Lan", phone: "0934567890", email: "lan.hoang@gmail.com", numPeople: 2, totalAmount: 5000000, paymentMethod: "transfer", status: "pending", createdAt: "2025-10-12T08:20:00" },
-  { id: "bk-06", bookingCode: "VEO-LYSO-F7T4S", tourId: "tour-2", tourName: "Làm sạch đại dương tại Lý Sơn", scheduleId: "sch-2b", scheduleLabel: "12/11 – 14/11/2025", customerId: "cust-6", customerName: "Võ Quang Minh", phone: "0945678901", email: "minh.vo@gmail.com", numPeople: 1, totalAmount: 3200000, paymentMethod: "transfer", status: "pending", createdAt: "2025-10-13T11:10:00" },
-  { id: "bk-07", bookingCode: "VEO-DALA-G8U5T", tourId: "tour-3", tourName: "Kỹ năng sống tại Đà Lạt", scheduleId: "sch-3b", scheduleLabel: "19/11 – 21/11/2025", customerId: "cust-7", customerName: "Đinh Thị Ngân", phone: "0956789012", email: "ngan.dinh@gmail.com", numPeople: 2, totalAmount: 3600000, paymentMethod: "office", status: "paid", createdAt: "2025-10-14T13:55:00", attended: true, coordinationStatus: "attended", participants: [{ name: "Đinh Thị Ngân", phone: "0956789012", email: "ngan.dinh@gmail.com" }, { name: "Nguyễn Đình Tuấn", phone: "0934567123", email: "tuan.nd@gmail.com" }] },
-  { id: "bk-11", bookingCode: "VEO-DALA-K3Y7R", tourId: "tour-3", tourName: "Kỹ năng sống tại Đà Lạt", scheduleId: "sch-3b", scheduleLabel: "19/11 – 21/11/2025", customerId: "cust-1", customerName: "Nguyễn Văn An", phone: "0912345678", email: "an.nguyen@gmail.com", numPeople: 1, totalAmount: 1800000, paymentMethod: "transfer", status: "paid", createdAt: "2025-10-15T08:30:00", attended: false, coordinationStatus: "absent_reserved", reservationNote: "Bảo lưu sang chuyến tháng 12", participants: [{ name: "Nguyễn Văn An", phone: "0912345678", email: "an.nguyen@gmail.com" }] },
-  { id: "bk-12", bookingCode: "VEO-DALA-L4Z8S", tourId: "tour-3", tourName: "Kỹ năng sống tại Đà Lạt", scheduleId: "sch-3b", scheduleLabel: "19/11 – 21/11/2025", customerId: "cust-3", customerName: "Lê Hoàng Cường", phone: "0901234567", email: "cuong.le@gmail.com", numPeople: 2, totalAmount: 3600000, paymentMethod: "transfer", status: "paid", createdAt: "2025-10-16T14:00:00", participants: [{ name: "Lê Hoàng Cường", phone: "0901234567", email: "cuong.le@gmail.com" }, { name: "Trần Thị Mai", phone: "0987654321", email: "mai.tran@gmail.com" }] },
-  { id: "bk-13", bookingCode: "VEO-DALA-M5A9T", tourId: "tour-3", tourName: "Kỹ năng sống tại Đà Lạt", scheduleId: "sch-3b", scheduleLabel: "19/11 – 21/11/2025", customerId: "cust-5", customerName: "Hoàng Thị Lan", phone: "0934567890", email: "lan.hoang@gmail.com", numPeople: 1, totalAmount: 1800000, paymentMethod: "transfer", status: "pending", createdAt: "2025-10-17T09:10:00" },
-  { id: "bk-08", bookingCode: "VEO-DALA-H9V6U", tourId: "tour-3", tourName: "Kỹ năng sống tại Đà Lạt", scheduleId: "sch-3a", scheduleLabel: "05/11 – 07/11/2025", customerId: "cust-8", customerName: "Bùi Anh Tuấn", phone: "0967890123", email: "tuan.bui@gmail.com", numPeople: 1, totalAmount: 1800000, paymentMethod: "transfer", status: "cancelled", createdAt: "2025-10-15T09:30:00", attended: false },
-  { id: "bk-09", bookingCode: "VEO-SAPA-I1W7V", tourId: "tour-1", tourName: "Xây trường cho em tại Mèo Vạc", scheduleId: "sch-1a", scheduleLabel: "15/10 – 17/10/2025", customerId: "cust-4", customerName: "Phạm Minh Đức", phone: "0978123456", email: "duc.pham@gmail.com", numPeople: 2, totalAmount: 5000000, paymentMethod: "transfer", status: "paid", createdAt: "2025-10-02T15:00:00", attended: true, participants: [{ name: "Phạm Minh Đức", phone: "0978123456", email: "duc.pham@gmail.com" }, { name: "Phạm Văn Hải", phone: "0978223344", email: "hai.pv@gmail.com" }] },
-  { id: "bk-10", bookingCode: "VEO-LYSO-J2X8W", tourId: "tour-2", tourName: "Làm sạch đại dương tại Lý Sơn", scheduleId: "sch-2a", scheduleLabel: "22/10 – 24/10/2025", customerId: "cust-1", customerName: "Nguyễn Văn An", phone: "0912345678", email: "an.nguyen@gmail.com", numPeople: 1, totalAmount: 3200000, paymentMethod: "office", status: "pending", createdAt: "2025-10-16T10:20:00", attended: null },
+  { id: "bk-01", bookingCode: "VEO-SAPA-A3X7K", tourId: "tour-1", tourType: "dltn", tourName: "Xây trường cho em tại Mèo Vạc", scheduleId: "sch-1a", scheduleLabel: "15/10 – 17/10/2025", customerId: "cust-1", customerName: "Nguyễn Văn An", phone: "0912345678", email: "an.nguyen@gmail.com", numPeople: 2, originalAmount: 5500000, discountCode: "VEO10", discountAmount: 500000, totalAmount: 5000000, paymentMethod: "transfer", status: "paid", createdAt: "2025-10-01T09:15:00", paidAt: "2025-10-01T10:30:00", attended: true, coordinationStatus: "attended", participants: [{ name: "Nguyễn Văn An", phone: "0912345678", email: "an.nguyen@gmail.com" }, { name: "Trần Thị Bình", phone: "0987654321", email: "binh.tran@gmail.com" }], activityLog: [{ id: "log-1", timestamp: "2025-10-01T09:15:00", actor: "Hệ thống", action: "Đơn đăng ký được tạo", icon: "add_circle" }, { id: "log-2", timestamp: "2025-10-01T10:30:00", actor: "Nguyễn Thị Mai", actorRole: "Sale", action: "Xác nhận thanh toán chuyển khoản", icon: "payments" }, { id: "log-3", timestamp: "2025-10-17T18:00:00", actor: "Hệ thống", action: "Cập nhật trạng thái tham gia: Đã tham gia", icon: "check_circle" }] },
+  { id: "bk-02", bookingCode: "VEO-SAPA-B8Y2M", tourId: "tour-1", tourType: "dltn", tourName: "Xây trường cho em tại Mèo Vạc", scheduleId: "sch-1b", scheduleLabel: "22/10 – 24/10/2025", customerId: "cust-3", customerName: "Lê Hoàng Cường", phone: "0901234567", email: "cuong.le@gmail.com", numPeople: 1, totalAmount: 2500000, paymentMethod: "transfer", status: "pending", createdAt: "2025-10-05T14:30:00", attended: false },
+  { id: "bk-03", bookingCode: "VEO-LYSO-C4Z9N", tourId: "tour-2", tourType: "dltn", tourName: "Làm sạch đại dương tại Lý Sơn", scheduleId: "sch-2a", scheduleLabel: "22/10 – 24/10/2025", customerId: "cust-2", customerName: "Trần Thị Bình", phone: "0987654321", email: "binh.tran@gmail.com", numPeople: 2, totalAmount: 6400000, paymentMethod: "office", status: "paid", createdAt: "2025-10-08T10:00:00", attended: true, coordinationStatus: "absent_reserved", reservationNote: "Bảo lưu cho chuyến 12/11 – 14/11", participants: [{ name: "Trần Thị Bình", phone: "0987654321", email: "binh.tran@gmail.com" }, { name: "Lưu Quang Hải", phone: "0987112233", email: "hai.lq@gmail.com" }] },
+  { id: "bk-04", bookingCode: "VEO-DALA-D5W1P", tourId: "tour-3", tourType: "traihè", tourName: "Kỹ năng sống tại Đà Lạt", scheduleId: "sch-3a", scheduleLabel: "05/11 – 07/11/2025", customerId: "cust-4", customerName: "Phạm Minh Đức", phone: "0978123456", email: "duc.pham@gmail.com", numPeople: 3, totalAmount: 5400000, paymentMethod: "transfer", status: "paid", createdAt: "2025-10-10T16:45:00", attended: true, coordinationStatus: "attended", participants: [{ name: "Phạm Minh Đức", phone: "0978123456", email: "duc.pham@gmail.com" }, { name: "Phạm Thị Thu", phone: "0978112233", email: "thu.pham@gmail.com" }, { name: "Nguyễn Quốc Bảo", phone: "0912334455", email: "bao.nq@gmail.com" }] },
+  { id: "bk-05", bookingCode: "VEO-SAPA-E6Q3R", tourId: "tour-1", tourType: "dltn", tourName: "Xây trường cho em tại Mèo Vạc", scheduleId: "sch-1c", scheduleLabel: "05/11 – 07/11/2025", customerId: "cust-5", customerName: "Hoàng Thị Lan", phone: "0934567890", email: "lan.hoang@gmail.com", numPeople: 2, totalAmount: 5000000, paymentMethod: "transfer", status: "pending", createdAt: "2025-10-12T08:20:00" },
+  { id: "bk-06", bookingCode: "VEO-LYSO-F7T4S", tourId: "tour-2", tourType: "dltn", tourName: "Làm sạch đại dương tại Lý Sơn", scheduleId: "sch-2b", scheduleLabel: "12/11 – 14/11/2025", customerId: "cust-6", customerName: "Võ Quang Minh", phone: "0945678901", email: "minh.vo@gmail.com", numPeople: 1, totalAmount: 3200000, paymentMethod: "transfer", status: "pending", createdAt: "2025-10-13T11:10:00" },
+  { id: "bk-07", bookingCode: "VEO-DALA-G8U5T", tourId: "tour-3", tourType: "traihè", tourName: "Kỹ năng sống tại Đà Lạt", scheduleId: "sch-3b", scheduleLabel: "19/11 – 21/11/2025", customerId: "cust-7", customerName: "Đinh Thị Ngân", phone: "0956789012", email: "ngan.dinh@gmail.com", numPeople: 2, totalAmount: 3600000, paymentMethod: "office", status: "paid", createdAt: "2025-10-14T13:55:00", attended: true, coordinationStatus: "attended", participants: [{ name: "Đinh Thị Ngân", phone: "0956789012", email: "ngan.dinh@gmail.com" }, { name: "Nguyễn Đình Tuấn", phone: "0934567123", email: "tuan.nd@gmail.com" }] },
+  { id: "bk-11", bookingCode: "VEO-DALA-K3Y7R", tourId: "tour-3", tourType: "traihè", tourName: "Kỹ năng sống tại Đà Lạt", scheduleId: "sch-3b", scheduleLabel: "19/11 – 21/11/2025", customerId: "cust-1", customerName: "Nguyễn Văn An", phone: "0912345678", email: "an.nguyen@gmail.com", numPeople: 1, totalAmount: 1800000, paymentMethod: "transfer", status: "paid", createdAt: "2025-10-15T08:30:00", attended: false, coordinationStatus: "absent_reserved", reservationNote: "Bảo lưu sang chuyến tháng 12", participants: [{ name: "Nguyễn Văn An", phone: "0912345678", email: "an.nguyen@gmail.com" }] },
+  { id: "bk-12", bookingCode: "VEO-DALA-L4Z8S", tourId: "tour-3", tourType: "traihè", tourName: "Kỹ năng sống tại Đà Lạt", scheduleId: "sch-3b", scheduleLabel: "19/11 – 21/11/2025", customerId: "cust-3", customerName: "Lê Hoàng Cường", phone: "0901234567", email: "cuong.le@gmail.com", numPeople: 2, totalAmount: 3600000, paymentMethod: "transfer", status: "paid", createdAt: "2025-10-16T14:00:00", participants: [{ name: "Lê Hoàng Cường", phone: "0901234567", email: "cuong.le@gmail.com" }, { name: "Trần Thị Mai", phone: "0987654321", email: "mai.tran@gmail.com" }] },
+  { id: "bk-13", bookingCode: "VEO-DALA-M5A9T", tourId: "tour-3", tourType: "traihè", tourName: "Kỹ năng sống tại Đà Lạt", scheduleId: "sch-3b", scheduleLabel: "19/11 – 21/11/2025", customerId: "cust-5", customerName: "Hoàng Thị Lan", phone: "0934567890", email: "lan.hoang@gmail.com", numPeople: 1, totalAmount: 1800000, paymentMethod: "transfer", status: "pending", createdAt: "2025-10-17T09:10:00" },
+  { id: "bk-08", bookingCode: "VEO-DALA-H9V6U", tourId: "tour-3", tourType: "traihè", tourName: "Kỹ năng sống tại Đà Lạt", scheduleId: "sch-3a", scheduleLabel: "05/11 – 07/11/2025", customerId: "cust-8", customerName: "Bùi Anh Tuấn", phone: "0967890123", email: "tuan.bui@gmail.com", numPeople: 1, totalAmount: 1800000, paymentMethod: "transfer", status: "cancelled", createdAt: "2025-10-15T09:30:00", attended: false },
+  { id: "bk-09", bookingCode: "VEO-SAPA-I1W7V", tourId: "tour-1", tourType: "dltn", tourName: "Xây trường cho em tại Mèo Vạc", scheduleId: "sch-1a", scheduleLabel: "15/10 – 17/10/2025", customerId: "cust-4", customerName: "Phạm Minh Đức", phone: "0978123456", email: "duc.pham@gmail.com", numPeople: 2, totalAmount: 5000000, paymentMethod: "transfer", status: "paid", createdAt: "2025-10-02T15:00:00", attended: true, participants: [{ name: "Phạm Minh Đức", phone: "0978123456", email: "duc.pham@gmail.com" }, { name: "Phạm Văn Hải", phone: "0978223344", email: "hai.pv@gmail.com" }] },
+  { id: "bk-10", bookingCode: "VEO-LYSO-J2X8W", tourId: "tour-2", tourType: "dltn", tourName: "Làm sạch đại dương tại Lý Sơn", scheduleId: "sch-2a", scheduleLabel: "22/10 – 24/10/2025", customerId: "cust-1", customerName: "Nguyễn Văn An", phone: "0912345678", email: "an.nguyen@gmail.com", numPeople: 1, totalAmount: 3200000, paymentMethod: "office", status: "pending", createdAt: "2025-10-16T10:20:00", attended: null },
 ];
 
 export const mockWeeklyStats: WeeklyStats[] = [

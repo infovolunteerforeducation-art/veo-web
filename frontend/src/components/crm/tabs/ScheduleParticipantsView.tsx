@@ -8,6 +8,7 @@ type Props = {
   bookings: Booking[];
   onBack: () => void;
   onToggleAttended: (bookingId: string, attended: boolean | null) => void;
+  onViewBooking?: (bookingId: string) => void;
 };
 
 function AttendedToggle({
@@ -47,7 +48,7 @@ function AttendedToggle({
   );
 }
 
-export default function ScheduleParticipantsView({ schedule, bookings, onBack, onToggleAttended }: Props) {
+export default function ScheduleParticipantsView({ schedule, bookings, onBack, onToggleAttended, onViewBooking }: Props) {
   const totalPeople    = bookings.reduce((s, b) => s + b.numPeople, 0);
   const paidBookings   = bookings.filter((b) => b.status === "paid");
   const paidPeople     = paidBookings.reduce((s, b) => s + b.numPeople, 0);
@@ -164,9 +165,15 @@ export default function ScheduleParticipantsView({ schedule, bookings, onBack, o
                     </td>
 
                     <td className="px-5 py-3">
-                      <span className="font-mono text-xs bg-surface-container px-2 py-1 rounded-lg text-on-surface">
-                        {row.booking.bookingCode}
-                      </span>
+                      {onViewBooking ? (
+                        <button type="button" onClick={() => onViewBooking(row.booking.id)} className="font-mono text-xs bg-primary/10 text-primary px-2 py-1 rounded-lg hover:bg-primary/20 transition-colors font-bold">
+                          {row.booking.bookingCode}
+                        </button>
+                      ) : (
+                        <span className="font-mono text-xs bg-surface-container px-2 py-1 rounded-lg text-on-surface">
+                          {row.booking.bookingCode}
+                        </span>
+                      )}
                     </td>
 
                     <td className="px-5 py-3 text-xs text-on-surface-variant whitespace-nowrap">

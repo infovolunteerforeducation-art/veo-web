@@ -9,6 +9,7 @@ type Props = {
   onBack: () => void;
   onToggleAttended: (bookingId: string, attended: boolean | null) => void;
   onViewSchedule?: (scheduleId: string) => void;
+  onViewBooking?: (bookingId: string) => void;
 };
 
 function BookingStatusBadge({ status }: { status: Booking["status"] }) {
@@ -54,7 +55,7 @@ function AttendedToggle({ attended, onChange }: { attended: boolean | null | und
   );
 }
 
-export default function TourDetailView({ tour, bookings, onBack, onToggleAttended, onViewSchedule }: Props) {
+export default function TourDetailView({ tour, bookings, onBack, onToggleAttended, onViewSchedule, onViewBooking }: Props) {
   // Only attended bookings, sorted by schedule isoDate descending
   const attendedBookings = [...bookings]
     .filter((b) => b.attended === true)
@@ -182,7 +183,13 @@ export default function TourDetailView({ tour, bookings, onBack, onToggleAttende
                           </div>
                           <p className="text-xs text-on-surface-variant mt-0.5">{b.phone} · {b.email}</p>
                         </td>
-                        <td className="px-5 py-3 text-xs text-on-surface-variant font-mono whitespace-nowrap">{b.bookingCode}</td>
+                        <td className="px-5 py-3 font-mono text-xs whitespace-nowrap">
+                          {onViewBooking ? (
+                            <button type="button" onClick={() => onViewBooking(b.id)} className="text-primary hover:underline font-bold">{b.bookingCode}</button>
+                          ) : (
+                            <span className="text-on-surface-variant">{b.bookingCode}</span>
+                          )}
+                        </td>
                         <td className="px-5 py-3 whitespace-nowrap">
                           {onViewSchedule ? (
                             <button

@@ -14,6 +14,7 @@ type Props = {
   setTours: React.Dispatch<React.SetStateAction<ManagedTour[]>>;
   deepLinkScheduleId?: string | null;
   onDeepLinkConsumed?: () => void;
+  onNavigateToBooking?: (bookingId: string) => void;
 };
 
 type SortField = "createdAt" | "isoDate" | "status";
@@ -41,7 +42,7 @@ function SortBtn({ field, current, dir, onClick }: { field: SortField; current: 
   );
 }
 
-export default function SchedulesTab({ tours, setTours, deepLinkScheduleId, onDeepLinkConsumed }: Props) {
+export default function SchedulesTab({ tours, setTours, deepLinkScheduleId, onDeepLinkConsumed, onNavigateToBooking }: Props) {
   const [calYear, setCalYear] = useState(2025);
   const [calMonth, setCalMonth] = useState(9);
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
@@ -187,6 +188,7 @@ export default function SchedulesTab({ tours, setTours, deepLinkScheduleId, onDe
         onToggleAttended={(bookingId, attended) =>
           setBookings((prev) => prev.map((b) => b.id === bookingId ? { ...b, attended } : b))
         }
+        onViewBooking={onNavigateToBooking}
       />
     );
   }

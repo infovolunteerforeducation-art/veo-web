@@ -35,6 +35,7 @@ type Props = {
   onBack: () => void;
   onViewTour?: (tourId: string) => void;
   onViewSchedule?: (scheduleId: string) => void;
+  onViewBooking?: (bookingId: string) => void;
 };
 
 function AttendedBadge({ attended }: { attended?: boolean | null }) {
@@ -53,7 +54,7 @@ function PaymentBadge({ status }: { status: string }) {
   return <span className={`inline-flex px-2 py-0.5 rounded-full text-[11px] font-semibold ${cls}`}>{label}</span>;
 }
 
-export default function CustomerDetailView({ customer, allBookings, onBack, onViewTour, onViewSchedule }: Props) {
+export default function CustomerDetailView({ customer, allBookings, onBack, onViewTour, onViewSchedule, onViewBooking }: Props) {
   // All bookings this person created/paid for
   const registrantBookings = allBookings
     .filter((b) => b.customerId === customer.id)
@@ -190,7 +191,13 @@ export default function CustomerDetailView({ customer, allBookings, onBack, onVi
                           <span className="text-xs text-on-surface-variant">{b.scheduleLabel}</span>
                         )}
                       </td>
-                      <td className="px-5 py-3 text-xs font-mono text-on-surface-variant whitespace-nowrap">{b.bookingCode}</td>
+                      <td className="px-5 py-3 text-xs font-mono whitespace-nowrap">
+                        {onViewBooking ? (
+                          <button type="button" onClick={() => onViewBooking(b.id)} className="text-primary hover:underline font-mono font-bold">{b.bookingCode}</button>
+                        ) : (
+                          <span className="text-on-surface-variant">{b.bookingCode}</span>
+                        )}
+                      </td>
                       <td className="px-5 py-3">
                         <div className="flex items-center gap-1.5">
                           <span className="font-semibold text-on-surface">{b.numPeople} người</span>
@@ -271,7 +278,13 @@ export default function CustomerDetailView({ customer, allBookings, onBack, onVi
                           </div>
                         )}
                       </td>
-                      <td className="px-5 py-3 text-xs font-mono text-on-surface-variant whitespace-nowrap">{b.bookingCode}</td>
+                      <td className="px-5 py-3 text-xs font-mono whitespace-nowrap">
+                        {onViewBooking ? (
+                          <button type="button" onClick={() => onViewBooking(b.id)} className="text-primary hover:underline font-mono font-bold">{b.bookingCode}</button>
+                        ) : (
+                          <span className="text-on-surface-variant">{b.bookingCode}</span>
+                        )}
+                      </td>
                       <td className="px-5 py-3 text-xs text-on-surface-variant whitespace-nowrap">{fmtDateTime(b.createdAt)}</td>
                       <td className="px-5 py-3"><AttendedBadge attended={b.attended} /></td>
                     </tr>

@@ -36,9 +36,10 @@ function SortBtn({
 type Props = {
   onNavigateToTour?: (tourId: string) => void;
   onNavigateToSchedule?: (scheduleId: string) => void;
+  onNavigateToBooking?: (bookingId: string) => void;
 };
 
-export default function CustomersTab({ onNavigateToTour, onNavigateToSchedule }: Props) {
+export default function CustomersTab({ onNavigateToTour, onNavigateToSchedule, onNavigateToBooking }: Props) {
   const [search, setSearch] = useState("");
   const [selected, setSelected] = useState<Customer | null>(null);
   const [page, setPage] = useState(1);
@@ -84,6 +85,7 @@ export default function CustomersTab({ onNavigateToTour, onNavigateToSchedule }:
         onBack={() => setSelected(null)}
         onViewTour={onNavigateToTour}
         onViewSchedule={onNavigateToSchedule}
+        onViewBooking={onNavigateToBooking}
       />
     );
   }

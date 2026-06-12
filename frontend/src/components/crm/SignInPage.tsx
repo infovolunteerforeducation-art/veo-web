@@ -59,12 +59,7 @@ export default function SignInPage({ onSignIn }: Props) {
 
         {/* Logo */}
         <div className="flex items-center gap-3 relative z-10">
-          <div
-            className="w-10 h-10 rounded-xl flex items-center justify-center"
-            style={{ background: "#fbb040" }}
-          >
-            <span className="material-symbols-outlined text-white" style={{ fontSize: 22 }}>volunteer_activism</span>
-          </div>
+          <img src="/veo-logo-linkedin.png" alt="VEO" className="w-10 h-10 rounded-xl" />
           <div>
             <p className="text-lg font-bold text-white leading-tight">VEO CRM</p>
             <p className="text-xs text-white/50">Quản lý nội bộ</p>
@@ -87,12 +82,7 @@ export default function SignInPage({ onSignIn }: Props) {
         <div className="w-full max-w-md space-y-8">
           {/* Mobile logo */}
           <div className="flex items-center gap-3 lg:hidden">
-            <div
-              className="w-9 h-9 rounded-xl flex items-center justify-center"
-              style={{ background: "#451e6b" }}
-            >
-              <span className="material-symbols-outlined text-white" style={{ fontSize: 20 }}>volunteer_activism</span>
-            </div>
+            <img src="/veo-logo-linkedin.png" alt="VEO" className="w-9 h-9 rounded-xl" />
             <p className="text-lg font-bold" style={{ color: "#451e6b" }}>VEO CRM</p>
           </div>
 
