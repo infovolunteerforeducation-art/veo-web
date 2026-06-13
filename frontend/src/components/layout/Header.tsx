@@ -6,14 +6,31 @@ import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 
-const navLinks = [
-  { label: "Du lịch tình nguyện", href: "/tours" },
+type NavLink = {
+  label: string;
+  href?: string;
+  external?: boolean;
+  children?: { label: string; href: string; external?: boolean }[];
+};
+
+const navLinks: NavLink[] = [
+  { label: "Du lịch tình nguyện", href: "/du-lich-tinh-nguyen" },
   { label: "Trại hè tình nguyện", href: "/trai-he-tinh-nguyen" },
-  { label: "CSR", href: "#" },
+  {
+    label: "B2B",
+    children: [
+      { label: "CSR", href: "#" },
+      { label: "Hoạt động ngoại khóa trường học", href: "/hoat-dong-ngoai-khoa-truong-hoc" },
+    ],
+  },
   { label: "SLP", href: "https://www.slp.edu.vn/", external: true },
   { label: "Tin tức", href: "/tin-tuc" },
   { label: "Liên hệ", href: "/lien-he" },
 ];
+
+function isLinkActive(pathname: string, href?: string) {
+  return !!href && href !== "#" && (pathname === href || pathname.startsWith(`${href}/`));
+}
 
 function getInitials(name: string) {
   const parts = name.trim().split(/\s+/);
@@ -29,7 +46,10 @@ export default function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [b2bOpen, setB2bOpen] = useState(false);
+  const [mobileB2bOpen, setMobileB2bOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const b2bDropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 50);
@@ -42,6 +62,9 @@ export default function Header() {
     const handler = (e: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
         setDropdownOpen(false);
+      }
+      if (b2bDropdownRef.current && !b2bDropdownRef.current.contains(e.target as Node)) {
+        setB2bOpen(false);
       }
     };
     document.addEventListener("mousedown", handler);
@@ -77,13 +100,52 @@ export default function Header() {
 
         <nav className="hidden lg:flex items-center gap-8">
           {navLinks.map((link) => {
-            const isActive = !link.external && link.href !== "#" && (
-              pathname === link.href || pathname.startsWith(`${link.href}/`)
-            );
+            const isActive = link.children
+              ? link.children.some((child) => !child.external && isLinkActive(pathname, child.href))
+              : !link.external && isLinkActive(pathname, link.href);
+
+            if (link.children) {
+              return (
+                <div key={link.label} className="relative" ref={b2bDropdownRef}>
+                  <button
+                    type="button"
+                    onClick={() => setB2bOpen((open) => !open)}
+                    className={`flex items-center gap-1 text-base font-semibold transition-colors duration-200 ${
+                      isActive
+                        ? "text-primary border-b-2 border-solar-orange pb-1"
+                        : "text-on-surface-variant hover:text-solar-orange"
+                    }`}
+                    aria-expanded={b2bOpen}
+                  >
+                    {link.label}
+                    <span className="material-symbols-outlined text-base">
+                      {b2bOpen ? "keyboard_arrow_up" : "keyboard_arrow_down"}
+                    </span>
+                  </button>
+
+                  {b2bOpen && (
+                    <div className="absolute left-0 top-full mt-3 w-64 rounded-2xl border border-outline-variant/30 bg-white py-2 shadow-xl z-50">
+                      {link.children.map((child) => (
+                        <Link
+                          key={child.label}
+                          href={child.href}
+                          {...(child.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+                          onClick={() => setB2bOpen(false)}
+                          className="block px-4 py-2.5 text-sm font-semibold text-on-surface hover:bg-surface-container hover:text-primary transition-colors"
+                        >
+                          {child.label}
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              );
+            }
+
             return (
               <Link
                 key={link.label}
-                href={link.href}
+                href={link.href ?? "#"}
                 {...(link.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
                 className={`text-base font-semibold transition-colors duration-200 ${
                   isActive
@@ -160,7 +222,7 @@ export default function Header() {
                   </Link>
                   <Link
                     href="/dang-ky"
-                    className="hidden lg:inline-flex items-center justify-center bg-solar-orange hover:bg-action-hover text-pure-white px-5 py-2 rounded-full text-base font-bold transition-colors"
+                    className="hidden lg:inline-flex items-center justify-center bg-solar-orange px-5 py-2 rounded-full text-base font-bold text-primary transition-colors hover:bg-action-hover"
                   >
                     Đăng ký
                   </Link>
@@ -187,13 +249,49 @@ export default function Header() {
       {mobileOpen && (
         <div className="lg:hidden bg-pure-white border-t border-surface-variant px-4 sm:px-6 py-4 flex flex-col gap-4">
           {navLinks.map((link) => {
-            const isActive = !link.external && link.href !== "#" && (
-              pathname === link.href || pathname.startsWith(`${link.href}/`)
-            );
+            const isActive = link.children
+              ? link.children.some((child) => !child.external && isLinkActive(pathname, child.href))
+              : !link.external && isLinkActive(pathname, link.href);
+
+            if (link.children) {
+              return (
+                <div key={link.label} className="space-y-2">
+                  <button
+                    type="button"
+                    onClick={() => setMobileB2bOpen((open) => !open)}
+                    className={`w-full flex items-center justify-between text-base font-semibold transition-colors ${
+                      isActive ? "text-primary" : "text-on-surface hover:text-solar-orange"
+                    }`}
+                    aria-expanded={mobileB2bOpen}
+                  >
+                    {link.label}
+                    <span className="material-symbols-outlined text-base">
+                      {mobileB2bOpen ? "keyboard_arrow_up" : "keyboard_arrow_down"}
+                    </span>
+                  </button>
+                  {mobileB2bOpen && (
+                    <div className="pl-4 flex flex-col gap-2 border-l border-outline-variant/30">
+                      {link.children.map((child) => (
+                        <Link
+                          key={child.label}
+                          href={child.href}
+                          {...(child.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+                          className="text-sm font-semibold text-on-surface-variant hover:text-primary transition-colors"
+                          onClick={() => setMobileOpen(false)}
+                        >
+                          {child.label}
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              );
+            }
+
             return (
               <Link
                 key={link.label}
-                href={link.href}
+                href={link.href ?? "#"}
                 {...(link.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
                 className={`text-base font-semibold transition-colors ${
                   isActive ? "text-primary" : "text-on-surface hover:text-solar-orange"
@@ -250,7 +348,7 @@ export default function Header() {
                   </Link>
                   <Link
                     href="/dang-ky"
-                    className="flex items-center justify-center bg-solar-orange hover:bg-action-hover text-pure-white px-4 py-2.5 rounded-full text-base font-bold transition-colors"
+                    className="flex items-center justify-center bg-solar-orange px-4 py-2.5 rounded-full text-base font-bold text-primary transition-colors hover:bg-action-hover"
                     onClick={() => setMobileOpen(false)}
                   >
                     Đăng ký

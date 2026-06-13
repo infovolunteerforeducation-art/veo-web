@@ -2,6 +2,7 @@
 import Link from "next/link";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
+import ScrollReveal from "@/components/layout/ScrollReveal";
 import FAQAccordion from "@/components/trai-he/FAQAccordion";
 import { camps } from "@/lib/trai-he-data";
 
@@ -329,15 +330,18 @@ function CampListingsSection() {
         )))}
       </svg>
       <div className="mx-auto max-w-[1200px] px-4 sm:px-6">
-        <SectionHeading
-          eyebrow="3 điểm đến"
-          title="Chọn hành trình phù hợp với bạn"
-          desc="Mỗi điểm đến mang một màu sắc văn hoá và trải nghiệm khác nhau — cùng một tinh thần tình nguyện VEO."
-          light
-        />
+        <ScrollReveal>
+          <SectionHeading
+            eyebrow="3 điểm đến"
+            title="Chọn hành trình phù hợp với bạn"
+            desc="Mỗi điểm đến mang một màu sắc văn hoá và trải nghiệm khác nhau — cùng một tinh thần tình nguyện VEO."
+            light
+          />
+        </ScrollReveal>
         <div className="space-y-6">
-          {camps.map((camp) => (
-            <div key={camp.title} className="overflow-hidden rounded-2xl bg-white shadow-sm">
+          {camps.map((camp, index) => (
+            <ScrollReveal key={camp.title} delay={index * 90}>
+              <div className="overflow-hidden rounded-2xl bg-white shadow-sm">
               <div className="grid grid-cols-1 lg:grid-cols-[300px_1fr]">
                 <div className="relative overflow-hidden lg:rounded-l-2xl">
                   <div className="aspect-video sm:aspect-[4/3] lg:aspect-auto lg:h-full">
@@ -388,7 +392,7 @@ function CampListingsSection() {
                     </div>
                     <Link
                       href={`/trai-he-tinh-nguyen/${camp.slug}`}
-                      className="inline-flex items-center gap-1.5 rounded-full bg-solar-orange px-4 py-2 text-sm font-bold text-pure-white transition-colors hover:bg-action-hover sm:gap-2 sm:px-5 sm:py-2.5"
+                      className="inline-flex items-center gap-1.5 rounded-full bg-solar-orange px-4 py-2 text-sm font-bold text-primary transition-colors hover:bg-action-hover sm:gap-2 sm:px-5 sm:py-2.5"
                     >
                       Xem chi tiết
                       <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
@@ -397,6 +401,7 @@ function CampListingsSection() {
                 </div>
               </div>
             </div>
+            </ScrollReveal>
           ))}
         </div>
       </div>
@@ -427,7 +432,7 @@ export default function TraiHeTinhNguyenPage() {
               <div className="mt-6 sm:mt-8">
                 <Link
                   href="#chuong-trinh"
-                  className="inline-flex items-center justify-center gap-2 rounded-full bg-solar-orange px-6 py-3 text-sm font-bold text-white shadow-lg transition-colors hover:bg-action-hover sm:py-3.5 sm:text-base"
+                  className="inline-flex items-center justify-center gap-2 rounded-full bg-solar-orange px-6 py-3 text-sm font-bold text-primary shadow-lg transition-colors hover:bg-action-hover sm:py-3.5 sm:text-base"
                 >
                   Tham gia ngay
                   <span className="material-symbols-outlined text-[18px] sm:text-[20px]">arrow_forward</span>
@@ -441,8 +446,9 @@ export default function TraiHeTinhNguyenPage() {
         <section className="border-b border-outline-variant/30 bg-white">
           <div className="mx-auto grid max-w-[1200px] grid-cols-2 px-4 sm:grid-cols-4 sm:px-6">
             {highlights.map((item, i) => (
-              <div
+              <ScrollReveal
                 key={item.label}
+                delay={i * 70}
                 className={[
                   "py-5 text-center sm:py-6 border-outline-variant/30",
                   i % 2 === 0 ? "border-r" : i === 1 ? "sm:border-r" : "",
@@ -454,7 +460,7 @@ export default function TraiHeTinhNguyenPage() {
                 </span>
                 <p className="mt-2 text-xl font-black text-primary sm:text-2xl">{item.value}</p>
                 <p className="text-xs font-semibold text-on-surface-variant">{item.label}</p>
-              </div>
+              </ScrollReveal>
             ))}
           </div>
         </section>
@@ -462,20 +468,22 @@ export default function TraiHeTinhNguyenPage() {
         {/* Tinh thần chương trình */}
         <section className="bg-surface py-12 sm:py-20">
           <div className="mx-auto max-w-[1200px] px-4 sm:px-6">
-            <SectionHeading
-              eyebrow="Tinh thần chương trình"
-              title="Không phải tour nghỉ dưỡng, đây là một hành trình trưởng thành"
-              desc="VEO thiết kế trại hè như một môi trường an toàn để học viên thử sức, va chạm vừa đủ và hiểu rằng trách nhiệm cộng đồng bắt đầu từ những hành động rất cụ thể."
-            />
+            <ScrollReveal>
+              <SectionHeading
+                eyebrow="Tinh thần chương trình"
+                title="Không phải tour nghỉ dưỡng, đây là một hành trình trưởng thành"
+                desc="VEO thiết kế trại hè như một môi trường an toàn để học viên thử sức, va chạm vừa đủ và hiểu rằng trách nhiệm cộng đồng bắt đầu từ những hành động rất cụ thể."
+              />
+            </ScrollReveal>
             <div className="grid grid-cols-1 gap-4 sm:gap-5 md:grid-cols-3">
-              {pillars.map((pillar) => (
-                <div key={pillar.title} className="rounded-xl border border-outline-variant/30 bg-white p-5 sm:p-6">
+              {pillars.map((pillar, index) => (
+                <ScrollReveal key={pillar.title} delay={index * 90} className="rounded-xl border border-outline-variant/30 bg-white p-5 sm:p-6">
                   <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10 text-primary">
                     <span className="material-symbols-outlined">{pillar.icon}</span>
                   </div>
                   <h3 className="text-base font-bold text-primary sm:text-lg">{pillar.title}</h3>
                   <p className="mt-2 text-sm leading-relaxed text-on-surface-variant">{pillar.desc}</p>
-                </div>
+                </ScrollReveal>
               ))}
             </div>
           </div>
@@ -490,16 +498,20 @@ export default function TraiHeTinhNguyenPage() {
           </div>
           <div className="absolute -left-16 bottom-20 hidden h-36 w-36 rounded-full border-[18px] border-solar-orange/60 lg:block" />
           <div className="mx-auto max-w-[1100px] px-4 sm:px-6">
-            <SectionHeading title="Điểm khác biệt chỉ có tại Trại hè tình nguyện của V.E.O" light />
+            <ScrollReveal>
+              <SectionHeading title="Điểm khác biệt chỉ có tại Trại hè tình nguyện của V.E.O" light />
+            </ScrollReveal>
             <div className="grid grid-cols-1 gap-8 sm:gap-x-12 sm:gap-y-12 md:grid-cols-2">
-              {featureCards.map((item) => (
-                <article key={item.title} className="text-center">
+              {featureCards.map((item, index) => (
+                <ScrollReveal key={item.title} delay={index * 90}>
+                <article className="text-center">
                   <img src={item.image} alt={item.title} className="h-44 w-full rounded-lg object-cover shadow-lg sm:h-56" />
                   <h3 className="mt-4 text-base font-bold text-white sm:mt-5">{item.title}</h3>
                   <p className="mx-auto mt-2 max-w-md text-sm font-medium leading-relaxed text-white/85 sm:mt-3">
                     {item.desc}
                   </p>
                 </article>
+                </ScrollReveal>
               ))}
             </div>
           </div>
@@ -508,14 +520,17 @@ export default function TraiHeTinhNguyenPage() {
         {/* Lộ trình theo độ tuổi */}
         <section id="chuong-trinh-age" className="bg-white py-12 sm:py-20">
           <div className="mx-auto max-w-[1200px] px-4 sm:px-6">
-            <SectionHeading
-              eyebrow="Nhóm tham gia"
-              title="Lộ trình phù hợp theo độ tuổi"
-              desc="Mỗi nhóm tuổi có mức độ thử thách và vai trò khác nhau, để học viên vừa an toàn, vừa có cảm giác mình thật sự đang đóng góp."
-            />
+            <ScrollReveal>
+              <SectionHeading
+                eyebrow="Nhóm tham gia"
+                title="Lộ trình phù hợp theo độ tuổi"
+                desc="Mỗi nhóm tuổi có mức độ thử thách và vai trò khác nhau, để học viên vừa an toàn, vừa có cảm giác mình thật sự đang đóng góp."
+              />
+            </ScrollReveal>
             <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 md:grid-cols-3">
-              {programs.map((program) => (
-                <article key={program.title} className="overflow-hidden rounded-xl border border-white bg-white shadow-[0_10px_30px_rgba(108,42,138,0.10)]">
+              {programs.map((program, index) => (
+                <ScrollReveal key={program.title} delay={index * 90}>
+                <article className="overflow-hidden rounded-xl border border-white bg-white shadow-[0_10px_30px_rgba(108,42,138,0.10)]">
                   <img src={program.image} alt={program.title} className="h-44 w-full object-cover sm:h-52" />
                   <div className="p-4 sm:p-5">
                     <span className="inline-flex rounded-full bg-solar-orange/15 px-3 py-1 text-xs font-bold text-secondary">
@@ -525,6 +540,7 @@ export default function TraiHeTinhNguyenPage() {
                     <p className="mt-2 text-sm leading-relaxed text-on-surface-variant">{program.desc}</p>
                   </div>
                 </article>
+                </ScrollReveal>
               ))}
             </div>
           </div>
@@ -533,15 +549,17 @@ export default function TraiHeTinhNguyenPage() {
         {/* Lịch trình 6 ngày */}
         <section id="lich-trinh" className="bg-deep-amethyst py-12 sm:py-20">
           <div className="mx-auto max-w-[1100px] px-4 sm:px-6">
-            <SectionHeading
-              eyebrow="Lịch trình mẫu"
-              title="6 ngày 5 đêm có nhịp đi rõ ràng"
-              desc="Lịch trình thực tế có thể thay đổi theo điểm đến và thời tiết, nhưng luôn giữ trục chính: đóng góp, trải nghiệm, phản tư và trưởng thành."
-              light
-            />
+            <ScrollReveal>
+              <SectionHeading
+                eyebrow="Lịch trình mẫu"
+                title="6 ngày 5 đêm có nhịp đi rõ ràng"
+                desc="Lịch trình thực tế có thể thay đổi theo điểm đến và thời tiết, nhưng luôn giữ trục chính: đóng góp, trải nghiệm, phản tư và trưởng thành."
+                light
+              />
+            </ScrollReveal>
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-              {schedule.map(([day, text]) => (
-                <div key={day} className="flex gap-4 rounded-xl border border-white/15 bg-white/8 p-4 sm:p-5">
+              {schedule.map(([day, text], index) => (
+                <ScrollReveal key={day} delay={index * 70} className="flex gap-4 rounded-xl border border-white/15 bg-white/8 p-4 sm:p-5">
                   <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-solar-orange text-sm font-black text-white sm:h-12 sm:w-12">
                     {day.replace("Ngày ", "N")}
                   </div>
@@ -549,7 +567,7 @@ export default function TraiHeTinhNguyenPage() {
                     <h3 className="font-bold text-white">{day}</h3>
                     <p className="mt-1 text-sm leading-relaxed text-white/75">{text}</p>
                   </div>
-                </div>
+                </ScrollReveal>
               ))}
             </div>
           </div>
@@ -558,7 +576,7 @@ export default function TraiHeTinhNguyenPage() {
         {/* Kết quả sau hành trình */}
         <section className="bg-surface py-12 sm:py-20">
           <div className="mx-auto grid max-w-[1200px] grid-cols-1 items-center gap-8 px-4 sm:px-6 lg:grid-cols-2 lg:gap-12">
-            <div>
+            <ScrollReveal direction="left">
               <p className="mb-2 text-xs font-bold uppercase tracking-wide text-solar-orange">Kết quả sau hành trình</p>
               <h2 className="text-2xl font-bold leading-tight text-primary sm:text-3xl">
                 Học viên trở về với kỹ năng, câu chuyện và sự tự tin rõ hơn
@@ -574,17 +592,17 @@ export default function TraiHeTinhNguyenPage() {
                   </li>
                 ))}
               </ul>
-            </div>
-            <div className="overflow-hidden rounded-xl">
+            </ScrollReveal>
+            <ScrollReveal direction="right" delay={120} className="overflow-hidden rounded-xl">
               <img src={heroImage} alt="Học viên trại hè tham gia hoạt động cộng đồng" className="h-[240px] w-full object-cover object-right sm:h-[340px] lg:h-[420px]" />
-            </div>
+            </ScrollReveal>
           </div>
         </section>
 
         {/* Chứng nhận */}
         <section className="bg-white py-12 sm:py-20">
           <div className="mx-auto max-w-[1280px] px-4 sm:px-6">
-            <div className="mx-auto max-w-3xl text-center">
+            <ScrollReveal className="mx-auto max-w-3xl text-center">
               <h2 className="text-xl font-bold leading-tight text-primary sm:text-2xl lg:text-3xl">
                 Chứng nhận trại hè V.E.O<br />
                 Tấm vé vàng đến các trường đại học hàng đầu
@@ -592,15 +610,15 @@ export default function TraiHeTinhNguyenPage() {
               <p className="mx-auto mt-4 max-w-2xl text-sm leading-relaxed text-on-surface-variant">
                 Hàng ngàn tình nguyện viên đã sử dụng chứng nhận tình nguyện để kiến tạo hồ sơ năng lực ấn tượng, chinh phục học bổng tại các trường đại học danh tiếng.
               </p>
-            </div>
+            </ScrollReveal>
             <div className="mt-8 grid grid-cols-2 gap-x-6 gap-y-8 sm:mt-10 sm:gap-x-8 sm:gap-y-10 md:grid-cols-4">
-              {universities.map((item) => (
-                <div key={item.type} className="flex flex-col items-center text-center">
+              {universities.map((item, index) => (
+                <ScrollReveal key={item.type} delay={index * 55} className="flex flex-col items-center text-center">
                   <div className="flex h-14 items-end justify-center sm:h-16 lg:h-[68px]">
                     <UniversityLogo type={item.type} />
                   </div>
                   <p className="mt-1.5 text-xs font-medium text-on-surface-variant sm:mt-2">{item.rank}</p>
-                </div>
+                </ScrollReveal>
               ))}
             </div>
           </div>
@@ -609,12 +627,14 @@ export default function TraiHeTinhNguyenPage() {
         {/* Testimonials */}
         <section className="bg-surface py-12 sm:py-20">
           <div className="mx-auto max-w-[1200px] px-4 sm:px-6">
-            <SectionHeading
-              eyebrow="Phụ huynh và học viên"
-              title="Những điều còn lại sau chuyến đi"
-              desc="Điều đáng nhớ nhất thường không nằm ở lịch trình dày đặc, mà ở khoảnh khắc các bạn nhận ra mình có thể sống tự lập và giúp ích cho người khác."
-            />
-            <div className="mx-auto mb-8 max-w-3xl overflow-hidden rounded-xl border border-outline-variant/30 bg-white shadow-sm">
+            <ScrollReveal>
+              <SectionHeading
+                eyebrow="Phụ huynh và học viên"
+                title="Những điều còn lại sau chuyến đi"
+                desc="Điều đáng nhớ nhất thường không nằm ở lịch trình dày đặc, mà ở khoảnh khắc các bạn nhận ra mình có thể sống tự lập và giúp ích cho người khác."
+              />
+            </ScrollReveal>
+            <ScrollReveal className="mx-auto mb-8 max-w-3xl overflow-hidden rounded-xl border border-outline-variant/30 bg-white shadow-sm">
               <div className="relative aspect-video bg-deep-amethyst">
                 <iframe
                   className="absolute inset-0 h-full w-full"
@@ -626,10 +646,11 @@ export default function TraiHeTinhNguyenPage() {
                   allowFullScreen
                 />
               </div>
-            </div>
+            </ScrollReveal>
             <div className="grid grid-cols-1 gap-4 sm:gap-5 md:grid-cols-3">
-              {testimonials.map((item) => (
-                <figure key={item.name} className="rounded-xl border border-outline-variant/30 bg-white p-5 sm:p-6">
+              {testimonials.map((item, index) => (
+                <ScrollReveal key={item.name} delay={index * 90}>
+                <figure className="rounded-xl border border-outline-variant/30 bg-white p-5 sm:p-6">
                   <span className="material-symbols-outlined text-solar-orange" style={{ fontSize: 32 }}>format_quote</span>
                   <blockquote className="mt-3 text-sm leading-relaxed text-on-surface-variant">{item.quote}</blockquote>
                   <figcaption className="mt-4 sm:mt-5">
@@ -637,6 +658,7 @@ export default function TraiHeTinhNguyenPage() {
                     <p className="text-xs text-on-surface-variant">{item.role}</p>
                   </figcaption>
                 </figure>
+                </ScrollReveal>
               ))}
             </div>
           </div>
@@ -645,32 +667,34 @@ export default function TraiHeTinhNguyenPage() {
         {/* Tổ chức */}
         <section className="bg-white py-12 sm:py-20">
           <div className="mx-auto max-w-[1100px] px-4 sm:px-6">
-            <div className="mx-auto max-w-3xl text-center">
+            <ScrollReveal className="mx-auto max-w-3xl text-center">
               <h2 className="text-xl font-bold leading-tight text-primary sm:text-2xl lg:text-3xl">
                 Chương trình trại hè được thiết kế và dẫn dắt bởi chuyên gia{" "}
                 <span className="text-solar-orange">10+ năm kinh nghiệm</span> từ
               </h2>
-            </div>
+            </ScrollReveal>
             <div className="mt-8 grid grid-cols-2 gap-x-6 gap-y-8 sm:mt-10 sm:gap-y-10 md:grid-cols-4">
-              {expertOrganizations.map((item) => (
-                <div key={item.type} className="flex flex-col items-center text-center">
+              {expertOrganizations.map((item, index) => (
+                <ScrollReveal key={item.type} delay={index * 70} className="flex flex-col items-center text-center">
                   <div className="flex h-24 items-center justify-center sm:h-28 md:h-24">
                     <ExpertLogo type={item.type} />
                   </div>
                   <p className="mt-3 max-w-[190px] whitespace-pre-line text-xs leading-snug text-on-surface-variant sm:mt-4">
                     {item.desc}
                   </p>
-                </div>
+                </ScrollReveal>
               ))}
             </div>
-            <h3 className="mt-12 text-center text-xl font-bold text-primary sm:mt-14 sm:text-2xl">
-              Đối tác của chúng tôi
-            </h3>
+            <ScrollReveal>
+              <h3 className="mt-12 text-center text-xl font-bold text-primary sm:mt-14 sm:text-2xl">
+                Đối tác của chúng tôi
+              </h3>
+            </ScrollReveal>
             <div className="mt-6 grid grid-cols-2 items-center gap-x-6 gap-y-6 sm:mt-8 sm:gap-x-8 sm:gap-y-8 md:grid-cols-4">
-              {partnerSchools.map((item) => (
-                <div key={item} className="flex h-20 items-center justify-center sm:h-24 md:h-24">
+              {partnerSchools.map((item, index) => (
+                <ScrollReveal key={item} delay={index * 70} className="flex h-20 items-center justify-center sm:h-24 md:h-24">
                   <PartnerLogo type={item} />
-                </div>
+                </ScrollReveal>
               ))}
             </div>
           </div>
@@ -683,7 +707,7 @@ export default function TraiHeTinhNguyenPage() {
         <section className="relative overflow-hidden py-16 sm:py-20">
           <img src={heroImage} alt="" className="absolute inset-0 h-full w-full object-cover" />
           <div className="absolute inset-0 bg-black/72" />
-          <div className="relative mx-auto max-w-[900px] px-4 text-center sm:px-6">
+          <ScrollReveal className="relative mx-auto max-w-[900px] px-4 text-center sm:px-6">
             <p className="text-xs font-bold uppercase tracking-wide text-solar-orange sm:text-sm">Còn thắc mắc?</p>
             <h2 className="mt-3 text-2xl font-black leading-tight text-white sm:text-3xl lg:text-4xl">
               Liên hệ VEO để được tư vấn miễn phí
@@ -693,23 +717,27 @@ export default function TraiHeTinhNguyenPage() {
             </p>
             <Link
               href="/lien-he"
-              className="mt-6 inline-flex items-center justify-center gap-2 rounded-full bg-solar-orange px-6 py-3 text-sm font-bold text-white shadow-xl transition-colors hover:bg-action-hover sm:mt-8 sm:px-8 sm:py-4 sm:text-base"
+              className="mt-6 inline-flex items-center justify-center gap-2 rounded-full bg-solar-orange px-6 py-3 text-sm font-bold text-primary shadow-xl transition-colors hover:bg-action-hover sm:mt-8 sm:px-8 sm:py-4 sm:text-base"
             >
               Liên hệ tư vấn
               <span className="material-symbols-outlined text-[18px] sm:text-[20px]">arrow_forward</span>
             </Link>
-          </div>
+          </ScrollReveal>
         </section>
 
         {/* FAQ */}
         <section className="bg-white py-12 sm:py-20">
           <div className="mx-auto max-w-[820px] px-4 sm:px-6">
-            <SectionHeading
-              eyebrow="FAQ"
-              title="Câu hỏi thường gặp"
-              desc="Một vài thông tin phụ huynh và học viên thường hỏi trước khi chọn trại hè tình nguyện."
-            />
-            <FAQAccordion />
+            <ScrollReveal>
+              <SectionHeading
+                eyebrow="FAQ"
+                title="Câu hỏi thường gặp"
+                desc="Một vài thông tin phụ huynh và học viên thường hỏi trước khi chọn trại hè tình nguyện."
+              />
+            </ScrollReveal>
+            <ScrollReveal delay={100}>
+              <FAQAccordion />
+            </ScrollReveal>
           </div>
         </section>
       </main>

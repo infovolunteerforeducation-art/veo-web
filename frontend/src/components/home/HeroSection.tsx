@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -20,7 +20,7 @@ const banners: Banner[] = [
     title: "Mai Châu\nThung lũng xanh",
     subtitle: "Sống cùng đồng bào Thái Trắng, dạy học và trải nghiệm cuộc sống bình yên giữa núi rừng Tây Bắc.",
     ctaLabel: "Xem tour Mai Châu",
-    href: "/tours",
+    href: "/du-lich-tinh-nguyen",
   },
   {
     id: 2,
@@ -28,7 +28,7 @@ const banners: Banner[] = [
     title: "Hà Giang\nCực Bắc hùng vĩ",
     subtitle: "Tình nguyện tại cao nguyên đá Đồng Văn — hành trình kết nối với cộng đồng vùng cao đặc biệt nhất Việt Nam.",
     ctaLabel: "Xem tour Hà Giang",
-    href: "/tours",
+    href: "/du-lich-tinh-nguyen",
   },
   {
     id: 3,
@@ -36,7 +36,7 @@ const banners: Banner[] = [
     title: "Hòa Bình\nMiền sông nước",
     subtitle: "Đồng hành cùng trẻ em vùng hồ Hòa Bình — chương trình giáo dục kỹ năng sống và bảo vệ môi trường.",
     ctaLabel: "Xem tour Hòa Bình",
-    href: "/tours",
+    href: "/du-lich-tinh-nguyen",
   },
   {
     id: 4,
@@ -44,15 +44,18 @@ const banners: Banner[] = [
     title: "Bắc Kạn\nHồ Ba Bể nguyên sơ",
     subtitle: "Tình nguyện bảo tồn sinh thái tại hồ Ba Bể — khu Ramsar quốc tế giữa đại ngàn Đông Bắc Việt Nam.",
     ctaLabel: "Xem tour Bắc Kạn",
-    href: "/tours",
+    href: "/du-lich-tinh-nguyen",
   },
 ];
 
 const AUTO_PLAY_INTERVAL = 5000;
+const SWIPE_THRESHOLD = 40;
 
 export default function HeroSection() {
   const [current, setCurrent] = useState(0);
   const [paused, setPaused] = useState(false);
+  const pointerStartRef = useRef<{ x: number; y: number } | null>(null);
+  const didSwipeRef = useRef(false);
 
   const next = useCallback(() => setCurrent((i) => (i + 1) % banners.length), []);
   const prev = useCallback(() => setCurrent((i) => (i - 1 + banners.length) % banners.length), []);
@@ -63,11 +66,65 @@ export default function HeroSection() {
     return () => clearInterval(id);
   }, [paused, next]);
 
+  const handlePointerDown = useCallback((event: React.PointerEvent<HTMLElement>) => {
+    if (event.pointerType === "mouse") return;
+    pointerStartRef.current = { x: event.clientX, y: event.clientY };
+    didSwipeRef.current = false;
+    setPaused(true);
+  }, []);
+
+  const handlePointerMove = useCallback((event: React.PointerEvent<HTMLElement>) => {
+    const start = pointerStartRef.current;
+    if (!start) return;
+
+    const deltaX = event.clientX - start.x;
+    const deltaY = event.clientY - start.y;
+
+    if (Math.abs(deltaX) > 12 && Math.abs(deltaX) > Math.abs(deltaY)) {
+      didSwipeRef.current = true;
+    }
+  }, []);
+
+  const handlePointerEnd = useCallback((event: React.PointerEvent<HTMLElement>) => {
+    const start = pointerStartRef.current;
+    if (!start) {
+      setPaused(false);
+      return;
+    }
+
+    const deltaX = event.clientX - start.x;
+    const deltaY = event.clientY - start.y;
+    pointerStartRef.current = null;
+
+    if (Math.abs(deltaX) >= SWIPE_THRESHOLD && Math.abs(deltaX) > Math.abs(deltaY) * 1.2) {
+      didSwipeRef.current = true;
+      if (deltaX < 0) {
+        next();
+      } else {
+        prev();
+      }
+    }
+
+    setPaused(false);
+  }, [next, prev]);
+
+  const handleClickCapture = useCallback((event: React.MouseEvent<HTMLElement>) => {
+    if (!didSwipeRef.current) return;
+    event.preventDefault();
+    event.stopPropagation();
+    didSwipeRef.current = false;
+  }, []);
+
   return (
     <section
-      className="relative w-full aspect-[4/3] min-h-[280px] overflow-hidden sm:aspect-[3/1] sm:min-h-[220px]"
+      className="relative w-full aspect-[4/3] min-h-[280px] touch-pan-y overflow-hidden sm:aspect-[3/1] sm:min-h-[220px]"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
+      onPointerDown={handlePointerDown}
+      onPointerMove={handlePointerMove}
+      onPointerUp={handlePointerEnd}
+      onPointerCancel={handlePointerEnd}
+      onClickCapture={handleClickCapture}
     >
       {/* Slides track */}
       <div

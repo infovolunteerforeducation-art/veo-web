@@ -195,7 +195,7 @@ export default function PaymentClient({ tour }: { tour: Tour }) {
         )}
 
         <Link
-          href="/tours"
+          href="/du-lich-tinh-nguyen"
           className="w-full bg-primary text-white py-4 rounded-xl font-bold hover:bg-primary/90 transition-colors flex items-center justify-center gap-2"
         >
           <span className="material-symbols-outlined" style={{ fontSize: 18 }}>explore</span>
@@ -488,7 +488,7 @@ export default function PaymentClient({ tour }: { tour: Tour }) {
             setConfirmed(true);
           }
         }}
-        className="w-full bg-solar-orange hover:bg-action-hover disabled:opacity-40 disabled:cursor-not-allowed text-pure-white py-4 rounded-xl font-bold shadow-lg transition-all active:scale-95 flex items-center justify-center gap-2 text-base"
+        className="w-full rounded-xl bg-solar-orange py-4 text-base font-bold text-primary shadow-lg transition-all hover:bg-action-hover active:scale-95 disabled:cursor-not-allowed disabled:opacity-40 flex items-center justify-center gap-2"
       >
         <span className="material-symbols-outlined">check_circle</span>
         {payMethod === "transfer" ? "Xác nhận đã thanh toán" : payMethod === "office" ? "Xác nhận đăng ký" : "Chọn phương thức thanh toán"}

@@ -132,7 +132,7 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full h-12 bg-solar-orange hover:bg-action-hover text-pure-white font-bold rounded-xl transition-colors flex items-center justify-center gap-2 disabled:opacity-70"
+              className="w-full h-12 rounded-xl bg-solar-orange font-bold text-primary transition-colors hover:bg-action-hover disabled:opacity-70 flex items-center justify-center gap-2"
             >
               {loading ? (
                 <>

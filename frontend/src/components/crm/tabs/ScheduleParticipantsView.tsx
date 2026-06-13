@@ -60,7 +60,7 @@ export default function ScheduleParticipantsView({ schedule, bookings, onBack, o
   const participantRows: ParticipantRow[] = paidBookings.flatMap((b) => {
     const parts = b.participants && b.participants.length > 0
       ? b.participants
-      : [{ name: b.customerName, phone: b.phone, email: b.email }];
+      : [{ name: b.customerName, phone: b.phone, email: b.email, matchStatus: "unmatched" as const }];
     return parts.map((p) => ({ ...p, booking: b }));
   });
 

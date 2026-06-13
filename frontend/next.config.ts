@@ -9,6 +9,20 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  async redirects() {
+    return [
+      {
+        source: "/tours",
+        destination: "/du-lich-tinh-nguyen",
+        permanent: true,
+      },
+      {
+        source: "/tours/:path*",
+        destination: "/du-lich-tinh-nguyen/:path*",
+        permanent: true,
+      },
+    ];
+  },
 };
 
 export default nextConfig;

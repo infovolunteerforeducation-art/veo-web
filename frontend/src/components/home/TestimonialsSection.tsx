@@ -1,3 +1,5 @@
+import ScrollReveal from "@/components/layout/ScrollReveal";
+
 const testimonials = [
   {
     quote:
@@ -37,17 +39,18 @@ const StarIcon = () => (
 export default function TestimonialsSection() {
   return (
     <section className="py-20 max-w-[1200px] mx-auto px-4 sm:px-6">
-      <div className="text-center mb-12">
+      <ScrollReveal className="text-center mb-12">
         <h2 className="text-2xl sm:text-3xl font-bold text-primary">
           Cảm nhận tình nguyện viên
         </h2>
-      </div>
+      </ScrollReveal>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {testimonials.map((t) => (
-          <div
+        {testimonials.map((t, index) => (
+          <ScrollReveal
             key={t.name}
             className="glass-card p-6 lg:p-8 rounded-2xl shadow-sm border-l-4 border-solar-orange flex flex-col"
+            delay={index * 90}
           >
             <div className="flex gap-1 mb-4">
               {Array.from({ length: 5 }).map((_, i) => (
@@ -66,7 +69,7 @@ export default function TestimonialsSection() {
                 <p className="text-xs text-on-surface-variant">{t.role}</p>
               </div>
             </div>
-          </div>
+          </ScrollReveal>
         ))}
       </div>
     </section>

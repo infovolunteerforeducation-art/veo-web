@@ -170,8 +170,8 @@ export default function JoinGuidePage() {
             <h2 className="text-2xl font-bold text-pure-white mb-4">Sẵn sàng bắt đầu?</h2>
             <p className="text-pure-white/80 mb-8">Khám phá ngay các chuyến du lịch tình nguyện đang mở đăng ký.</p>
             <Link
-              href="/tours"
-              className="inline-flex items-center gap-2 bg-solar-orange hover:bg-action-hover text-pure-white px-8 py-3.5 rounded-full font-bold transition-colors"
+              href="/du-lich-tinh-nguyen"
+              className="inline-flex items-center gap-2 rounded-full bg-solar-orange px-8 py-3.5 font-bold text-primary transition-colors hover:bg-action-hover"
             >
               Xem tất cả tour
               <span className="material-symbols-outlined text-lg">arrow_forward</span>

@@ -2,7 +2,12 @@
 
 import { useState } from "react";
 
-const faqs = [
+export type FAQItem = {
+  q: string;
+  a: string;
+};
+
+const defaultFaqs: FAQItem[] = [
   {
     q: "Trại hè tình nguyện VEO dành cho độ tuổi nào?",
     a: "Chương trình phù hợp với học sinh, sinh viên từ 10 đến 22 tuổi. Các nhóm tuổi được chia theo cấp học để hoạt động, mức thử thách và mentor đồng hành phù hợp hơn.",
@@ -29,12 +34,12 @@ const faqs = [
   },
 ];
 
-export default function FAQAccordion() {
+export default function FAQAccordion({ items = defaultFaqs }: { items?: FAQItem[] }) {
   const [open, setOpen] = useState<number | null>(0);
 
   return (
     <div className="space-y-3">
-      {faqs.map((faq, index) => {
+      {items.map((faq, index) => {
         const isOpen = open === index;
         return (
           <div key={faq.q} className="overflow-hidden rounded-xl border border-outline-variant/40 bg-white">
@@ -44,7 +49,9 @@ export default function FAQAccordion() {
               className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left transition-colors hover:bg-surface-container-low"
               aria-expanded={isOpen}
             >
-              <span className="text-sm font-bold leading-snug text-primary sm:text-base">{faq.q}</span>
+              <span className="text-sm font-bold leading-snug text-primary sm:text-base">
+                <span className="mr-2 text-solar-orange">{index + 1}.</span>{faq.q}
+              </span>
               <span
                 className="material-symbols-outlined shrink-0 text-primary transition-transform"
                 style={{ fontSize: 22, transform: isOpen ? "rotate(45deg)" : "none" }}

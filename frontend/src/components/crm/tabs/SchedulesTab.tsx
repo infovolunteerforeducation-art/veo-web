@@ -15,6 +15,7 @@ type Props = {
   deepLinkScheduleId?: string | null;
   onDeepLinkConsumed?: () => void;
   onNavigateToBooking?: (bookingId: string) => void;
+  tourTypeFilter?: "dltn" | "traihè";
 };
 
 type SortField = "createdAt" | "isoDate" | "status";
@@ -42,7 +43,8 @@ function SortBtn({ field, current, dir, onClick }: { field: SortField; current: 
   );
 }
 
-export default function SchedulesTab({ tours, setTours, deepLinkScheduleId, onDeepLinkConsumed, onNavigateToBooking }: Props) {
+export default function SchedulesTab({ tours, setTours, deepLinkScheduleId, onDeepLinkConsumed, onNavigateToBooking, tourTypeFilter }: Props) {
+  const filteredTours = tourTypeFilter ? tours.filter((t) => t.tourType === tourTypeFilter) : tours;
   const [calYear, setCalYear] = useState(2025);
   const [calMonth, setCalMonth] = useState(9);
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
@@ -59,7 +61,7 @@ export default function SchedulesTab({ tours, setTours, deepLinkScheduleId, onDe
   const [bookings, setBookings] = useState<Booking[]>(mockBookings);
 
   const allSchedules = useMemo<FlatSchedule[]>(() =>
-    tours.flatMap((t) => t.schedules.map((s) => ({
+    filteredTours.flatMap((t) => t.schedules.map((s) => ({
       ...s, tourId: t.id, tourTitle: t.title, tourDuration: t.duration,
     }))),
     [tours]
@@ -147,7 +149,7 @@ export default function SchedulesTab({ tours, setTours, deepLinkScheduleId, onDe
     if (!form.tourId || !form.isoDate) return;
     const now = new Date().toISOString();
     const spots = parseInt(form.spotsTotal) || 20;
-    const tourForForm = tours.find((t) => t.id === form.tourId);
+    const tourForForm = filteredTours.find((t) => t.id === form.tourId);
     const label = computeScheduleLabel(form.isoDate, tourForForm?.duration ?? 3);
     if (editTarget) {
       setTours((prev) =>
@@ -436,7 +438,7 @@ export default function SchedulesTab({ tours, setTours, deepLinkScheduleId, onDe
                   value={form.tourId}
                   onChange={(v) => setForm((f) => ({ ...f, tourId: v }))}
                   disabled={!!editTarget}
-                  options={tours.map((t) => ({ value: t.id, label: t.title }))}
+                  options={filteredTours.map((t) => ({ value: t.id, label: t.title }))}
                   className="w-full px-3 py-2.5 rounded-lg border border-outline-variant text-sm font-semibold text-on-surface-variant bg-white"
                 />
                 {form.tourId && (

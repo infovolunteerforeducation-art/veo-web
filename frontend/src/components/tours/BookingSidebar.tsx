@@ -47,7 +47,7 @@ export default function BookingSidebar({ tour }: { tour: Tour }) {
 
   function handleRegister() {
     if (!canRegister) return;
-    router.push(`/tours/${tour.slug}/dang-ky?date=${selectedDate}`);
+    router.push(`/du-lich-tinh-nguyen/${tour.slug}/dang-ky?date=${selectedDate}`);
   }
 
   return (
@@ -123,7 +123,7 @@ export default function BookingSidebar({ tour }: { tour: Tour }) {
           type="button"
           disabled={!canRegister}
           onClick={handleRegister}
-          className="w-full bg-solar-orange hover:bg-action-hover disabled:bg-outline-variant disabled:cursor-not-allowed text-pure-white py-4 rounded-xl font-bold shadow-lg transition-all active:scale-95 flex items-center justify-center gap-2"
+          className="w-full rounded-xl bg-solar-orange py-4 font-bold text-primary shadow-lg transition-all hover:bg-action-hover active:scale-95 disabled:cursor-not-allowed disabled:bg-outline-variant disabled:text-on-surface-variant flex items-center justify-center gap-2"
         >
           <span className="material-symbols-outlined">app_registration</span>
           {canRegister ? "Đăng ký ngay" : selectedDate ? "Đã hết hạn đăng ký" : "Chọn lịch để đăng ký"}

@@ -75,7 +75,7 @@ export default function ToursPage() {
   const [filters, setFilters] = useState<TourFilterState>(EMPTY_TOUR_FILTERS);
   const [sortBy, setSortBy] = useState<SortOption>("departure-asc");
   const [sortOpen, setSortOpen] = useState(false);
-  const [openFaq, setOpenFaq] = useState<number | null>(null);
+  const [openFaq, setOpenFaq] = useState<number | null>(0);
 
   const filteredTours = useMemo(() => {
     const matched = tours.filter((tour) => {
@@ -200,7 +200,7 @@ export default function ToursPage() {
                   return (
                     <Link
                       key={tour.slug}
-                      href={`/tours/${tour.slug}`}
+                      href={`/du-lich-tinh-nguyen/${tour.slug}`}
                       className="bg-pure-white rounded-xl overflow-hidden card-hover-shadow transition-all duration-300 border border-surface-variant group flex flex-col"
                     >
                       {/* Image */}
@@ -371,32 +371,50 @@ export default function ToursPage() {
           </section>
 
           {/* FAQ */}
-          <section>
-            <div className="text-center mb-8">
-              <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-solar-orange/10 text-solar-orange text-sm font-semibold mb-3">
+          <section className="mx-auto max-w-[820px]">
+            <div className="mx-auto mb-10 max-w-2xl text-center [&>h2]:hidden [&>span]:hidden">
+              <div>
+                <p className="mb-2 text-xs font-bold uppercase tracking-wide text-solar-orange">
+                  FAQ
+                </p>
+                <h2 className="text-2xl font-bold leading-tight text-primary sm:text-3xl">
+                  Câu hỏi thường gặp
+                </h2>
+                <p className="mt-3 text-base leading-relaxed text-on-surface-variant">
+                  Một vài thông tin tình nguyện viên thường hỏi trước khi chọn hành trình du lịch tình nguyện.
+                </p>
+              </div>
+              <span className="hidden">
                 <span className="material-symbols-outlined text-base">help</span>
                 Câu hỏi thường gặp
               </span>
-              <h2 className="text-2xl sm:text-3xl font-bold text-on-surface">Giải đáp thắc mắc</h2>
+              <h2 className="text-2xl sm:text-3xl font-bold text-on-surface">Câu hỏi thường gặp</h2>
             </div>
 
-            <div className="max-w-3xl mx-auto divide-y divide-outline-variant/30 rounded-2xl border border-outline-variant/20 bg-white overflow-hidden shadow-[0px_4px_20px_rgba(108,42,138,0.06)]">
+            <div className="space-y-3">
               {FAQS.map((faq, i) => {
                 const isOpen = openFaq === i;
                 return (
-                  <div key={i}>
+                  <div key={faq.q} className="overflow-hidden rounded-xl border border-outline-variant/40 bg-white">
                     <button
                       type="button"
                       onClick={() => setOpenFaq(isOpen ? null : i)}
-                      className="w-full flex items-start justify-between gap-4 px-6 py-5 text-left hover:bg-surface-container/40 transition-colors"
+                      className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left transition-colors hover:bg-surface-container-low"
                       aria-expanded={isOpen}
                     >
-                      <span className="font-semibold text-on-surface text-sm sm:text-base leading-snug">{faq.q}</span>
-                      <span className={`material-symbols-outlined text-primary shrink-0 mt-0.5 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`} style={{ fontSize: 20 }}>expand_more</span>
+                      <span className="text-sm font-bold leading-snug text-primary sm:text-base">
+                        <span className="mr-2 text-solar-orange">{i + 1}.</span>{faq.q}
+                      </span>
+                      <span
+                        className="material-symbols-outlined shrink-0 text-primary transition-transform"
+                        style={{ fontSize: 22, transform: isOpen ? "rotate(45deg)" : "none" }}
+                      >
+                        add
+                      </span>
                     </button>
                     {isOpen && (
-                      <div className="px-6 pb-5">
-                        <p className="text-sm sm:text-base text-on-surface-variant leading-relaxed">{faq.a}</p>
+                      <div className="border-t border-outline-variant/30 px-5 py-4 text-sm leading-relaxed text-on-surface-variant">
+                        {faq.a}
                       </div>
                     )}
                   </div>

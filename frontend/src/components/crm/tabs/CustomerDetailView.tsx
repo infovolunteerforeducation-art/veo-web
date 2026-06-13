@@ -63,15 +63,15 @@ export default function CustomerDetailView({ customer, allBookings, onBack, onVi
   // Bookings where this person personally participated (in their own booking)
   const selfParticipatingBookings = registrantBookings.filter((b) => {
     if (!b.participants || b.participants.length === 0) return true;
-    return b.participants.some((p) => p.email === customer.email);
+    return b.participants.some((p) => p.customerId === customer.id && p.matchStatus === "matched");
   });
 
-  // Bookings registered by someone else but customer appears as participant
+  // Bookings registered by someone else but customer is a matched participant
   const externalParticipantBookings = allBookings
     .filter(
       (b) =>
         b.customerId !== customer.id &&
-        b.participants?.some((p) => p.email === customer.email || p.name === customer.name)
+        b.participants?.some((p) => p.customerId === customer.id && p.matchStatus === "matched")
     )
     .sort((a, b) => b.createdAt.localeCompare(a.createdAt));
 

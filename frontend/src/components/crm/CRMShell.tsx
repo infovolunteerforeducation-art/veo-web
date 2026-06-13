@@ -7,7 +7,6 @@ import BookingsTab from "./tabs/BookingsTab";
 import CustomersTab from "./tabs/CustomersTab";
 import ToursTab from "./tabs/ToursTab";
 import SchedulesTab from "./tabs/SchedulesTab";
-import CoordinationTab from "./tabs/CoordinationTab";
 import DestinationsTab from "./tabs/DestinationsTab";
 import SettingsTab from "./tabs/SettingsTab";
 import PromoCodesTab from "./tabs/PromoCodesTab";
@@ -16,7 +15,7 @@ import { StaffRole, ManagedTour, mockTours, mockBookings } from "@/lib/crm-data"
 
 const pendingCount = mockBookings.filter((b) => b.status === "pending").length;
 
-type Tab = "dashboard" | "bookings" | "customers" | "tours" | "schedules" | "coordination" | "destinations" | "promoCodes" | "settings";
+type Tab = "dashboard" | "bookings" | "customers" | "tours" | "schedules" | "campTours" | "campSchedules" | "destinations" | "promoCodes" | "settings";
 
 // Leaf = single tab link; Group = collapsible parent with child tabs
 type NavLeaf  = { kind: "leaf";  id: Tab;    label: string; icon: string };
@@ -28,9 +27,12 @@ const NAV: NavEntry[] = [
   { kind: "leaf",  id: "bookings",     label: "Đăng ký",          icon: "event_note" },
   { kind: "leaf",  id: "customers",    label: "Khách hàng",       icon: "people" },
   { kind: "group", id: "trips",        label: "Chuyến đi DLTN",  icon: "hiking", children: [
-    { id: "tours",        label: "Chương trình" },
-    { id: "schedules",    label: "Lịch chuyến" },
-    { id: "coordination", label: "Điều phối" },
+    { id: "tours",     label: "Chương trình" },
+    { id: "schedules", label: "Lịch chuyến" },
+  ]},
+  { kind: "group", id: "camps",        label: "Trại hè",          icon: "forest", children: [
+    { id: "campTours",     label: "Chương trình" },
+    { id: "campSchedules", label: "Lịch chuyến" },
   ]},
   { kind: "leaf",  id: "destinations", label: "Điểm đến",         icon: "location_on" },
   { kind: "leaf",  id: "promoCodes",   label: "Mã KM",            icon: "local_offer" },
@@ -38,10 +40,10 @@ const NAV: NavEntry[] = [
 ];
 
 const ROLE_ALLOWED_TABS: Record<StaffRole, Tab[]> = {
-  admin:       ["dashboard", "bookings", "customers", "tours", "schedules", "coordination", "destinations", "promoCodes", "settings"],
-  coordinator: ["dashboard", "bookings", "customers", "tours", "schedules", "coordination", "destinations"],
+  admin:       ["dashboard", "bookings", "customers", "tours", "schedules", "campTours", "campSchedules", "destinations", "promoCodes", "settings"],
+  coordinator: ["dashboard", "bookings", "customers", "tours", "schedules", "campTours", "campSchedules", "destinations"],
   sale:        ["bookings", "customers"],
-  staff:       ["dashboard", "bookings", "customers", "coordination"],
+  staff:       ["dashboard", "bookings", "customers"],
 };
 
 const PREVIEW_ROLES: { value: StaffRole; label: string }[] = [
@@ -71,6 +73,7 @@ export default function CRMShell() {
   const [scheduleDeepLink, setScheduleDeepLink] = useState<string | null>(null);
   const [tourDeepLink, setTourDeepLink] = useState<string | null>(null);
   const [bookingDeepLink, setBookingDeepLink] = useState<string | null>(null);
+  const [bookingStatusFilter, setBookingStatusFilter] = useState<string | null>(null);
 
   if (!signedInUser) {
     return <SignInPage onSignIn={(name) => setSignedInUser(name)} />;
@@ -299,12 +302,13 @@ export default function CRMShell() {
         </header>
 
         <main className="flex-1 overflow-y-auto p-4 lg:p-6">
-          {activeTab === "dashboard"    && <DashboardTab />}
-          {activeTab === "bookings"     && <BookingsTab deepLinkBookingId={bookingDeepLink} onDeepLinkBookingConsumed={() => setBookingDeepLink(null)} onNavigateToCustomer={() => { switchTab("customers"); }} onNavigateToTour={(id) => { setTourDeepLink(id); switchTab("tours"); }} onNavigateToSchedule={(id) => { setScheduleDeepLink(id); switchTab("schedules"); }} />}
+          {activeTab === "dashboard"    && <DashboardTab onNavigateToPending={() => { setBookingStatusFilter("pending"); switchTab("bookings"); }} />}
+          {activeTab === "bookings"     && <BookingsTab deepLinkBookingId={bookingDeepLink} deepLinkStatusFilter={bookingStatusFilter as any} onDeepLinkBookingConsumed={() => setBookingDeepLink(null)} onDeepLinkStatusConsumed={() => setBookingStatusFilter(null)} onNavigateToCustomer={() => { switchTab("customers"); }} onNavigateToTour={(id) => { setTourDeepLink(id); switchTab("tours"); }} onNavigateToSchedule={(id) => { setScheduleDeepLink(id); switchTab("schedules"); }} canManualAssign={effectiveRole === "admin" || effectiveRole === "coordinator"} />}
           {activeTab === "customers"    && <CustomersTab onNavigateToTour={(id) => { setTourDeepLink(id); switchTab("tours"); }} onNavigateToSchedule={(id) => { setScheduleDeepLink(id); switchTab("schedules"); }} onNavigateToBooking={(id) => { setBookingDeepLink(id); switchTab("bookings"); }} />}
-          {activeTab === "tours"        && <ToursTab tours={tours} setTours={setTours} onNavigateToSchedule={(id) => { setScheduleDeepLink(id); switchTab("schedules"); }} onNavigateToBooking={(id) => { setBookingDeepLink(id); switchTab("bookings"); }} deepLinkTourId={tourDeepLink} onDeepLinkTourConsumed={() => setTourDeepLink(null)} />}
-          {activeTab === "schedules"    && <SchedulesTab tours={tours} setTours={setTours} deepLinkScheduleId={scheduleDeepLink} onDeepLinkConsumed={() => setScheduleDeepLink(null)} onNavigateToBooking={(id) => { setBookingDeepLink(id); switchTab("bookings"); }} />}
-          {activeTab === "coordination" && <CoordinationTab />}
+          {activeTab === "tours"        && <ToursTab tours={tours.filter((t) => t.tourType === "dltn" || !t.tourType)} setTours={setTours} onNavigateToSchedule={(id) => { setScheduleDeepLink(id); switchTab("schedules"); }} onNavigateToBooking={(id) => { setBookingDeepLink(id); switchTab("bookings"); }} deepLinkTourId={tourDeepLink} onDeepLinkTourConsumed={() => setTourDeepLink(null)} tourTypeFilter="dltn" />}
+          {activeTab === "schedules"    && <SchedulesTab tours={tours.filter((t) => t.tourType === "dltn" || !t.tourType)} setTours={setTours} deepLinkScheduleId={scheduleDeepLink} onDeepLinkConsumed={() => setScheduleDeepLink(null)} onNavigateToBooking={(id) => { setBookingDeepLink(id); switchTab("bookings"); }} tourTypeFilter="dltn" />}
+          {activeTab === "campTours"    && <ToursTab tours={tours.filter((t) => t.tourType === "traihè")} setTours={setTours} onNavigateToSchedule={(id) => { setScheduleDeepLink(id); switchTab("campSchedules"); }} onNavigateToBooking={(id) => { setBookingDeepLink(id); switchTab("bookings"); }} deepLinkTourId={tourDeepLink} onDeepLinkTourConsumed={() => setTourDeepLink(null)} tourTypeFilter="traihè" />}
+          {activeTab === "campSchedules" && <SchedulesTab tours={tours.filter((t) => t.tourType === "traihè")} setTours={setTours} deepLinkScheduleId={scheduleDeepLink} onDeepLinkConsumed={() => setScheduleDeepLink(null)} onNavigateToBooking={(id) => { setBookingDeepLink(id); switchTab("bookings"); }} tourTypeFilter="traihè" />}
           {activeTab === "destinations" && <DestinationsTab />}
           {activeTab === "promoCodes"   && <PromoCodesTab />}
           {activeTab === "settings"     && <SettingsTab />}

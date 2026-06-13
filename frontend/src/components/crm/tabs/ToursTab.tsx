@@ -5,6 +5,7 @@ import { Booking, mockBookings, mockDestinations, ManagedTour, fmt, formatDurati
 import SelectInput from "../SelectInput";
 import { StatusBadge } from "./DashboardTab";
 import TourContentEditor from "./TourContentEditor";
+import CampContentEditor from "./CampContentEditor";
 import TourDetailView from "./TourDetailView";
 import Pagination from "../Pagination";
 
@@ -19,9 +20,10 @@ type Props = {
   onNavigateToBooking?: (bookingId: string) => void;
   deepLinkTourId?: string | null;
   onDeepLinkTourConsumed?: () => void;
+  tourTypeFilter?: "dltn" | "traihè";
 };
 
-export default function ToursTab({ tours, setTours, onNavigateToSchedule, onNavigateToBooking, deepLinkTourId, onDeepLinkTourConsumed }: Props) {
+export default function ToursTab({ tours, setTours, onNavigateToSchedule, onNavigateToBooking, deepLinkTourId, onDeepLinkTourConsumed, tourTypeFilter }: Props) {
   const [bookings] = useState<Booking[]>(mockBookings);
   const [detailTour, setDetailTour] = useState<ManagedTour | null>(null);
   const [contentTour, setContentTour] = useState<ManagedTour | null>(null);
@@ -94,6 +96,7 @@ export default function ToursTab({ tours, setTours, onNavigateToSchedule, onNavi
       ageRange: newTour.ageRange || undefined,
       schedules: [],
       status: "draft",
+      tourType: tourTypeFilter,
     };
     setTours((prev) => [...prev, tour]);
     setNewTour({ title: "", destinationId: "", price: "", duration: "3", ageRange: "" });
@@ -130,6 +133,15 @@ export default function ToursTab({ tours, setTours, onNavigateToSchedule, onNavi
   }
 
   if (contentTour) {
+    if (tourTypeFilter === "traihè" || contentTour.tourType === "traihè") {
+      return (
+        <CampContentEditor
+          tour={contentTour}
+          onSave={saveContent}
+          onBack={() => setContentTour(null)}
+        />
+      );
+    }
     return (
       <TourContentEditor
         tour={contentTour}

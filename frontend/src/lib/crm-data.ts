@@ -1,11 +1,17 @@
+import { camps } from "./trai-he-data";
+
 export type BookingStatus = "pending" | "cancelled" | "paid";
 export type PaymentMethod = "office" | "transfer";
 export type CoordinationStatus = "pending" | "attended" | "absent_reserved" | "absent_refunded";
+
+export type ParticipantMatchStatus = "matched" | "pending" | "unmatched";
 
 export type BookingParticipant = {
   name: string;
   phone?: string;
   email?: string;
+  customerId?: string;          // set when matchStatus === "matched"
+  matchStatus: ParticipantMatchStatus;
 };
 
 export type BookingActivityLog = {
@@ -44,6 +50,17 @@ export type Booking = {
   reservationNote?: string;
   participants?: BookingParticipant[];
   activityLog?: BookingActivityLog[];
+  assignedSaleId?: string;
+  assignedAt?: string;
+  assignedManually?: boolean;
+  cancelledBy?: "customer" | "veo" | "force_majeure";
+  cancelRequestDate?: string;
+  cancellationFeePercent?: number;
+  refundAmount?: number;
+  refundStatus?: "pending_refund" | "refunded";
+  refundCompletedAt?: string;
+  cancellationNote?: string;
+  offerTransfer?: boolean;
 };
 
 export type Customer = {
@@ -100,12 +117,26 @@ export type ManagedTour = {
   tourType?: TourType;
   schedules: TourSchedule[];
   status: "active" | "draft" | "archived";
-  // Page content
+  // Page content (shared)
   heroImage?: string;
   heroDescription?: string;
+  // DLTN-specific content
   goalsDescription?: string;
   goals?: string[];
   itinerary?: ItineraryDay[];
+  // Camp-specific content
+  highlights?: Array<{ icon: string; value: string; label: string }>;
+  pillars?: Array<{ icon: string; title: string; desc: string }>;
+  agePrograms?: Array<{ image: string; age: string; title: string; desc: string }>;
+  campSchedule?: Array<{ day: string; text: string }>;
+  outcomes?: string[];
+  requirements?: string[];
+  notes?: string[];
+  volunteer?: string[];
+  experience?: string[];
+  included?: string[];
+  notIncluded?: string[];
+  policies?: Array<{ icon?: string; title: string; items: string[] }>;
 };
 
 export type Destination = {
@@ -145,7 +176,23 @@ export const mockDestinations: Destination[] = [
   { id: "dest-1", name: "Mèo Vạc – Hà Giang", province: "Hà Giang", region: "north", createdAt: "2025-01-15", updatedAt: "2025-09-20" },
   { id: "dest-2", name: "Đảo Lý Sơn", province: "Quảng Ngãi", region: "south", createdAt: "2025-02-10", updatedAt: "2025-08-05" },
   { id: "dest-3", name: "Đà Lạt – Lâm Đồng", province: "Lâm Đồng", region: "south", createdAt: "2025-03-05", updatedAt: "2025-10-01" },
+  { id: "dest-4", name: "Sa Pa – Lào Cai", province: "Lào Cai", region: "north", createdAt: "2026-01-10", updatedAt: "2026-03-10" },
+  { id: "dest-5", name: "Phú Quốc – Kiên Giang", province: "Kiên Giang", region: "south", createdAt: "2026-02-01", updatedAt: "2026-04-01" },
+  { id: "dest-6", name: "Bản Cối · Phú Thọ", province: "Phú Thọ", region: "north", createdAt: "2026-03-10", updatedAt: "2026-03-10" },
 ];
+
+const banCoiCamp = camps.find((camp) => camp.slug === "ban-coi-phu-tho") ?? camps[0];
+const banCoiHeroDescription = `Hành trình 6 ngày 5 đêm tại ${banCoiCamp.location} - kết hợp hoạt động tình nguyện thực tế và trải nghiệm văn hóa bản địa dành cho học sinh, sinh viên.`;
+
+function toManagedItinerary(itinerary: typeof camps[number]["itinerary"]): ItineraryDay[] {
+  return itinerary.map((day) => ({
+    ...day,
+    activities: day.activities.map((activity) => ({
+      ...activity,
+      images: activity.images ?? [],
+    })),
+  }));
+}
 
 export const mockTours: ManagedTour[] = [
   {
@@ -295,7 +342,89 @@ export const mockTours: ManagedTour[] = [
       { id: "sch-3b", label: "19/11 – 21/11/2025", isoDate: "2025-11-19", spotsTotal: 30, spotsLeft: 2, status: "open", isVisible: true, createdAt: "2025-09-20T10:05:00", updatedAt: "2025-09-20T10:05:00" },
     ],
   },
+  {
+    id: "tour-4",
+    slug: "trai-he-stem-sapa",
+    title: "Trại hè STEM tại Sa Pa",
+    tourType: "traihè",
+    destinationId: "dest-4",
+    destinationName: "Sa Pa – Lào Cai",
+    price: 3500000,
+    duration: 5,
+    ageRange: "8 – 15 tuổi",
+    status: "active",
+    heroImage: "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=1200&q=80",
+    heroDescription: "Trại hè STEM kết hợp khám phá thiên nhiên núi rừng Sa Pa — nơi các bạn nhỏ được thực hành khoa học, công nghệ và nghệ thuật sáng tạo giữa thiên nhiên hùng vĩ.",
+    goals: [
+      "Tổ chức 10 workshop STEM thực hành: lập trình Scratch, điện tử cơ bản, khoa học môi trường.",
+      "Trải nghiệm canh tác ruộng bậc thang và tìm hiểu văn hóa dân tộc H'Mông.",
+      "Xây dựng kỹ năng làm việc nhóm, lãnh đạo và giải quyết vấn đề trong môi trường thực tế.",
+    ],
+    schedules: [
+      { id: "sch-4a", label: "15/06 – 19/06/2026", isoDate: "2026-06-15", spotsTotal: 25, spotsLeft: 18, status: "open", isVisible: true, createdAt: "2026-03-10T09:00:00", updatedAt: "2026-03-10T09:00:00" },
+      { id: "sch-4b", label: "22/06 – 26/06/2026", isoDate: "2026-06-22", spotsTotal: 25, spotsLeft: 25, status: "open", isVisible: true, createdAt: "2026-03-10T09:05:00", updatedAt: "2026-03-10T09:05:00" },
+      { id: "sch-4c", label: "06/07 – 10/07/2026", isoDate: "2026-07-06", spotsTotal: 25, spotsLeft: 25, status: "open", isVisible: false, createdAt: "2026-03-10T09:10:00", updatedAt: "2026-03-10T09:10:00" },
+    ],
+  },
+  {
+    id: "tour-5",
+    slug: "trai-he-bien-dao-phu-quoc",
+    title: "Trại hè khám phá biển đảo Phú Quốc",
+    tourType: "traihè",
+    destinationId: "dest-5",
+    destinationName: "Phú Quốc – Kiên Giang",
+    price: 4200000,
+    duration: 4,
+    ageRange: "10 – 17 tuổi",
+    status: "active",
+    heroImage: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1200&q=80",
+    heroDescription: "Hành trình khám phá hệ sinh thái biển đảo, học lặn snorkeling, và tham gia các hoạt động bảo vệ môi trường biển cùng các chuyên gia.",
+    goals: [
+      "Học lặn snorkeling và tìm hiểu hệ sinh thái rạn san hô nhiệt đới.",
+      "Tham gia thu gom rác biển và trồng san hô cùng WWF Việt Nam.",
+      "Rèn luyện kỹ năng sinh tồn biển, định hướng bằng sao và chèo thuyền kayak.",
+    ],
+    schedules: [
+      { id: "sch-5a", label: "01/07 – 04/07/2026", isoDate: "2026-07-01", spotsTotal: 20, spotsLeft: 12, status: "open", isVisible: true, createdAt: "2026-04-01T08:00:00", updatedAt: "2026-04-01T08:00:00" },
+      { id: "sch-5b", label: "15/07 – 18/07/2026", isoDate: "2026-07-15", spotsTotal: 20, spotsLeft: 20, status: "open", isVisible: true, createdAt: "2026-04-01T08:05:00", updatedAt: "2026-04-01T08:05:00" },
+    ],
+  },
 ];
+
+const banCoiCmsTour = mockTours.find((tour) => tour.id === "tour-3");
+
+if (banCoiCmsTour) {
+  Object.assign(banCoiCmsTour, {
+    slug: banCoiCamp.slug,
+    title: banCoiCamp.title,
+    destinationId: "dest-6",
+    destinationName: banCoiCamp.location,
+    price: banCoiCamp.priceNumber,
+    duration: 6,
+    ageRange: "10 - 22 tuổi",
+    heroImage: banCoiCamp.image,
+    heroDescription: banCoiHeroDescription,
+    volunteer: banCoiCamp.volunteer,
+    experience: banCoiCamp.experience,
+    itinerary: toManagedItinerary(banCoiCamp.itinerary),
+    included: banCoiCamp.included,
+    notIncluded: banCoiCamp.notIncluded,
+    policies: banCoiCamp.policies,
+    schedules: [
+      {
+        id: "sch-3a",
+        label: banCoiCamp.dates[0]?.label ?? "04/07 - 09/07/2026",
+        isoDate: banCoiCamp.dates[0]?.isoDate ?? "2026-07-04",
+        spotsTotal: 30,
+        spotsLeft: banCoiCamp.dates[0]?.spotsLeft ?? 10,
+        status: "open",
+        isVisible: true,
+        createdAt: "2026-03-10T09:00:00",
+        updatedAt: "2026-03-10T09:00:00",
+      },
+    ],
+  } satisfies Partial<ManagedTour>);
+}
 
 export const mockCustomers: Customer[] = [
   { id: "cust-1", name: "Nguyễn Văn An", phone: "0912345678", email: "an.nguyen@gmail.com", totalTrips: 3, totalSpent: 7500000, lastTour: "Xây trường cho em tại Mèo Vạc", lastTourDate: "2025-10-15", joinedAt: "2024-06-10" },
@@ -309,18 +438,18 @@ export const mockCustomers: Customer[] = [
 ];
 
 export const mockBookings: Booking[] = [
-  { id: "bk-01", bookingCode: "VEO-SAPA-A3X7K", tourId: "tour-1", tourType: "dltn", tourName: "Xây trường cho em tại Mèo Vạc", scheduleId: "sch-1a", scheduleLabel: "15/10 – 17/10/2025", customerId: "cust-1", customerName: "Nguyễn Văn An", phone: "0912345678", email: "an.nguyen@gmail.com", numPeople: 2, originalAmount: 5500000, discountCode: "VEO10", discountAmount: 500000, totalAmount: 5000000, paymentMethod: "transfer", status: "paid", createdAt: "2025-10-01T09:15:00", paidAt: "2025-10-01T10:30:00", attended: true, coordinationStatus: "attended", participants: [{ name: "Nguyễn Văn An", phone: "0912345678", email: "an.nguyen@gmail.com" }, { name: "Trần Thị Bình", phone: "0987654321", email: "binh.tran@gmail.com" }], activityLog: [{ id: "log-1", timestamp: "2025-10-01T09:15:00", actor: "Hệ thống", action: "Đơn đăng ký được tạo", icon: "add_circle" }, { id: "log-2", timestamp: "2025-10-01T10:30:00", actor: "Nguyễn Thị Mai", actorRole: "Sale", action: "Xác nhận thanh toán chuyển khoản", icon: "payments" }, { id: "log-3", timestamp: "2025-10-17T18:00:00", actor: "Hệ thống", action: "Cập nhật trạng thái tham gia: Đã tham gia", icon: "check_circle" }] },
+  { id: "bk-01", bookingCode: "VEO-SAPA-A3X7K", tourId: "tour-1", tourType: "dltn", tourName: "Xây trường cho em tại Mèo Vạc", scheduleId: "sch-1a", scheduleLabel: "15/10 – 17/10/2025", customerId: "cust-1", customerName: "Nguyễn Văn An", phone: "0912345678", email: "an.nguyen@gmail.com", numPeople: 2, originalAmount: 5500000, discountCode: "VEO10", discountAmount: 500000, totalAmount: 5000000, paymentMethod: "transfer", status: "paid", createdAt: "2025-10-01T09:15:00", paidAt: "2025-10-01T10:30:00", attended: true, coordinationStatus: "attended", participants: [{ name: "Nguyễn Văn An", phone: "0912345678", email: "an.nguyen@gmail.com", customerId: "cust-1", matchStatus: "matched" }, { name: "Trần Thị Bình", phone: "0987654321", email: "binh.tran@gmail.com", customerId: "cust-2", matchStatus: "matched" }], activityLog: [{ id: "log-1", timestamp: "2025-10-01T09:15:00", actor: "Hệ thống", action: "Đơn đăng ký được tạo", icon: "add_circle" }, { id: "log-2", timestamp: "2025-10-01T10:30:00", actor: "Nguyễn Thị Mai", actorRole: "Sale", action: "Xác nhận thanh toán chuyển khoản", icon: "payments" }, { id: "log-3", timestamp: "2025-10-17T18:00:00", actor: "Hệ thống", action: "Cập nhật trạng thái tham gia: Đã tham gia", icon: "check_circle" }] },
   { id: "bk-02", bookingCode: "VEO-SAPA-B8Y2M", tourId: "tour-1", tourType: "dltn", tourName: "Xây trường cho em tại Mèo Vạc", scheduleId: "sch-1b", scheduleLabel: "22/10 – 24/10/2025", customerId: "cust-3", customerName: "Lê Hoàng Cường", phone: "0901234567", email: "cuong.le@gmail.com", numPeople: 1, totalAmount: 2500000, paymentMethod: "transfer", status: "pending", createdAt: "2025-10-05T14:30:00", attended: false },
-  { id: "bk-03", bookingCode: "VEO-LYSO-C4Z9N", tourId: "tour-2", tourType: "dltn", tourName: "Làm sạch đại dương tại Lý Sơn", scheduleId: "sch-2a", scheduleLabel: "22/10 – 24/10/2025", customerId: "cust-2", customerName: "Trần Thị Bình", phone: "0987654321", email: "binh.tran@gmail.com", numPeople: 2, totalAmount: 6400000, paymentMethod: "office", status: "paid", createdAt: "2025-10-08T10:00:00", attended: true, coordinationStatus: "absent_reserved", reservationNote: "Bảo lưu cho chuyến 12/11 – 14/11", participants: [{ name: "Trần Thị Bình", phone: "0987654321", email: "binh.tran@gmail.com" }, { name: "Lưu Quang Hải", phone: "0987112233", email: "hai.lq@gmail.com" }] },
-  { id: "bk-04", bookingCode: "VEO-DALA-D5W1P", tourId: "tour-3", tourType: "traihè", tourName: "Kỹ năng sống tại Đà Lạt", scheduleId: "sch-3a", scheduleLabel: "05/11 – 07/11/2025", customerId: "cust-4", customerName: "Phạm Minh Đức", phone: "0978123456", email: "duc.pham@gmail.com", numPeople: 3, totalAmount: 5400000, paymentMethod: "transfer", status: "paid", createdAt: "2025-10-10T16:45:00", attended: true, coordinationStatus: "attended", participants: [{ name: "Phạm Minh Đức", phone: "0978123456", email: "duc.pham@gmail.com" }, { name: "Phạm Thị Thu", phone: "0978112233", email: "thu.pham@gmail.com" }, { name: "Nguyễn Quốc Bảo", phone: "0912334455", email: "bao.nq@gmail.com" }] },
-  { id: "bk-05", bookingCode: "VEO-SAPA-E6Q3R", tourId: "tour-1", tourType: "dltn", tourName: "Xây trường cho em tại Mèo Vạc", scheduleId: "sch-1c", scheduleLabel: "05/11 – 07/11/2025", customerId: "cust-5", customerName: "Hoàng Thị Lan", phone: "0934567890", email: "lan.hoang@gmail.com", numPeople: 2, totalAmount: 5000000, paymentMethod: "transfer", status: "pending", createdAt: "2025-10-12T08:20:00" },
+  { id: "bk-03", bookingCode: "VEO-LYSO-C4Z9N", tourId: "tour-2", tourType: "dltn", tourName: "Làm sạch đại dương tại Lý Sơn", scheduleId: "sch-2a", scheduleLabel: "22/10 – 24/10/2025", customerId: "cust-2", customerName: "Trần Thị Bình", phone: "0987654321", email: "binh.tran@gmail.com", numPeople: 2, totalAmount: 6400000, paymentMethod: "office", status: "paid", createdAt: "2025-10-08T10:00:00", attended: true, coordinationStatus: "absent_reserved", reservationNote: "Bảo lưu cho chuyến 12/11 – 14/11", participants: [{ name: "Trần Thị Bình", phone: "0987654321", email: "binh.tran@gmail.com", customerId: "cust-2", matchStatus: "matched" }, { name: "Lưu Quang Hải", phone: "0987112233", email: "hai.lq@gmail.com", matchStatus: "pending" }] },
+  { id: "bk-04", bookingCode: "VEO-DALA-D5W1P", tourId: "tour-3", tourType: "traihè", tourName: "Kỹ năng sống tại Đà Lạt", scheduleId: "sch-3a", scheduleLabel: "05/11 – 07/11/2025", customerId: "cust-4", customerName: "Phạm Minh Đức", phone: "0978123456", email: "duc.pham@gmail.com", numPeople: 3, totalAmount: 5400000, paymentMethod: "transfer", status: "paid", createdAt: "2025-10-10T16:45:00", attended: true, coordinationStatus: "attended", participants: [{ name: "Phạm Minh Đức", phone: "0978123456", email: "duc.pham@gmail.com", customerId: "cust-4", matchStatus: "matched" }, { name: "Phạm Thị Thu", phone: "0978112233", email: "thu.pham@gmail.com", matchStatus: "pending" }, { name: "Nguyễn Quốc Bảo", phone: "0912334455", email: "bao.nq@gmail.com", matchStatus: "pending" }] },
+  { id: "bk-05", bookingCode: "VEO-SAPA-E6Q3R", tourId: "tour-1", tourType: "dltn", tourName: "Xây trường cho em tại Mèo Vạc", scheduleId: "sch-1c", scheduleLabel: "05/11 – 07/11/2025", customerId: "cust-5", customerName: "Hoàng Thị Lan", phone: "0934567890", email: "lan.hoang@gmail.com", numPeople: 2, totalAmount: 5000000, paymentMethod: "transfer", status: "pending", createdAt: "2025-10-12T08:20:00", participants: [{ name: "Hoàng Thị Lan", phone: "0934567890", email: "lan.hoang@gmail.com", customerId: "cust-5", matchStatus: "matched" }, { name: "Hoàng Minh Khoa", matchStatus: "unmatched" }] },
   { id: "bk-06", bookingCode: "VEO-LYSO-F7T4S", tourId: "tour-2", tourType: "dltn", tourName: "Làm sạch đại dương tại Lý Sơn", scheduleId: "sch-2b", scheduleLabel: "12/11 – 14/11/2025", customerId: "cust-6", customerName: "Võ Quang Minh", phone: "0945678901", email: "minh.vo@gmail.com", numPeople: 1, totalAmount: 3200000, paymentMethod: "transfer", status: "pending", createdAt: "2025-10-13T11:10:00" },
-  { id: "bk-07", bookingCode: "VEO-DALA-G8U5T", tourId: "tour-3", tourType: "traihè", tourName: "Kỹ năng sống tại Đà Lạt", scheduleId: "sch-3b", scheduleLabel: "19/11 – 21/11/2025", customerId: "cust-7", customerName: "Đinh Thị Ngân", phone: "0956789012", email: "ngan.dinh@gmail.com", numPeople: 2, totalAmount: 3600000, paymentMethod: "office", status: "paid", createdAt: "2025-10-14T13:55:00", attended: true, coordinationStatus: "attended", participants: [{ name: "Đinh Thị Ngân", phone: "0956789012", email: "ngan.dinh@gmail.com" }, { name: "Nguyễn Đình Tuấn", phone: "0934567123", email: "tuan.nd@gmail.com" }] },
-  { id: "bk-11", bookingCode: "VEO-DALA-K3Y7R", tourId: "tour-3", tourType: "traihè", tourName: "Kỹ năng sống tại Đà Lạt", scheduleId: "sch-3b", scheduleLabel: "19/11 – 21/11/2025", customerId: "cust-1", customerName: "Nguyễn Văn An", phone: "0912345678", email: "an.nguyen@gmail.com", numPeople: 1, totalAmount: 1800000, paymentMethod: "transfer", status: "paid", createdAt: "2025-10-15T08:30:00", attended: false, coordinationStatus: "absent_reserved", reservationNote: "Bảo lưu sang chuyến tháng 12", participants: [{ name: "Nguyễn Văn An", phone: "0912345678", email: "an.nguyen@gmail.com" }] },
-  { id: "bk-12", bookingCode: "VEO-DALA-L4Z8S", tourId: "tour-3", tourType: "traihè", tourName: "Kỹ năng sống tại Đà Lạt", scheduleId: "sch-3b", scheduleLabel: "19/11 – 21/11/2025", customerId: "cust-3", customerName: "Lê Hoàng Cường", phone: "0901234567", email: "cuong.le@gmail.com", numPeople: 2, totalAmount: 3600000, paymentMethod: "transfer", status: "paid", createdAt: "2025-10-16T14:00:00", participants: [{ name: "Lê Hoàng Cường", phone: "0901234567", email: "cuong.le@gmail.com" }, { name: "Trần Thị Mai", phone: "0987654321", email: "mai.tran@gmail.com" }] },
+  { id: "bk-07", bookingCode: "VEO-DALA-G8U5T", tourId: "tour-3", tourType: "traihè", tourName: "Kỹ năng sống tại Đà Lạt", scheduleId: "sch-3b", scheduleLabel: "19/11 – 21/11/2025", customerId: "cust-7", customerName: "Đinh Thị Ngân", phone: "0956789012", email: "ngan.dinh@gmail.com", numPeople: 2, totalAmount: 3600000, paymentMethod: "office", status: "paid", createdAt: "2025-10-14T13:55:00", attended: true, coordinationStatus: "attended", participants: [{ name: "Đinh Thị Ngân", phone: "0956789012", email: "ngan.dinh@gmail.com", customerId: "cust-7", matchStatus: "matched" }, { name: "Nguyễn Đình Tuấn", phone: "0934567123", email: "tuan.nd@gmail.com", matchStatus: "pending" }] },
+  { id: "bk-11", bookingCode: "VEO-DALA-K3Y7R", tourId: "tour-3", tourType: "traihè", tourName: "Kỹ năng sống tại Đà Lạt", scheduleId: "sch-3b", scheduleLabel: "19/11 – 21/11/2025", customerId: "cust-1", customerName: "Nguyễn Văn An", phone: "0912345678", email: "an.nguyen@gmail.com", numPeople: 1, totalAmount: 1800000, paymentMethod: "transfer", status: "paid", createdAt: "2025-10-15T08:30:00", attended: false, coordinationStatus: "absent_reserved", reservationNote: "Bảo lưu sang chuyến tháng 12", participants: [{ name: "Nguyễn Văn An", phone: "0912345678", email: "an.nguyen@gmail.com", customerId: "cust-1", matchStatus: "matched" }] },
+  { id: "bk-12", bookingCode: "VEO-DALA-L4Z8S", tourId: "tour-3", tourType: "traihè", tourName: "Kỹ năng sống tại Đà Lạt", scheduleId: "sch-3b", scheduleLabel: "19/11 – 21/11/2025", customerId: "cust-3", customerName: "Lê Hoàng Cường", phone: "0901234567", email: "cuong.le@gmail.com", numPeople: 2, totalAmount: 3600000, paymentMethod: "transfer", status: "paid", createdAt: "2025-10-16T14:00:00", participants: [{ name: "Lê Hoàng Cường", phone: "0901234567", email: "cuong.le@gmail.com", customerId: "cust-3", matchStatus: "matched" }, { name: "Trần Thị Mai", phone: "0987651234", email: "mai.tran@gmail.com", matchStatus: "pending" }] },
   { id: "bk-13", bookingCode: "VEO-DALA-M5A9T", tourId: "tour-3", tourType: "traihè", tourName: "Kỹ năng sống tại Đà Lạt", scheduleId: "sch-3b", scheduleLabel: "19/11 – 21/11/2025", customerId: "cust-5", customerName: "Hoàng Thị Lan", phone: "0934567890", email: "lan.hoang@gmail.com", numPeople: 1, totalAmount: 1800000, paymentMethod: "transfer", status: "pending", createdAt: "2025-10-17T09:10:00" },
   { id: "bk-08", bookingCode: "VEO-DALA-H9V6U", tourId: "tour-3", tourType: "traihè", tourName: "Kỹ năng sống tại Đà Lạt", scheduleId: "sch-3a", scheduleLabel: "05/11 – 07/11/2025", customerId: "cust-8", customerName: "Bùi Anh Tuấn", phone: "0967890123", email: "tuan.bui@gmail.com", numPeople: 1, totalAmount: 1800000, paymentMethod: "transfer", status: "cancelled", createdAt: "2025-10-15T09:30:00", attended: false },
-  { id: "bk-09", bookingCode: "VEO-SAPA-I1W7V", tourId: "tour-1", tourType: "dltn", tourName: "Xây trường cho em tại Mèo Vạc", scheduleId: "sch-1a", scheduleLabel: "15/10 – 17/10/2025", customerId: "cust-4", customerName: "Phạm Minh Đức", phone: "0978123456", email: "duc.pham@gmail.com", numPeople: 2, totalAmount: 5000000, paymentMethod: "transfer", status: "paid", createdAt: "2025-10-02T15:00:00", attended: true, participants: [{ name: "Phạm Minh Đức", phone: "0978123456", email: "duc.pham@gmail.com" }, { name: "Phạm Văn Hải", phone: "0978223344", email: "hai.pv@gmail.com" }] },
+  { id: "bk-09", bookingCode: "VEO-SAPA-I1W7V", tourId: "tour-1", tourType: "dltn", tourName: "Xây trường cho em tại Mèo Vạc", scheduleId: "sch-1a", scheduleLabel: "15/10 – 17/10/2025", customerId: "cust-4", customerName: "Phạm Minh Đức", phone: "0978123456", email: "duc.pham@gmail.com", numPeople: 2, totalAmount: 5000000, paymentMethod: "transfer", status: "paid", createdAt: "2025-10-02T15:00:00", attended: true, participants: [{ name: "Phạm Minh Đức", phone: "0978123456", email: "duc.pham@gmail.com", customerId: "cust-4", matchStatus: "matched" }, { name: "Phạm Văn Hải", phone: "0978223344", email: "hai.pv@gmail.com", matchStatus: "pending" }] },
   { id: "bk-10", bookingCode: "VEO-LYSO-J2X8W", tourId: "tour-2", tourType: "dltn", tourName: "Làm sạch đại dương tại Lý Sơn", scheduleId: "sch-2a", scheduleLabel: "22/10 – 24/10/2025", customerId: "cust-1", customerName: "Nguyễn Văn An", phone: "0912345678", email: "an.nguyen@gmail.com", numPeople: 1, totalAmount: 3200000, paymentMethod: "office", status: "pending", createdAt: "2025-10-16T10:20:00", attended: null },
 ];
 
@@ -366,7 +495,29 @@ export const mockStaff: StaffMember[] = [
   { id: "staff-4", name: "Phạm Thu Hà", email: "ha.pham@veo.vn", phone: "0904444555", role: "staff", status: "active", joinedAt: "2024-07-01", lastLogin: "2025-10-16T10:00:00" },
   { id: "staff-5", name: "Hoàng Văn Bình", email: "binh.hoang@veo.vn", phone: "0905555666", role: "staff", status: "inactive", joinedAt: "2024-09-15", lastLogin: "2025-09-30T14:00:00" },
   { id: "staff-6", name: "Ngô Thị Hương", email: "huong.ngo@veo.vn", phone: "0906666777", role: "sale", status: "active", joinedAt: "2025-03-10", lastLogin: "2025-10-16T11:00:00" },
+  { id: "staff-7", name: "Đặng Quốc Việt", email: "viet.dang@veo.vn", phone: "0907777888", role: "sale", status: "active", joinedAt: "2025-05-01", lastLogin: "2025-10-16T10:30:00" },
+  { id: "staff-8", name: "Lý Thị Kim Oanh", email: "oanh.ly@veo.vn", phone: "0908888999", role: "sale", status: "active", joinedAt: "2025-07-15", lastLogin: "2025-10-16T09:45:00" },
 ];
+
+export const mockSaleStaff = mockStaff.filter((s) => s.role === "sale" && s.status === "active");
+
+// Distribute sale assignments across bookings
+const _saleAssignments: Record<string, Pick<Booking, "assignedSaleId" | "assignedAt" | "assignedManually">> = {
+  "bk-01": { assignedSaleId: "staff-6", assignedAt: "2025-10-01T09:15:00" },
+  "bk-02": { assignedSaleId: "staff-7", assignedAt: "2025-10-05T14:30:00" },
+  "bk-03": { assignedSaleId: "staff-8", assignedAt: "2025-10-08T10:00:00" },
+  "bk-04": { assignedSaleId: "staff-6", assignedAt: "2025-10-10T16:45:00" },
+  "bk-05": { assignedSaleId: "staff-8", assignedAt: "2025-10-12T08:20:00", assignedManually: true },
+  "bk-06": { assignedSaleId: "staff-7", assignedAt: "2025-10-13T11:10:00" },
+  "bk-07": { assignedSaleId: "staff-6", assignedAt: "2025-10-14T13:55:00" },
+  "bk-08": { assignedSaleId: "staff-7", assignedAt: "2025-10-15T09:30:00" },
+  "bk-09": { assignedSaleId: "staff-8", assignedAt: "2025-10-02T15:00:00" },
+  "bk-10": { assignedSaleId: "staff-6", assignedAt: "2025-10-16T10:20:00" },
+  "bk-11": { assignedSaleId: "staff-7", assignedAt: "2025-10-15T08:30:00" },
+  "bk-12": { assignedSaleId: "staff-8", assignedAt: "2025-10-16T14:00:00" },
+  "bk-13": { assignedSaleId: "staff-6", assignedAt: "2025-10-17T09:10:00" },
+};
+mockBookings.forEach((b) => { if (_saleAssignments[b.id]) Object.assign(b, _saleAssignments[b.id]); });
 
 export function fmt(n: number) {
   return new Intl.NumberFormat("vi-VN").format(n) + "đ";
@@ -542,6 +693,51 @@ export const mockPromoCodes: PromoCode[] = [
     createdBy: "Admin",
   },
 ];
+
+export const CANCEL_FEE_TIERS = [
+  { minDays: 30, feePercent: 0,   label: "Trước 30 ngày trở lên",         refundLabel: "Hoàn 100%" },
+  { minDays: 15, feePercent: 10,  label: "Trước 15 – 29 ngày",             refundLabel: "Hoàn 90%" },
+  { minDays: 7,  feePercent: 20,  label: "Trước 7 – 14 ngày",              refundLabel: "Hoàn 80%" },
+  { minDays: 3,  feePercent: 30,  label: "Trước 3 – 6 ngày",               refundLabel: "Hoàn 70%" },
+  { minDays: 2,  feePercent: 50,  label: "Trước 48 giờ",                   refundLabel: "Hoàn 50%" },
+  { minDays: 0,  feePercent: 100, label: "Trước 24 giờ hoặc không thông báo", refundLabel: "Không hoàn" },
+] as const;
+
+export function calcBusinessDays(from: Date, to: Date): number {
+  let count = 0;
+  const cur = new Date(from);
+  cur.setHours(0, 0, 0, 0);
+  const end = new Date(to);
+  end.setHours(0, 0, 0, 0);
+  while (cur < end) {
+    const day = cur.getDay();
+    if (day !== 0 && day !== 6) count++;
+    cur.setDate(cur.getDate() + 1);
+  }
+  return count;
+}
+
+export function calcCancellationFeePercent(businessDays: number): number {
+  for (const tier of CANCEL_FEE_TIERS) {
+    if (businessDays >= tier.minDays) return tier.feePercent;
+  }
+  return 100;
+}
+
+export function getCancelTier(businessDays: number): typeof CANCEL_FEE_TIERS[number] {
+  for (const tier of CANCEL_FEE_TIERS) {
+    if (businessDays >= tier.minDays) return tier;
+  }
+  return CANCEL_FEE_TIERS[CANCEL_FEE_TIERS.length - 1];
+}
+
+export function getScheduleIsoDate(scheduleId: string): string | null {
+  for (const tour of mockTours) {
+    const sch = tour.schedules.find((s) => s.id === scheduleId);
+    if (sch) return sch.isoDate;
+  }
+  return null;
+}
 
 export function computeScheduleLabel(isoStart: string, durationDays: number): string {
   const start = new Date(isoStart + "T00:00:00");

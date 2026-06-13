@@ -73,7 +73,7 @@ export default function RegistrationForm({ tour, selectedDate, paymentPath }: { 
     e.preventDefault();
     if (!validate()) return;
     sessionStorage.setItem("veo_registration", JSON.stringify({ registrant: { ...registrant, departureDate: selectedDate }, participants }));
-    router.push(paymentPath ?? `/tours/${tour.slug}/thanh-toan`);
+    router.push(paymentPath ?? `/du-lich-tinh-nguyen/${tour.slug}/thanh-toan`);
   }
 
   return (
@@ -304,7 +304,7 @@ export default function RegistrationForm({ tour, selectedDate, paymentPath }: { 
 
       <button
         type="submit"
-        className="w-full bg-solar-orange hover:bg-action-hover text-pure-white py-4 rounded-xl font-bold shadow-lg transition-all active:scale-95 flex items-center justify-center gap-2 text-base"
+        className="w-full rounded-xl bg-solar-orange py-4 text-base font-bold text-primary shadow-lg transition-all hover:bg-action-hover active:scale-95 flex items-center justify-center gap-2"
       >
         <span className="material-symbols-outlined">arrow_forward</span>
         Xác nhận và tiếp tục

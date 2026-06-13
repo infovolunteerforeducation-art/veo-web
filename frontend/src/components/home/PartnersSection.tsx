@@ -1,4 +1,5 @@
 import Image from "next/image";
+import ScrollReveal from "@/components/layout/ScrollReveal";
 
 const pressLogos = [
   {
@@ -77,15 +78,17 @@ const logoCardClass =
 export default function PartnersSection() {
   return (
     <>
-      <section className="bg-pure-white py-20 border-t border-surface-variant">
+      <section className="bg-pure-white py-20">
         <div className="max-w-[1200px] mx-auto px-6">
+          <ScrollReveal>
           <h2 className="text-3xl font-bold text-primary text-center mb-12">
             Báo chí viết về VEO
           </h2>
+          </ScrollReveal>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-            {pressLogos.map((logo) => (
+            {pressLogos.map((logo, index) => (
+              <ScrollReveal key={logo.alt} delay={index * 55}>
               <a
-                key={logo.alt}
                 href={logo.href}
                 target="_blank"
                 rel="noopener noreferrer"
@@ -100,6 +103,7 @@ export default function PartnersSection() {
                   className={`${logo.className} max-w-full object-contain`}
                 />
               </a>
+              </ScrollReveal>
             ))}
           </div>
         </div>
@@ -107,11 +111,13 @@ export default function PartnersSection() {
 
       <section className="bg-surface py-20">
         <div className="max-w-[1200px] mx-auto px-6">
+          <ScrollReveal>
           <h2 className="text-3xl font-bold text-primary text-center mb-12">
             Giải thưởng của VEO
           </h2>
+          </ScrollReveal>
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
-            {awardLogos.map((logo) => {
+            {awardLogos.map((logo, index) => {
               const content = (
                 <Image
                   alt={logo.alt}
@@ -124,15 +130,17 @@ export default function PartnersSection() {
 
               if (!logo.href) {
                 return (
-                  <div key={logo.alt} className={logoCardClass}>
+                  <ScrollReveal key={logo.alt} delay={index * 65}>
+                  <div className={logoCardClass}>
                     {content}
                   </div>
+                  </ScrollReveal>
                 );
               }
 
               return (
+                <ScrollReveal key={logo.alt} delay={index * 65}>
                 <a
-                  key={logo.alt}
                   href={logo.href}
                   target="_blank"
                   rel="noopener noreferrer"
@@ -141,6 +149,7 @@ export default function PartnersSection() {
                 >
                   {content}
                 </a>
+                </ScrollReveal>
               );
             })}
           </div>

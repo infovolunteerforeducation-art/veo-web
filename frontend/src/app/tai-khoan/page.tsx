@@ -207,7 +207,7 @@ function MyBookingsTab({ userEmail }: { userEmail: string }) {
       <div className="text-center py-16 text-on-surface-variant">
         <span className="material-symbols-outlined text-5xl mb-3 block text-outline">confirmation_number</span>
         <p className="text-base font-medium">Bạn chưa có đơn đăng ký nào.</p>
-        <Link href="/tours" className="mt-4 inline-flex items-center gap-1 text-sm text-primary font-semibold hover:underline">
+        <Link href="/du-lich-tinh-nguyen" className="mt-4 inline-flex items-center gap-1 text-sm text-primary font-semibold hover:underline">
           Khám phá chương trình <span className="material-symbols-outlined text-base">arrow_forward</span>
         </Link>
       </div>
@@ -681,7 +681,7 @@ export default function AccountPage() {
 
             {/* CTA */}
             <div className="shrink-0">
-              <Link href="/tours" className="inline-flex items-center gap-2 px-5 py-2.5 bg-solar-orange hover:bg-action-hover text-white rounded-xl text-sm font-bold transition-colors shadow-lg">
+              <Link href="/du-lich-tinh-nguyen" className="inline-flex items-center gap-2 rounded-xl bg-solar-orange px-5 py-2.5 text-sm font-bold text-primary shadow-lg transition-colors hover:bg-action-hover">
                 <span className="material-symbols-outlined text-base">explore</span>
                 Khám phá chuyến mới
               </Link>
@@ -777,7 +777,7 @@ export default function AccountPage() {
                 <p className="font-bold text-on-surface mb-1">Sẵn sàng cho chuyến tiếp theo?</p>
                 <p className="text-sm text-on-surface-variant">Hàng chục chương trình tình nguyện đang chờ bạn.</p>
               </div>
-              <Link href="/tours" className="inline-flex items-center gap-1.5 px-4 py-2 bg-solar-orange hover:bg-action-hover text-white rounded-xl text-sm font-bold transition-colors">
+              <Link href="/du-lich-tinh-nguyen" className="inline-flex items-center gap-1.5 rounded-xl bg-solar-orange px-4 py-2 text-sm font-bold text-primary transition-colors hover:bg-action-hover">
                 <span className="material-symbols-outlined text-base">add</span>
                 Đăng ký ngay
               </Link>

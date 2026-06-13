@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { mockBookings, Booking, BookingStatus, fmt } from "@/lib/crm-data";
+import { mockBookings, mockSaleStaff, Booking, BookingStatus, fmt } from "@/lib/crm-data";
 import { StatusBadge } from "./DashboardTab";
 import Pagination from "../Pagination";
 import BookingDetailView from "./BookingDetailView";
@@ -17,13 +17,16 @@ const STATUS_FILTERS: { value: BookingStatus | "all"; label: string }[] = [
 
 type Props = {
   deepLinkBookingId?: string | null;
+  deepLinkStatusFilter?: BookingStatus | null;
   onDeepLinkBookingConsumed?: () => void;
+  onDeepLinkStatusConsumed?: () => void;
   onNavigateToCustomer?: (customerId: string) => void;
   onNavigateToTour?: (tourId: string) => void;
   onNavigateToSchedule?: (scheduleId: string) => void;
+  canManualAssign?: boolean;
 };
 
-export default function BookingsTab({ deepLinkBookingId, onDeepLinkBookingConsumed, onNavigateToCustomer, onNavigateToTour, onNavigateToSchedule }: Props = {}) {
+export default function BookingsTab({ deepLinkBookingId, deepLinkStatusFilter, onDeepLinkBookingConsumed, onDeepLinkStatusConsumed, onNavigateToCustomer, onNavigateToTour, onNavigateToSchedule, canManualAssign }: Props = {}) {
   const [statusFilter, setStatusFilter] = useState<BookingStatus | "all">("all");
   const [search, setSearch] = useState("");
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -39,10 +42,17 @@ export default function BookingsTab({ deepLinkBookingId, onDeepLinkBookingConsum
     return () => window.clearTimeout(timeoutId);
   }, [deepLinkBookingId, onDeepLinkBookingConsumed]);
 
+  useEffect(() => {
+    if (!deepLinkStatusFilter) return;
+    setStatusFilter(deepLinkStatusFilter);
+    setPage(1);
+    onDeepLinkStatusConsumed?.();
+  }, [deepLinkStatusFilter, onDeepLinkStatusConsumed]);
+
   const selected = bookings.find((b) => b.id === selectedId) ?? null;
 
-  function updateStatus(id: string, status: BookingStatus) {
-    setBookings((prev) => prev.map((b) => (b.id === id ? { ...b, status } : b)));
+  function updateStatus(id: string, status: BookingStatus, extra?: Partial<Booking>) {
+    setBookings((prev) => prev.map((b) => (b.id === id ? { ...b, status, ...extra } : b)));
   }
 
   if (selected) {
@@ -54,6 +64,7 @@ export default function BookingsTab({ deepLinkBookingId, onDeepLinkBookingConsum
         onViewCustomer={onNavigateToCustomer}
         onViewTour={onNavigateToTour}
         onViewSchedule={onNavigateToSchedule}
+        canManualAssign={canManualAssign}
       />
     );
   }
@@ -120,7 +131,7 @@ export default function BookingsTab({ deepLinkBookingId, onDeepLinkBookingConsum
             <table className="w-full text-sm">
               <thead className="bg-surface-container-low border-b border-outline-variant/30">
                 <tr>
-                  {["Mã đặt chỗ", "Người đăng ký", "Tour", "Lịch khởi hành", "Người", "Tổng tiền", "Thanh toán", "Trạng thái", ""].map((h) => (
+                  {["Mã đặt chỗ", "Người đăng ký", "Chuyến đi", "Phụ trách", "Người", "Tổng tiền", "Thanh toán", "Trạng thái", ""].map((h) => (
                     <th key={h} className="px-4 py-3 text-left text-xs font-bold text-on-surface-variant whitespace-nowrap">{h}</th>
                   ))}
                 </tr>
@@ -145,9 +156,35 @@ export default function BookingsTab({ deepLinkBookingId, onDeepLinkBookingConsum
                         <p className="text-sm text-on-surface-variant">{b.phone}</p>
                       </td>
                       <td className="px-4 py-3">
-                        <p className="text-on-surface max-w-[160px] truncate">{b.tourName}</p>
+                        <div className="flex items-center gap-1.5 mb-0.5">
+                          {b.tourType && (
+                            <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full whitespace-nowrap ${b.tourType === "dltn" ? "bg-solar-orange/15 text-solar-orange" : "bg-deep-amethyst/15 text-deep-amethyst"}`}>
+                              {b.tourType === "dltn" ? "DLTN" : "Trại hè"}
+                            </span>
+                          )}
+                          <p className="text-on-surface max-w-[180px] truncate font-medium">{b.tourName}</p>
+                        </div>
+                        <p className="text-xs text-on-surface-variant whitespace-nowrap">{b.scheduleLabel}</p>
                       </td>
-                      <td className="px-4 py-3 whitespace-nowrap text-on-surface-variant text-sm">{b.scheduleLabel}</td>
+                      <td className="px-4 py-3 whitespace-nowrap">
+                        {(() => {
+                          const sale = b.assignedSaleId ? mockSaleStaff.find((s) => s.id === b.assignedSaleId) : null;
+                          if (!sale) return <span className="text-xs text-on-surface-variant/50 italic">Chưa phân công</span>;
+                          return (
+                            <div className="flex items-center gap-1.5">
+                              <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center text-[10px] font-bold text-primary shrink-0">
+                                {sale.name.split(" ").pop()?.charAt(0)}
+                              </div>
+                              <div>
+                                <p className="text-xs font-semibold text-on-surface leading-none">{sale.name.split(" ").slice(-2).join(" ")}</p>
+                                {b.assignedManually && (
+                                  <p className="text-[10px] text-primary/60 leading-none mt-0.5">Thủ công</p>
+                                )}
+                              </div>
+                            </div>
+                          );
+                        })()}
+                      </td>
                       <td className="px-4 py-3 text-center font-semibold">{b.numPeople}</td>
                       <td className="px-4 py-3 whitespace-nowrap font-semibold text-primary">{fmt(b.totalAmount)}</td>
                       <td className="px-4 py-3">

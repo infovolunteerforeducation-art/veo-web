@@ -189,7 +189,7 @@ export default function QuenMatKhauPage() {
               </p>
               <button
                 type="submit"
-                className="w-full h-12 bg-solar-orange hover:bg-action-hover text-pure-white font-bold rounded-xl transition-colors flex items-center justify-center gap-2"
+                className="w-full h-12 rounded-xl bg-solar-orange font-bold text-primary transition-colors hover:bg-action-hover flex items-center justify-center gap-2"
               >
                 Gửi mã xác nhận
                 <span className="material-symbols-outlined text-lg">arrow_forward</span>
@@ -234,7 +234,7 @@ export default function QuenMatKhauPage() {
               <button
                 type="button"
                 onClick={() => { setError(""); setStep(3); }}
-                className="w-full h-12 bg-solar-orange hover:bg-action-hover text-pure-white font-bold rounded-xl transition-colors flex items-center justify-center gap-2"
+                className="w-full h-12 rounded-xl bg-solar-orange font-bold text-primary transition-colors hover:bg-action-hover flex items-center justify-center gap-2"
               >
                 Tiếp tục đặt mật khẩu mới
                 <span className="material-symbols-outlined text-lg">arrow_forward</span>
@@ -298,7 +298,7 @@ export default function QuenMatKhauPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full h-12 bg-solar-orange hover:bg-action-hover text-pure-white font-bold rounded-xl transition-colors flex items-center justify-center gap-2 disabled:opacity-70"
+                className="w-full h-12 rounded-xl bg-solar-orange font-bold text-primary transition-colors hover:bg-action-hover disabled:opacity-70 flex items-center justify-center gap-2"
               >
                 {loading ? (
                   <>
@@ -333,7 +333,7 @@ export default function QuenMatKhauPage() {
               <button
                 type="button"
                 onClick={() => router.push("/dang-nhap")}
-                className="w-full h-12 bg-solar-orange hover:bg-action-hover text-pure-white font-bold rounded-xl transition-colors flex items-center justify-center gap-2"
+                className="w-full h-12 rounded-xl bg-solar-orange font-bold text-primary transition-colors hover:bg-action-hover flex items-center justify-center gap-2"
               >
                 Đăng nhập ngay
                 <span className="material-symbols-outlined text-lg">login</span>

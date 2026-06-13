@@ -1,14 +1,19 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const COOKIE_KEY = "veo_cookie_consent";
 
 export default function CookieBanner() {
-  const [visible, setVisible] = useState(() => {
-    if (typeof window === "undefined") return false;
-    return !localStorage.getItem(COOKIE_KEY);
-  });
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      setVisible(!localStorage.getItem(COOKIE_KEY));
+    }, 0);
+
+    return () => window.clearTimeout(timer);
+  }, []);
 
   const accept = (choice: "all" | "essential") => {
     localStorage.setItem(COOKIE_KEY, choice);

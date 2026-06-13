@@ -112,7 +112,7 @@ export default function RegisterPage() {
               </p>
               <Link
                 href="/dang-nhap"
-                className="inline-flex items-center gap-2 bg-solar-orange hover:bg-action-hover text-pure-white px-8 py-3.5 rounded-xl font-bold transition-colors"
+                className="inline-flex items-center gap-2 rounded-xl bg-solar-orange px-8 py-3.5 font-bold text-primary transition-colors hover:bg-action-hover"
               >
                 Đăng nhập ngay
                 <span className="material-symbols-outlined text-lg">arrow_forward</span>
@@ -253,7 +253,7 @@ export default function RegisterPage() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full h-12 bg-solar-orange hover:bg-action-hover text-pure-white font-bold rounded-xl transition-colors flex items-center justify-center gap-2 disabled:opacity-70"
+                  className="w-full h-12 rounded-xl bg-solar-orange font-bold text-primary transition-colors hover:bg-action-hover disabled:opacity-70 flex items-center justify-center gap-2"
                 >
                   {loading ? (
                     <>

@@ -32,9 +32,9 @@ export default async function DangKyPage({
           <nav className="flex items-center gap-1.5 text-xs text-on-surface-variant mb-6 flex-wrap">
             <Link href="/" className="hover:text-primary transition-colors">Trang chủ</Link>
             <span>/</span>
-            <Link href="/tours" className="hover:text-primary transition-colors">Du lịch tình nguyện</Link>
+            <Link href="/du-lich-tinh-nguyen" className="hover:text-primary transition-colors">Du lịch tình nguyện</Link>
             <span>/</span>
-            <Link href={`/tours/${tour.slug}`} className="hover:text-primary transition-colors line-clamp-1 max-w-[140px]">{tour.title}</Link>
+            <Link href={`/du-lich-tinh-nguyen/${tour.slug}`} className="hover:text-primary transition-colors line-clamp-1 max-w-[140px]">{tour.title}</Link>
             <span>/</span>
             <span className="text-on-surface font-semibold">Đăng ký</span>
           </nav>

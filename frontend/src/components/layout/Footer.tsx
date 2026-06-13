@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 const programs = [
-  { label: "Du lịch tình nguyện", href: "/tours" },
+  { label: "Du lịch tình nguyện", href: "/du-lich-tinh-nguyen" },
   { label: "Trại hè tình nguyện", href: "/trai-he-tinh-nguyen" },
   { label: "CSR", href: "#" },
   { label: "Social Leader Program", href: "https://www.slp.edu.vn/", external: true },

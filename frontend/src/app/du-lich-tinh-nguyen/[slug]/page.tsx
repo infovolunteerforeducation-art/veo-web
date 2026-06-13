@@ -73,7 +73,7 @@ export default async function TourDetailPage({
             <nav className="flex items-center gap-2 text-sm text-on-surface-variant mb-8 sm:mb-10">
               <Link href="/" className="hover:text-primary transition-colors">Trang chủ</Link>
               <span className="material-symbols-outlined text-base">chevron_right</span>
-              <Link href="/tours" className="hover:text-primary transition-colors">Du lịch tình nguyện</Link>
+              <Link href="/du-lich-tinh-nguyen" className="hover:text-primary transition-colors">Du lịch tình nguyện</Link>
               <span className="material-symbols-outlined text-base">chevron_right</span>
               <span className="text-primary font-semibold line-clamp-1">{tour.title}</span>
             </nav>
@@ -175,15 +175,13 @@ export default async function TourDetailPage({
               {/* Chính sách chuyến đi */}
               {tour.policies && tour.policies.length > 0 && (
                 <div className="mt-4 sm:mt-6 bg-white border border-outline-variant/30 rounded-xl p-5 sm:p-6">
-                  <h3 className="text-lg font-semibold text-primary mb-5 flex items-center gap-2">
-                    <span className="material-symbols-outlined text-primary">policy</span>
+                  <h3 className="text-lg font-semibold text-primary mb-5">
                     Chính sách chuyến đi
                   </h3>
                   <div className="space-y-5">
                     {tour.policies.map((policy) => (
                       <div key={policy.title}>
-                        <h4 className="text-base font-bold text-on-surface mb-3 flex items-center gap-2">
-                          <span className="material-symbols-outlined text-solar-orange shrink-0" style={{ fontSize: 18 }}>{policy.icon}</span>
+                        <h4 className="text-base font-bold text-on-surface mb-3">
                           {policy.title}
                         </h4>
                         <ul className="space-y-2">

@@ -90,7 +90,7 @@ export default function ToursSection() {
                 <span className="material-symbols-outlined" style={{ fontSize: 20 }}>chevron_right</span>
               </button>
               <Link
-                href="/tours"
+                href="/du-lich-tinh-nguyen"
                 className="hidden items-center gap-2 rounded-full border border-white/35 px-4 py-2 text-sm font-bold text-pure-white transition-colors hover:border-solar-orange hover:text-solar-orange sm:inline-flex"
               >
                 Xem tất cả
@@ -128,7 +128,7 @@ export default function ToursSection() {
                 return (
                   <Link
                     key={tour.slug}
-                    href={`/tours/${tour.slug}`}
+                    href={`/du-lich-tinh-nguyen/${tour.slug}`}
                     className="group block w-[82%] shrink-0 snap-start overflow-hidden rounded-xl border border-white/30 bg-pure-white shadow-[0_10px_26px_rgba(28,4,43,0.16)] sm:w-[44%] xl:w-[calc(25%-18px)]"
                   >
                     <div className="relative h-44 overflow-hidden sm:h-52">
@@ -182,7 +182,7 @@ export default function ToursSection() {
           {/* Mobile-only CTA button below cards */}
           <div className="mt-6 flex justify-center sm:hidden">
             <Link
-              href="/tours"
+              href="/du-lich-tinh-nguyen"
               className="inline-flex items-center gap-2 rounded-full border border-white/35 px-6 py-2.5 font-bold text-pure-white transition-colors hover:border-solar-orange hover:text-solar-orange"
             >
               Xem tất cả tour

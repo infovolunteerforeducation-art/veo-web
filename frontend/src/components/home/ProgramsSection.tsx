@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import ScrollReveal from "@/components/layout/ScrollReveal";
 
 const programs = [
   {
@@ -7,7 +8,7 @@ const programs = [
     description:
       "Trải nghiệm ngắn ngày vào cuối tuần để khám phá vùng đất mới và góp sức cho cộng đồng nơi bạn đặt chân đến.",
     image: "/about-veo/program-volunteer-tour.webp",
-    href: "/tours",
+    href: "/du-lich-tinh-nguyen",
   },
   {
     title: "Trại hè tình nguyện",
@@ -28,7 +29,7 @@ const programs = [
     description:
       "Chương trình trải nghiệm thực tế thiết kế riêng theo nhu cầu của nhà trường, giúp học sinh phát triển toàn diện cả kỹ năng lẫn tư duy công dân toàn cầu.",
     image: "/about-veo/timeline-2019-kttv.webp",
-    href: "#",
+    href: "/hoat-dong-ngoai-khoa-truong-hoc",
   },
   {
     title: "Social Leader Program",
@@ -44,20 +45,22 @@ export default function ProgramsSection() {
   return (
     <section className="bg-white py-16 sm:py-20">
       <div className="mx-auto max-w-[1200px] px-4 sm:px-6">
-        <div className="mb-10 text-center">
+        <ScrollReveal className="mb-10 text-center">
           <h2 className="text-2xl font-bold text-primary sm:text-3xl">
             Các chương trình của VEO
           </h2>
-        </div>
+        </ScrollReveal>
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-6">
           {programs.map((program, index) => (
-            <Link
+            <ScrollReveal
               key={program.title}
+              delay={index * 80}
+              className={`lg:col-span-2 ${index === 3 ? "lg:col-start-2" : ""}`}
+            >
+            <Link
               href={program.href}
               {...(program.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-              className={`group overflow-hidden rounded-xl border border-outline-variant/30 bg-white shadow-[0_8px_28px_rgba(108,42,138,0.08)] transition-transform duration-300 hover:-translate-y-1 lg:col-span-2 ${
-                index === 3 ? "lg:col-start-2" : ""
-              }`}
+              className="group block h-full overflow-hidden rounded-xl border border-outline-variant/30 bg-white shadow-[0_8px_28px_rgba(108,42,138,0.08)] transition-transform duration-300 hover:-translate-y-1"
             >
               <div className="relative aspect-[16/9] overflow-hidden">
                 <Image
@@ -79,6 +82,7 @@ export default function ProgramsSection() {
                 </span>
               </div>
             </Link>
+            </ScrollReveal>
           ))}
         </div>
       </div>

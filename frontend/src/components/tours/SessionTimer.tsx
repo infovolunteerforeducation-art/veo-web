@@ -55,7 +55,7 @@ export default function SessionTimer({ tourSlug, returnPath }: { tourSlug: strin
           </p>
           <button
             type="button"
-            onClick={() => router.push(returnPath ?? `/tours/${tourSlug}`)}
+            onClick={() => router.push(returnPath ?? `/du-lich-tinh-nguyen/${tourSlug}`)}
             className="w-full bg-primary text-white py-3 rounded-xl font-bold hover:bg-primary/90 transition-colors"
           >
             Quay lại trang tour

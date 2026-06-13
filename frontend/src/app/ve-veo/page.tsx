@@ -30,7 +30,7 @@ const programs = [
     description:
       "Trải nghiệm ngắn ngày vào cuối tuần để khám phá vùng đất mới và góp sức cho cộng đồng nơi bạn đặt chân đến.",
     image: "/about-veo/program-volunteer-tour.webp",
-    href: "/tours",
+    href: "/du-lich-tinh-nguyen",
   },
   {
     title: "Trại hè tình nguyện",
@@ -51,7 +51,7 @@ const programs = [
     description:
       "Chương trình trải nghiệm thực tế thiết kế riêng theo nhu cầu của nhà trường, giúp học sinh phát triển toàn diện cả kỹ năng lẫn tư duy công dân toàn cầu.",
     image: "/about-veo/timeline-2019-kttv.webp",
-    href: "#",
+    href: "/hoat-dong-ngoai-khoa-truong-hoc",
   },
   {
     title: "Social Leader Program",
