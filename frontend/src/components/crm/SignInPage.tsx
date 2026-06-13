@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 
 interface Props {
   onSignIn: (username: string) => void;
@@ -59,7 +60,7 @@ export default function SignInPage({ onSignIn }: Props) {
 
         {/* Logo */}
         <div className="flex items-center gap-3 relative z-10">
-          <img src="/veo-logo-linkedin.png" alt="VEO" className="w-10 h-10 rounded-xl" />
+          <Image src="/veo-logo-linkedin.png" alt="VEO" width={40} height={40} className="w-10 h-10 rounded-xl" />
           <div>
             <p className="text-lg font-bold text-white leading-tight">VEO CRM</p>
             <p className="text-xs text-white/50">Quản lý nội bộ</p>
@@ -82,7 +83,7 @@ export default function SignInPage({ onSignIn }: Props) {
         <div className="w-full max-w-md space-y-8">
           {/* Mobile logo */}
           <div className="flex items-center gap-3 lg:hidden">
-            <img src="/veo-logo-linkedin.png" alt="VEO" className="w-9 h-9 rounded-xl" />
+            <Image src="/veo-logo-linkedin.png" alt="VEO" width={36} height={36} className="w-9 h-9 rounded-xl" />
             <p className="text-lg font-bold" style={{ color: "#451e6b" }}>VEO CRM</p>
           </div>
 

@@ -28,28 +28,35 @@ const programs = [
   {
     title: "Tour du lịch tình nguyện",
     description:
-      "Du lịch tình nguyện của VEO là chương trình kết hợp giữa du lịch trải nghiệm và hoạt động tình nguyện bền vững. Mục tiêu của chương trình là mang đến cho người dân sinh kế mới, gia tăng nguồn thu nhập thông qua hoạt động du lịch cộng đồng, hỗ trợ cải thiện kỹ năng việc làm và bảo tồn các giá trị văn hoá của người dân tộc thiểu số tại Việt Nam.",
+      "Trải nghiệm ngắn ngày vào cuối tuần để khám phá vùng đất mới và góp sức cho cộng đồng nơi bạn đặt chân đến.",
     image: "/about-veo/program-volunteer-tour.webp",
     href: "/tours",
   },
   {
     title: "Trại hè tình nguyện",
     description:
-      "Trại hè tình nguyện của VEO là trại hè phát triển kỹ năng sống dành cho các bạn trẻ lứa tuổi học sinh cấp hai, cấp ba và sinh viên đại học. Tại đây, các bạn có cơ hội tham gia các hoạt động tình nguyện kết hợp khám phá văn hoá truyền thống các dân tộc và phát triển các kỹ năng mềm như kỹ năng lãnh đạo, kỹ năng làm việc nhóm, kỹ năng giao tiếp, kỹ năng sinh tồn...",
+      "Dành cho học sinh, sinh viên: kiến tạo và đóng góp cho cộng đồng qua các hoạt động ý nghĩa vào kỳ nghỉ hè",
     image: "/about-veo/program-summer-camp.webp",
     href: "/trai-he-tinh-nguyen",
   },
   {
-    title: "Hoạt động trách nhiệm xã hội - CSR dành cho doanh nghiệp và cá nhân",
+    title: "CSR doanh nghiệp",
     description:
-      "Hơn 10 năm kinh nghiệm trong lĩnh vực hoạt động xã hội, VEO tự tin là đơn vị chuyên nghiệp và uy tín thực hiện hoạt động CSR - trách nhiệm xã hội cho doanh nghiệp và cá nhân tại Việt Nam với đội ngũ dày dặn kinh nghiệm tư vấn, xây dựng kế hoạch theo nhu cầu riêng và đảm nhiệm công tác chuẩn bị chu đáo.",
+      "Chương trình tình nguyện thiết kế riêng, gắn kết nội bộ và đo lường tác động xã hội",
     image: "/about-veo/program-csr.webp",
     href: "#",
   },
   {
-    title: "Chương trình huấn luyện ngoại khóa định hướng du học Social Leader Program",
+    title: "Hoạt động ngoại khóa trường học",
     description:
-      "Social Leader Program là chương trình huấn luyện hoạt động ngoại khóa định hướng du học dành cho học sinh THPT, giúp học sinh khai phá tiềm năng bản thân và sử dụng những điểm mạnh của mình để chinh phục học bổng các trường đại học top đầu thông qua dự án xã hội cá nhân.",
+      "Chương trình trải nghiệm thực tế thiết kế riêng theo nhu cầu của nhà trường, giúp học sinh phát triển toàn diện cả kỹ năng lẫn tư duy công dân toàn cầu.",
+    image: "/about-veo/timeline-2019-kttv.webp",
+    href: "#",
+  },
+  {
+    title: "Social Leader Program",
+    description:
+      "Huấn luyện kỹ năng lãnh đạo cho thế hệ trẻ qua các dự án xã hội thực tế.",
     image: "/about-veo/program-slp.webp",
     href: "https://www.slp.edu.vn/",
     external: true,
@@ -231,13 +238,15 @@ export default function AboutPage() {
               Các chương trình của VEO
             </h2>
           </div>
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-            {programs.map((program) => (
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-6">
+            {programs.map((program, index) => (
               <Link
                 key={program.title}
                 href={program.href}
                 {...(program.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-                className="group overflow-hidden rounded-xl border border-outline-variant/30 bg-white shadow-[0_8px_28px_rgba(108,42,138,0.08)] transition-transform duration-300 hover:-translate-y-1"
+                className={`group overflow-hidden rounded-xl border border-outline-variant/30 bg-white shadow-[0_8px_28px_rgba(108,42,138,0.08)] transition-transform duration-300 hover:-translate-y-1 lg:col-span-2 ${
+                  index === 3 ? "lg:col-start-2" : ""
+                }`}
               >
                 <div className="aspect-[16/9] overflow-hidden">
                   <img
@@ -269,20 +278,22 @@ export default function AboutPage() {
               </h2>
             </div>
             <div className="relative mx-auto max-w-[980px]">
-              <div className="absolute left-5 top-0 h-full w-px bg-primary/20 md:left-1/2 md:-translate-x-1/2" />
+              <div className="absolute bottom-7 left-5 top-7 w-px bg-primary/20 md:left-1/2 md:-translate-x-1/2" />
               {timeline.map((item, index) => (
                 <article
                   key={`${item.year}-${index}`}
-                  className={`relative mb-8 grid grid-cols-[44px_minmax(0,1fr)] gap-4 md:grid-cols-[1fr_72px_1fr] md:gap-6 ${
-                    index % 2 === 0 ? "" : "md:[&_.timeline-card]:col-start-3 md:[&_.timeline-card]:row-start-1"
+                  className={`relative mb-10 grid grid-cols-[44px_minmax(0,1fr)] items-start gap-4 md:grid-cols-[1fr_72px_1fr] md:gap-6 ${
+                    index % 2 === 0
+                      ? "md:[&_.timeline-card]:col-start-1"
+                      : "md:[&_.timeline-card]:col-start-3"
                   }`}
                 >
-                  <div className="relative z-10 flex justify-center md:col-start-2">
+                  <div className="relative z-10 col-start-1 row-start-1 flex justify-center md:col-start-2">
                     <div className="flex h-11 w-11 items-center justify-center rounded-full bg-primary text-xs font-bold text-pure-white shadow-[0_0_0_6px_rgba(108,42,138,0.10)] md:h-14 md:w-14">
                       {item.year}
                     </div>
                   </div>
-                  <div className="timeline-card overflow-hidden rounded-xl border border-outline-variant/30 bg-white shadow-[0_8px_28px_rgba(108,42,138,0.06)] md:col-start-1">
+                  <div className="timeline-card col-start-2 row-start-1 overflow-hidden rounded-xl border border-outline-variant/30 bg-white shadow-[0_8px_28px_rgba(108,42,138,0.06)] md:row-start-1">
                     <div className="aspect-[16/10] overflow-hidden">
                       <img src={item.image} alt={`VEO ${item.year}`} className="h-full w-full object-cover" />
                     </div>

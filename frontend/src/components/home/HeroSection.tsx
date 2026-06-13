@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import Image from "next/image";
 import Link from "next/link";
 
 type Banner = {
@@ -80,10 +81,13 @@ export default function HeroSection() {
             className="relative w-full h-full shrink-0 block"
             tabIndex={-1}
           >
-            <img
+            <Image
               src={banner.image}
               alt={banner.title.replace("\n", " ")}
-              className="w-full h-full object-cover object-left sm:object-center"
+              fill
+              priority={banner.id === 1}
+              sizes="100vw"
+              className="object-cover object-left sm:object-center"
             />
           </Link>
         ))}

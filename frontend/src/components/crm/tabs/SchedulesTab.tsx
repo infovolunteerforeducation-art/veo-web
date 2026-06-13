@@ -67,11 +67,13 @@ export default function SchedulesTab({ tours, setTours, deepLinkScheduleId, onDe
 
   useEffect(() => {
     if (!deepLinkScheduleId) return;
-    const found = allSchedules.find((s) => s.id === deepLinkScheduleId);
-    if (found) setDetailSchedule(found);
-    onDeepLinkConsumed?.();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [deepLinkScheduleId]);
+    const timeoutId = window.setTimeout(() => {
+      const found = allSchedules.find((s) => s.id === deepLinkScheduleId);
+      if (found) setDetailSchedule(found);
+      onDeepLinkConsumed?.();
+    }, 0);
+    return () => window.clearTimeout(timeoutId);
+  }, [allSchedules, deepLinkScheduleId, onDeepLinkConsumed]);
 
   function handleSort(field: SortField) {
     if (sortField === field) setSortDir((d) => d === "asc" ? "desc" : "asc");
@@ -93,8 +95,7 @@ export default function SchedulesTab({ tours, setTours, deepLinkScheduleId, onDe
     }
     if (week.length > 0) { while (week.length < 7) week.push(null); result.push(week); }
     return result;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [calYear, calMonth, startDow, daysInMonth]);
+  }, [startDow, daysInMonth]);
 
   function isoForDay(day: number) {
     return `${calYear}-${String(calMonth + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
@@ -110,10 +111,16 @@ export default function SchedulesTab({ tours, setTours, deepLinkScheduleId, onDe
   }
 
   const monthPrefix = `${calYear}-${String(calMonth + 1).padStart(2, "0")}`;
-  const monthSchedules = allSchedules.filter((s) => s.isoDate.startsWith(monthPrefix));
+  const monthSchedules = useMemo(
+    () => allSchedules.filter((s) => s.isoDate.startsWith(monthPrefix)),
+    [allSchedules, monthPrefix]
+  );
 
   // Filter → sort → paginate
-  const baseSchedules = selectedDate ? allSchedules.filter((s) => s.isoDate === selectedDate) : allSchedules;
+  const baseSchedules = useMemo(
+    () => selectedDate ? allSchedules.filter((s) => s.isoDate === selectedDate) : allSchedules,
+    [allSchedules, selectedDate]
+  );
   const sorted = useMemo(() => [...baseSchedules].sort((a, b) => {
     let cmp = 0;
     if (sortField === "createdAt") cmp = (a.createdAt ?? "").localeCompare(b.createdAt ?? "");
@@ -406,7 +413,7 @@ export default function SchedulesTab({ tours, setTours, deepLinkScheduleId, onDe
         <div className="px-5 py-2.5 border-t border-outline-variant/20">
           <p className="text-xs text-on-surface-variant">
             {sorted.length > PAGE_SIZE
-              ? `Trang ${page + 1}/${pageCount} · ${sorted.length} lịch`
+              ? `Trang ${page}/${pageCount} · ${sorted.length} lịch`
               : `${sorted.length} lịch`}
           </p>
         </div>

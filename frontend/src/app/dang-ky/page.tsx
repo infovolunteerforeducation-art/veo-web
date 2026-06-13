@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
 
@@ -59,7 +60,7 @@ export default function RegisterPage() {
           style={{ backgroundImage: "radial-gradient(circle at 20% 80%, #fbb040 0%, transparent 50%), radial-gradient(circle at 80% 20%, #fff 0%, transparent 50%)" }}
         />
         <Link href="/" className="relative z-10">
-          <img src="/veo-logo-footer.png" alt="VEO" className="h-10 w-auto object-contain" />
+          <Image src="/veo-logo-footer.png" alt="VEO" width={130} height={40} className="h-10 w-auto object-contain" />
         </Link>
 
         <div className="relative z-10 space-y-8">
@@ -93,7 +94,7 @@ export default function RegisterPage() {
       <div className="flex-1 flex flex-col items-center justify-center px-6 py-12 bg-white overflow-y-auto">
         {/* Mobile logo */}
         <Link href="/" className="lg:hidden mb-8">
-          <img src="/veo-logo.png" alt="VEO" className="h-10 w-auto object-contain" />
+          <Image src="/veo-logo.png" alt="VEO" width={130} height={40} className="h-10 w-auto object-contain" />
         </Link>
 
         <div className="w-full max-w-md">

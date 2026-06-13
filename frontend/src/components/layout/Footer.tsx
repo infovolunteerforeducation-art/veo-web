@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 
 const programs = [
@@ -64,9 +65,11 @@ export default function Footer() {
     <footer className="w-full bg-deep-amethyst">
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6 py-10 px-6 max-w-[1200px] mx-auto">
         <div className="space-y-4">
-          <img
+          <Image
             src="/veo-logo-footer.png"
             alt="VEO Logo"
+            width={156}
+            height={48}
             className="h-12 w-auto object-contain"
           />
           <p className="text-sm text-pure-white/80 leading-relaxed">
@@ -98,6 +101,21 @@ export default function Footer() {
             <a href="mailto:info@volunteerforeducation.org" className="flex items-center gap-2 text-pure-white/80 hover:text-solar-orange transition-colors text-sm">
               <span className="material-symbols-outlined text-base">mail</span>
               info@volunteerforeducation.org
+            </a>
+            <a
+              href="http://online.gov.vn/"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Đã thông báo Bộ Công Thương"
+              className="inline-flex pt-1 transition-opacity hover:opacity-85"
+            >
+              <Image
+                src="/bct.png"
+                alt="Đã thông báo Bộ Công Thương"
+                width={120}
+                height={40}
+                className="h-10 w-auto object-contain sm:h-11 lg:h-[50px]"
+              />
             </a>
           </div>
         </div>
@@ -157,19 +175,6 @@ export default function Footer() {
           <p className="text-sm text-pure-white/60">
             © 2026 Volunteer For Education (VEO). All rights reserved.
           </p>
-          <a
-            href="http://online.gov.vn/"
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="Đã thông báo Bộ Công Thương"
-            className="shrink-0 transition-opacity hover:opacity-85"
-          >
-            <img
-              src="/bct.png"
-              alt="Đã thông báo Bộ Công Thương"
-              className="h-[40px] w-auto object-contain"
-            />
-          </a>
         </div>
       </div>
     </footer>

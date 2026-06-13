@@ -204,7 +204,7 @@ export default function BookingDetailView({
               <div className="relative pl-6">
                 <div className="absolute left-[9px] top-2 bottom-2 w-px bg-outline-variant/40" />
                 <div className="space-y-4">
-                  {[...booking.activityLog].sort((a, b) => b.timestamp.localeCompare(a.timestamp)).map((log, i) => (
+                  {[...booking.activityLog].sort((a, b) => b.timestamp.localeCompare(a.timestamp)).map((log) => (
                     <div key={log.id} className="relative flex gap-3">
                       <div className="absolute -left-6 w-4 h-4 rounded-full bg-white border-2 border-outline-variant flex items-center justify-center shrink-0 mt-0.5">
                         <span className="material-symbols-outlined text-primary" style={{ fontSize: 10 }}>{log.icon ?? "circle"}</span>

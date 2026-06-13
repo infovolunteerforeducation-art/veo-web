@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { authVerifyIdentity, authSetNewPassword } from "@/lib/auth-store";
@@ -95,7 +96,7 @@ export default function QuenMatKhauPage() {
           }}
         />
         <Link href="/" className="relative z-10">
-          <img src="/veo-logo-footer.png" alt="VEO" className="h-10 w-auto object-contain" />
+          <Image src="/veo-logo-footer.png" alt="VEO" width={130} height={40} className="h-10 w-auto object-contain" />
         </Link>
         <div className="relative z-10">
           <h2 className="text-4xl font-bold text-white leading-snug mb-4">
@@ -120,7 +121,7 @@ export default function QuenMatKhauPage() {
       <div className="flex-1 flex flex-col items-center justify-center px-6 py-12 bg-white">
         {/* Mobile logo */}
         <Link href="/" className="lg:hidden mb-8">
-          <img src="/veo-logo.png" alt="VEO" className="h-10 w-auto object-contain" />
+          <Image src="/veo-logo.png" alt="VEO" width={130} height={40} className="h-10 w-auto object-contain" />
         </Link>
 
         <div className="w-full max-w-md">

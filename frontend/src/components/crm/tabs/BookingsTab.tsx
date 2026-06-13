@@ -32,10 +32,12 @@ export default function BookingsTab({ deepLinkBookingId, onDeepLinkBookingConsum
 
   useEffect(() => {
     if (!deepLinkBookingId) return;
-    setSelectedId(deepLinkBookingId);
-    onDeepLinkBookingConsumed?.();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [deepLinkBookingId]);
+    const timeoutId = window.setTimeout(() => {
+      setSelectedId(deepLinkBookingId);
+      onDeepLinkBookingConsumed?.();
+    }, 0);
+    return () => window.clearTimeout(timeoutId);
+  }, [deepLinkBookingId, onDeepLinkBookingConsumed]);
 
   const selected = bookings.find((b) => b.id === selectedId) ?? null;
 

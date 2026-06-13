@@ -22,7 +22,7 @@ type Props = {
 };
 
 export default function ToursTab({ tours, setTours, onNavigateToSchedule, onNavigateToBooking, deepLinkTourId, onDeepLinkTourConsumed }: Props) {
-  const [bookings, setBookings] = useState<Booking[]>(mockBookings);
+  const [bookings] = useState<Booking[]>(mockBookings);
   const [detailTour, setDetailTour] = useState<ManagedTour | null>(null);
   const [contentTour, setContentTour] = useState<ManagedTour | null>(null);
   const [showTourModal, setShowTourModal] = useState(false);
@@ -39,11 +39,13 @@ export default function ToursTab({ tours, setTours, onNavigateToSchedule, onNavi
 
   useEffect(() => {
     if (!deepLinkTourId) return;
-    const tour = tours.find((t) => t.id === deepLinkTourId);
-    if (tour) setDetailTour(tour);
-    onDeepLinkTourConsumed?.();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [deepLinkTourId]);
+    const timeoutId = window.setTimeout(() => {
+      const tour = tours.find((t) => t.id === deepLinkTourId);
+      if (tour) setDetailTour(tour);
+      onDeepLinkTourConsumed?.();
+    }, 0);
+    return () => window.clearTimeout(timeoutId);
+  }, [deepLinkTourId, onDeepLinkTourConsumed, tours]);
 
   const enriched = useMemo<EnrichedTour[]>(() =>
     tours.map((t) => {
@@ -143,9 +145,6 @@ export default function ToursTab({ tours, setTours, onNavigateToSchedule, onNavi
         tour={detailTour}
         bookings={bookings.filter((b) => b.tourId === detailTour.id)}
         onBack={() => setDetailTour(null)}
-        onToggleAttended={(bookingId, attended) =>
-          setBookings((prev) => prev.map((b) => b.id === bookingId ? { ...b, attended } : b))
-        }
         onViewSchedule={onNavigateToSchedule}
         onViewBooking={onNavigateToBooking}
       />

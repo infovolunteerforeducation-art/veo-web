@@ -209,7 +209,7 @@ function ExpertLogo({ type }: { type: (typeof expertOrganizations)[number]["type
   }
 
   if (type === "vfe") {
-    return <LogoImage src="/trai-he/logos/vfe.png" alt="Volunteers For Education Organization" className="h-16 max-w-40" />;
+    return <LogoImage src="/trai-he/logos/vfe.png" alt="Volunteers For Education Organization" className="h-24 max-w-28" />;
   }
 
   if (type === "undp") {
@@ -239,8 +239,7 @@ function PartnerLogo({ type }: { type: (typeof partnerSchools)[number] }) {
       <LogoImage
         src="/trai-he/logos/vinschool.png"
         alt="Vinschool"
-        className="h-12 max-w-32"
-        wrapperClassName="rounded bg-[#23366f] px-4"
+        className="h-24 max-w-44"
       />
     );
   }
@@ -249,14 +248,14 @@ function PartnerLogo({ type }: { type: (typeof partnerSchools)[number] }) {
 }
 
 const universityLogoSrc: Record<(typeof universities)[number]["type"], string> = {
-  melbourne: "https://upload.wikimedia.org/wikipedia/en/thumb/5/50/The_University_of_Melbourne_Logo.svg/250px-The_University_of_Melbourne_Logo.svg.png",
-  nyu:       "https://upload.wikimedia.org/wikipedia/commons/6/6a/Nyu_short_color.svg",
-  monash:    "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/Monash_University_logo.svg/250px-Monash_University_logo.svg.png",
-  sydney:    "https://upload.wikimedia.org/wikipedia/en/thumb/3/37/The_University_of_Sydney_Logo.svg/250px-The_University_of_Sydney_Logo.svg.png",
-  california:"https://upload.wikimedia.org/wikipedia/en/thumb/8/85/University_of_California%2C_Berkeley_Logo_2024.svg/250px-University_of_California%2C_Berkeley_Logo_2024.svg.png",
-  tum:       "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c8/Logo_of_the_Technical_University_of_Munich.svg/250px-Logo_of_the_Technical_University_of_Munich.svg.png",
-  imperial:  "https://upload.wikimedia.org/wikipedia/commons/thumb/0/06/Imperial_College_London_new_logo.png/250px-Imperial_College_London_new_logo.png",
-  edinburgh: "https://upload.wikimedia.org/wikipedia/en/thumb/3/3c/University_of_Edinburgh_Corporate_Logo_Colour.svg/330px-University_of_Edinburgh_Corporate_Logo_Colour.svg.png",
+  melbourne: "/trai-he/university-logos/melbourne.png",
+  nyu: "/trai-he/university-logos/nyu.png",
+  monash: "/trai-he/university-logos/monash.png",
+  sydney: "/trai-he/university-logos/sydney.png",
+  california: "/trai-he/university-logos/california.png",
+  tum: "/trai-he/university-logos/tum.png",
+  imperial: "/trai-he/university-logos/imperial.png",
+  edinburgh: "/trai-he/university-logos/edinburgh.png",
 };
 
 const universityLogoAlt: Record<(typeof universities)[number]["type"], string> = {
@@ -275,7 +274,7 @@ function UniversityLogo({ type }: { type: (typeof universities)[number]["type"] 
     <img
       src={universityLogoSrc[type]}
       alt={universityLogoAlt[type]}
-      className="max-h-12 w-auto max-w-[140px] object-contain"
+      className="max-h-12 w-auto max-w-[135px] object-contain sm:max-h-14 sm:max-w-[165px] lg:max-h-[60px] lg:max-w-[180px]"
     />
   );
 }
@@ -584,7 +583,7 @@ export default function TraiHeTinhNguyenPage() {
 
         {/* Chứng nhận */}
         <section className="bg-white py-12 sm:py-20">
-          <div className="mx-auto max-w-[1100px] px-4 sm:px-6">
+          <div className="mx-auto max-w-[1280px] px-4 sm:px-6">
             <div className="mx-auto max-w-3xl text-center">
               <h2 className="text-xl font-bold leading-tight text-primary sm:text-2xl lg:text-3xl">
                 Chứng nhận trại hè V.E.O<br />
@@ -597,10 +596,10 @@ export default function TraiHeTinhNguyenPage() {
             <div className="mt-8 grid grid-cols-2 gap-x-6 gap-y-8 sm:mt-10 sm:gap-x-8 sm:gap-y-10 md:grid-cols-4">
               {universities.map((item) => (
                 <div key={item.type} className="flex flex-col items-center text-center">
-                  <div className="flex h-12 items-center justify-center sm:h-14">
+                  <div className="flex h-14 items-end justify-center sm:h-16 lg:h-[68px]">
                     <UniversityLogo type={item.type} />
                   </div>
-                  <p className="mt-2 text-xs font-medium text-on-surface-variant sm:mt-3">{item.rank}</p>
+                  <p className="mt-1.5 text-xs font-medium text-on-surface-variant sm:mt-2">{item.rank}</p>
                 </div>
               ))}
             </div>
@@ -669,7 +668,7 @@ export default function TraiHeTinhNguyenPage() {
             </h3>
             <div className="mt-6 grid grid-cols-2 items-center gap-x-6 gap-y-6 sm:mt-8 sm:gap-x-8 sm:gap-y-8 md:grid-cols-4">
               {partnerSchools.map((item) => (
-                <div key={item} className="flex h-20 items-center justify-center sm:h-24 md:h-16">
+                <div key={item} className="flex h-20 items-center justify-center sm:h-24 md:h-24">
                   <PartnerLogo type={item} />
                 </div>
               ))}

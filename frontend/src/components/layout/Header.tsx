@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
@@ -64,9 +65,12 @@ export default function Header() {
     >
       <div className="flex justify-between items-center h-20 px-4 sm:px-6 max-w-[1200px] mx-auto">
         <Link href="/" className="flex items-center gap-2">
-          <img
+          <Image
             src="/veo-logo.png"
             alt="VEO Logo"
+            width={156}
+            height={48}
+            priority
             className="h-12 w-auto object-contain"
           />
         </Link>

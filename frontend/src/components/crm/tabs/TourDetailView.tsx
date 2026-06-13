@@ -7,55 +7,11 @@ type Props = {
   tour: ManagedTour;
   bookings: Booking[];
   onBack: () => void;
-  onToggleAttended: (bookingId: string, attended: boolean | null) => void;
   onViewSchedule?: (scheduleId: string) => void;
   onViewBooking?: (bookingId: string) => void;
 };
 
-function BookingStatusBadge({ status }: { status: Booking["status"] }) {
-  const map: Record<Booking["status"], { label: string; className: string }> = {
-    paid:      { label: "Đã thanh toán", className: "bg-green-100 text-green-700" },
-    pending:   { label: "Chờ xử lý",     className: "bg-yellow-100 text-yellow-700" },
-    cancelled: { label: "Đã hủy",        className: "bg-red-100 text-red-700" },
-  };
-  const { label, className } = map[status];
-  return (
-    <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold ${className}`}>
-      {label}
-    </span>
-  );
-}
-
-type AttendedState = { value: boolean | null; label: string; icon: string; activeClass: string };
-const ATTENDED_STATES: AttendedState[] = [
-  { value: true,  label: "Tham gia",  icon: "check_circle", activeClass: "bg-green-100 text-green-700 border-green-300" },
-  { value: false, label: "Vắng mặt", icon: "cancel",        activeClass: "bg-red-100 text-red-700 border-red-300" },
-  { value: null,  label: "Chưa rõ",  icon: "help",          activeClass: "bg-surface-container text-on-surface border-outline-variant" },
-];
-
-function AttendedToggle({ attended, onChange }: { attended: boolean | null | undefined; onChange: (v: boolean | null) => void }) {
-  const current = attended === undefined ? null : attended;
-  return (
-    <div className="flex items-center gap-1">
-      {ATTENDED_STATES.map((s) => (
-        <button
-          key={String(s.value)}
-          type="button"
-          onClick={() => onChange(s.value)}
-          title={s.label}
-          className={`inline-flex items-center gap-1 px-2 py-1 rounded-lg border text-[11px] font-semibold transition-colors ${
-            current === s.value ? s.activeClass : "border-outline-variant text-on-surface-variant hover:bg-surface-container"
-          }`}
-        >
-          <span className="material-symbols-outlined" style={{ fontSize: 13 }}>{s.icon}</span>
-          <span>{s.label}</span>
-        </button>
-      ))}
-    </div>
-  );
-}
-
-export default function TourDetailView({ tour, bookings, onBack, onToggleAttended, onViewSchedule, onViewBooking }: Props) {
+export default function TourDetailView({ tour, bookings, onBack, onViewSchedule, onViewBooking }: Props) {
   // Only attended bookings, sorted by schedule isoDate descending
   const attendedBookings = [...bookings]
     .filter((b) => b.attended === true)

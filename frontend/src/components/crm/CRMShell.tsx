@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import DashboardTab from "./tabs/DashboardTab";
 import BookingsTab from "./tabs/BookingsTab";
 import CustomersTab from "./tabs/CustomersTab";
@@ -114,7 +115,7 @@ export default function CRMShell() {
       >
         {/* Logo */}
         <div className="flex items-center gap-3 px-5 h-16 border-b border-white/10 shrink-0">
-          <img src="/veo-logo-linkedin.png" alt="VEO" className="w-8 h-8 rounded-lg" />
+          <Image src="/veo-logo-linkedin.png" alt="VEO" width={32} height={32} className="w-8 h-8 rounded-lg" />
           <div>
             <p className="text-sm font-bold leading-tight">VEO CRM</p>
             <p className="text-[10px] text-white/50 leading-tight">Quản lý nội bộ</p>
@@ -299,7 +300,7 @@ export default function CRMShell() {
 
         <main className="flex-1 overflow-y-auto p-4 lg:p-6">
           {activeTab === "dashboard"    && <DashboardTab />}
-          {activeTab === "bookings"     && <BookingsTab deepLinkBookingId={bookingDeepLink} onDeepLinkBookingConsumed={() => setBookingDeepLink(null)} onNavigateToCustomer={(id) => { /* no deep link to customers yet */ switchTab("customers"); }} onNavigateToTour={(id) => { setTourDeepLink(id); switchTab("tours"); }} onNavigateToSchedule={(id) => { setScheduleDeepLink(id); switchTab("schedules"); }} />}
+          {activeTab === "bookings"     && <BookingsTab deepLinkBookingId={bookingDeepLink} onDeepLinkBookingConsumed={() => setBookingDeepLink(null)} onNavigateToCustomer={() => { switchTab("customers"); }} onNavigateToTour={(id) => { setTourDeepLink(id); switchTab("tours"); }} onNavigateToSchedule={(id) => { setScheduleDeepLink(id); switchTab("schedules"); }} />}
           {activeTab === "customers"    && <CustomersTab onNavigateToTour={(id) => { setTourDeepLink(id); switchTab("tours"); }} onNavigateToSchedule={(id) => { setScheduleDeepLink(id); switchTab("schedules"); }} onNavigateToBooking={(id) => { setBookingDeepLink(id); switchTab("bookings"); }} />}
           {activeTab === "tours"        && <ToursTab tours={tours} setTours={setTours} onNavigateToSchedule={(id) => { setScheduleDeepLink(id); switchTab("schedules"); }} onNavigateToBooking={(id) => { setBookingDeepLink(id); switchTab("bookings"); }} deepLinkTourId={tourDeepLink} onDeepLinkTourConsumed={() => setTourDeepLink(null)} />}
           {activeTab === "schedules"    && <SchedulesTab tours={tours} setTours={setTours} deepLinkScheduleId={scheduleDeepLink} onDeepLinkConsumed={() => setScheduleDeepLink(null)} onNavigateToBooking={(id) => { setBookingDeepLink(id); switchTab("bookings"); }} />}

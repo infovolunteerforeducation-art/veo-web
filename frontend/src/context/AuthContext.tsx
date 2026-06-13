@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useEffect, useState, useCallback } from "react";
+import { createContext, useContext, useState, useCallback } from "react";
 import {
   StoredUser,
   getUsers,
@@ -31,19 +31,16 @@ type AuthContextValue = {
 const AuthContext = createContext<AuthContextValue | null>(null);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<StoredUser | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    // Resolve session from localStorage on mount
+  const [user, setUser] = useState<StoredUser | null>(() => {
+    if (typeof window === "undefined") return null;
     const email = getSessionEmail();
     if (email) {
       const users = getUsers();
-      const found = users.find((u) => u.email.toLowerCase() === email.toLowerCase());
-      setUser(found ?? null);
+      return users.find((u) => u.email.toLowerCase() === email.toLowerCase()) ?? null;
     }
-    setLoading(false);
-  }, []);
+    return null;
+  });
+  const [loading] = useState(false);
 
   const login = useCallback(
     async (email: string, password: string): Promise<{ ok: boolean; error?: string }> => {

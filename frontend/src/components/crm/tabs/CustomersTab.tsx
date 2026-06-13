@@ -52,7 +52,7 @@ export default function CustomersTab({ onNavigateToTour, onNavigateToSchedule, o
     setPage(1);
   }
 
-  const filtered = mockCustomers.filter((c) => {
+  const filtered = useMemo(() => mockCustomers.filter((c) => {
     const q = search.toLowerCase();
     return (
       !q ||
@@ -60,7 +60,7 @@ export default function CustomersTab({ onNavigateToTour, onNavigateToSchedule, o
       c.phone.includes(q) ||
       c.email.toLowerCase().includes(q)
     );
-  });
+  }), [search]);
 
   const sorted = useMemo(() => {
     return [...filtered].sort((a, b) => {
@@ -71,7 +71,6 @@ export default function CustomersTab({ onNavigateToTour, onNavigateToSchedule, o
       if (sortField === "lastTourDate") cmp = a.lastTourDate.localeCompare(b.lastTourDate);
       return sortDir === "asc" ? cmp : -cmp;
     });
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filtered, sortField, sortDir]);
 
   const pageCount = Math.ceil(sorted.length / PAGE_SIZE);

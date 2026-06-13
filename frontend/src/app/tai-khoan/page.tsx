@@ -1,10 +1,11 @@
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
-import { mockBookings, fmt, fmtDate, fmtDateTime } from "@/lib/crm-data";
+import { mockBookings, fmt, fmtDate } from "@/lib/crm-data";
 import type { Booking, CoordinationStatus } from "@/lib/crm-data";
 
 // ─── Level milestones ────────────────────────────────────────────────────────
@@ -375,6 +376,53 @@ function ReservedTab({ userEmail }: { userEmail: string }) {
 
 // ─── Tab: Đổi mật khẩu ───────────────────────────────────────────────────────
 
+type PasswordFieldProps = {
+  id: string;
+  label: string;
+  value: string;
+  onChange: (value: string) => void;
+  placeholder: string;
+  visible: boolean;
+  onToggleVisibility: () => void;
+};
+
+function PasswordField({
+  id,
+  label,
+  value,
+  onChange,
+  placeholder,
+  visible,
+  onToggleVisibility,
+}: PasswordFieldProps) {
+  return (
+    <div>
+      <label htmlFor={id} className="block text-sm font-semibold text-on-surface mb-1.5">
+        {label} <span className="text-red-500">*</span>
+      </label>
+      <div className="relative">
+        <input
+          id={id}
+          type={visible ? "text" : "password"}
+          required
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          placeholder={placeholder}
+          className="w-full h-12 px-4 pr-12 rounded-xl border border-outline-variant/60 text-on-surface text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition"
+        />
+        <button
+          type="button"
+          onClick={onToggleVisibility}
+          className="absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant hover:text-on-surface"
+          aria-label={visible ? "Ẩn mật khẩu" : "Hiện mật khẩu"}
+        >
+          <span className="material-symbols-outlined text-xl">{visible ? "visibility_off" : "visibility"}</span>
+        </button>
+      </div>
+    </div>
+  );
+}
+
 function ChangePasswordTab() {
   const { changePassword } = useAuth();
   const [form, setForm] = useState({ current: "", newPw: "", confirm: "" });
@@ -396,19 +444,6 @@ function ChangePasswordTab() {
     else setError(result.error ?? "Đổi mật khẩu thất bại.");
   };
 
-  const Field = ({ id, label, value, onChange, placeholder, showKey }: { id: string; label: string; value: string; onChange: (v: string) => void; placeholder: string; showKey: keyof typeof show }) => (
-    <div>
-      <label className="block text-sm font-semibold text-on-surface mb-1.5">{label} <span className="text-red-500">*</span></label>
-      <div className="relative">
-        <input type={show[showKey] ? "text" : "password"} required value={value} onChange={(e) => onChange(e.target.value)} placeholder={placeholder}
-          className="w-full h-12 px-4 pr-12 rounded-xl border border-outline-variant/60 text-on-surface text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition" />
-        <button type="button" onClick={() => setShow((s) => ({ ...s, [showKey]: !s[showKey] }))} className="absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant hover:text-on-surface">
-          <span className="material-symbols-outlined text-xl">{show[showKey] ? "visibility_off" : "visibility"}</span>
-        </button>
-      </div>
-    </div>
-  );
-
   return (
     <div className="max-w-md">
       {success && (
@@ -424,9 +459,33 @@ function ChangePasswordTab() {
         </div>
       )}
       <form onSubmit={handleSubmit} className="space-y-5">
-        <Field id="current" label="Mật khẩu hiện tại" value={form.current} onChange={(v) => setForm({ ...form, current: v })} placeholder="••••••••" showKey="current" />
-        <Field id="newPw" label="Mật khẩu mới" value={form.newPw} onChange={(v) => setForm({ ...form, newPw: v })} placeholder="Tối thiểu 8 ký tự" showKey="newPw" />
-        <Field id="confirm" label="Xác nhận mật khẩu mới" value={form.confirm} onChange={(v) => setForm({ ...form, confirm: v })} placeholder="Nhập lại mật khẩu mới" showKey="confirm" />
+        <PasswordField
+          id="current-password"
+          label="Mật khẩu hiện tại"
+          value={form.current}
+          onChange={(v) => setForm((prev) => ({ ...prev, current: v }))}
+          placeholder="••••••••"
+          visible={show.current}
+          onToggleVisibility={() => setShow((prev) => ({ ...prev, current: !prev.current }))}
+        />
+        <PasswordField
+          id="new-password"
+          label="Mật khẩu mới"
+          value={form.newPw}
+          onChange={(v) => setForm((prev) => ({ ...prev, newPw: v }))}
+          placeholder="Tối thiểu 8 ký tự"
+          visible={show.newPw}
+          onToggleVisibility={() => setShow((prev) => ({ ...prev, newPw: !prev.newPw }))}
+        />
+        <PasswordField
+          id="confirm-password"
+          label="Xác nhận mật khẩu mới"
+          value={form.confirm}
+          onChange={(v) => setForm((prev) => ({ ...prev, confirm: v }))}
+          placeholder="Nhập lại mật khẩu mới"
+          visible={show.confirm}
+          onToggleVisibility={() => setShow((prev) => ({ ...prev, confirm: !prev.confirm }))}
+        />
         <button type="submit" disabled={loading}
           className="h-12 px-8 bg-primary hover:bg-primary-container text-on-primary font-bold rounded-xl transition-colors flex items-center gap-2 disabled:opacity-70">
           {loading ? <><span className="material-symbols-outlined animate-spin text-lg">progress_activity</span>Đang lưu...</> : <><span className="material-symbols-outlined text-lg">lock_reset</span>Cập nhật mật khẩu</>}
@@ -575,7 +634,7 @@ export default function AccountPage() {
       <header className="bg-white border-b border-outline-variant/30 sticky top-0 z-40">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2">
-            <img src="/veo-logo.png" alt="VEO" className="h-8 w-auto object-contain" />
+            <Image src="/veo-logo.png" alt="VEO" width={104} height={32} className="h-8 w-auto object-contain" />
           </Link>
           <div className="flex items-center gap-3">
             <Link href="/" className="hidden sm:inline-flex items-center gap-1 text-sm text-on-surface-variant hover:text-on-surface transition-colors">
