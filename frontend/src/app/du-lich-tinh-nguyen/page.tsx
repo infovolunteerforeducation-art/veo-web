@@ -7,6 +7,7 @@ import Footer from "@/components/layout/Footer";
 import TourFilters, { EMPTY_TOUR_FILTERS, TourFilterState } from "@/components/tours/TourFilters";
 import { tours, type Tour } from "@/lib/tours";
 import { getUpcomingSchedules } from "@/lib/tour-schedules";
+import type { TourListingContent } from "@/lib/cms-content";
 
 type SortOption = "departure-asc" | "departure-desc" | "price-desc" | "price-asc";
 
@@ -229,6 +230,15 @@ export default function ToursPage() {
   const [sortBy, setSortBy] = useState<SortOption>("departure-asc");
   const [sortOpen, setSortOpen] = useState(false);
   const [openFaq, setOpenFaq] = useState<number | null>(0);
+  const [cmsData, setCmsData] = useState<TourListingContent | null>(null);
+
+  useEffect(() => {
+    fetch("/api/cms/du-lich").then((r) => r.json()).then((d: TourListingContent) => setCmsData(d));
+  }, []);
+
+  const pageTitle = cmsData?.pageTitle || "Tour du lịch tình nguyện";
+  const pageSubtitle = cmsData?.pageSubtitle || "Chọn hành trình phù hợp và bắt đầu tạo ra sự thay đổi.";
+  const faqs = cmsData && cmsData.faqs.length > 0 ? cmsData.faqs : FAQS;
   const currentSortLabel = SORT_OPTIONS.find((option) => option.value === sortBy)?.label;
 
   const filteredTours = useMemo(() => {
@@ -269,11 +279,11 @@ export default function ToursPage() {
           <section className="w-full min-w-0">
             <div className="mb-8">
               <h1 className="text-3xl sm:text-4xl lg:text-3xl font-bold text-primary mb-2">
-                  Tour du lịch tình nguyện
+                  {pageTitle}
               </h1>
               <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
                 <p className="text-base sm:text-lg text-on-surface-variant">
-                  Chọn hành trình phù hợp và bắt đầu tạo ra sự thay đổi.
+                  {pageSubtitle}
                 </p>
               <div
                 className="relative hidden w-full shrink-0 lg:block lg:w-52"
@@ -554,7 +564,7 @@ export default function ToursPage() {
             </div>
 
             <div className="space-y-3">
-              {FAQS.map((faq, i) => {
+              {faqs.map((faq, i) => {
                 const isOpen = openFaq === i;
                 return (
                   <div key={faq.q} className="overflow-hidden rounded-xl border border-outline-variant/40 bg-white">

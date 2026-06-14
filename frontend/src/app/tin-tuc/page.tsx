@@ -2,7 +2,45 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
-import { articles, allCategories, type Article } from "./articles";
+import { articles, allCategories, categoryMap, type Article } from "./articles";
+import { getBlogContent } from "@/lib/cms-content";
+
+export const dynamic = "force-dynamic";
+
+function formatDateVN(iso: string): string {
+  const d = new Date(iso);
+  return `${String(d.getDate()).padStart(2, "0")}/${String(d.getMonth() + 1).padStart(2, "0")}/${d.getFullYear()}`;
+}
+
+function isHtmlContent(content: string): boolean {
+  return /<\/?[a-z][\s\S]*>/i.test(content);
+}
+
+function getAllArticles(): Article[] {
+  const cms = getBlogContent();
+  const published = cms.articles
+    .filter((a) => a.status === "published")
+    .map((a): Article => {
+      const cat = categoryMap[a.categorySlug] ?? { name: a.categorySlug, class: "bg-primary text-white" };
+      const hasHtml = isHtmlContent(a.content);
+      return {
+        slug: a.slug,
+        category: cat.name,
+        categorySlug: a.categorySlug,
+        categoryClass: cat.class,
+        date: formatDateVN(a.publishedAt ?? a.updatedAt),
+        image: a.coverImage || "/og-default.jpg",
+        title: a.title,
+        excerpt: a.excerpt,
+        readTime: a.readTime || 3,
+        featured: a.featured,
+        bodyHtml: hasHtml ? a.content : undefined,
+        body: hasHtml ? [] : a.content.split(/\n\n+/).filter(Boolean).map((text) => ({ type: "p" as const, text })),
+      };
+    });
+  const hardcodedSlugs = new Set(published.map((a) => a.slug));
+  return [...published, ...articles.filter((a) => !hardcodedSlugs.has(a.slug))];
+}
 
 export const metadata: Metadata = {
   title: "Tin tức & Sự kiện – VEO Travel",
@@ -115,8 +153,9 @@ export default async function NewsPage({
   const { page } = await searchParams;
   const currentPage = Math.max(1, parseInt(page || "1"));
 
-  const featured = articles.find((a) => a.featured);
-  const rest = articles.filter((a) => !a.featured);
+  const allArticles = getAllArticles();
+  const featured = allArticles.find((a) => a.featured);
+  const rest = allArticles.filter((a) => !a.featured);
 
   const totalPages = Math.ceil(rest.length / PAGE_SIZE);
   const paginated = rest.slice(

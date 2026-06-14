@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
+import type { HeaderContent } from "@/lib/cms-content";
 
 type NavLink = {
   label: string;
@@ -48,6 +49,7 @@ export default function Header() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [b2bOpen, setB2bOpen] = useState(false);
   const [mobileB2bOpen, setMobileB2bOpen] = useState(false);
+  const [cmsLinks, setCmsLinks] = useState<typeof navLinks | null>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const b2bDropdownRef = useRef<HTMLDivElement>(null);
 
@@ -55,6 +57,15 @@ export default function Header() {
     const onScroll = () => setScrolled(window.scrollY > 50);
     window.addEventListener("scroll", onScroll);
     return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  useEffect(() => {
+    fetch("/api/cms/header")
+      .then((r) => r.json())
+      .then((d: HeaderContent) => {
+        if (d.navLinks && d.navLinks.length > 0) setCmsLinks(d.navLinks);
+      })
+      .catch(() => {});
   }, []);
 
   // Close dropdown on outside click
@@ -99,12 +110,12 @@ export default function Header() {
         </Link>
 
         <nav className="hidden lg:flex items-center gap-8">
-          {navLinks.map((link) => {
-            const isActive = link.children
+          {(cmsLinks ?? navLinks).map((link) => {
+            const isActive = link.children && link.children.length > 0
               ? link.children.some((child) => !child.external && isLinkActive(pathname, child.href))
               : !link.external && isLinkActive(pathname, link.href);
 
-            if (link.children) {
+            if (link.children && link.children.length > 0) {
               return (
                 <div key={link.label} className="relative" ref={b2bDropdownRef}>
                   <button
@@ -248,12 +259,12 @@ export default function Header() {
       {/* Mobile menu */}
       {mobileOpen && (
         <div className="lg:hidden bg-pure-white border-t border-surface-variant px-4 sm:px-6 py-4 flex flex-col gap-4">
-          {navLinks.map((link) => {
-            const isActive = link.children
+          {(cmsLinks ?? navLinks).map((link) => {
+            const isActive = link.children && link.children.length > 0
               ? link.children.some((child) => !child.external && isLinkActive(pathname, child.href))
               : !link.external && isLinkActive(pathname, link.href);
 
-            if (link.children) {
+            if (link.children && link.children.length > 0) {
               return (
                 <div key={link.label} className="space-y-2">
                   <button

@@ -4,6 +4,9 @@ import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import FAQAccordion from "@/components/trai-he/FAQAccordion";
 import ConsultationButton from "@/components/school-activities/ConsultationButton";
+import { getSchoolContent } from "@/lib/cms-content";
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Hoạt động ngoại khóa cho học sinh | VEO",
@@ -11,58 +14,26 @@ export const metadata: Metadata = {
     "Giải pháp trải nghiệm hoạt động ngoại khóa khác biệt dành cho học sinh, thiết kế theo mục tiêu giáo dục của nhà trường.",
 };
 
-const heroPoints = [
-  {
-    icon: "handshake",
-    text: "Đồng hành cùng đối tác trong giáo dục giá trị nhân văn",
-  },
-  {
-    icon: "workspace_premium",
-    text: "Hơn 12 năm kinh nghiệm triển khai hoạt động ngoại khóa dành cho học sinh, sinh viên",
-  },
-  {
-    icon: "groups",
-    text: "Đội ngũ nhân sự chuyên nghiệp thiết kế chương trình phù hợp từng lứa tuổi",
-  },
+const _heroPoints = [
+  { icon: "handshake", text: "Đồng hành cùng đối tác trong giáo dục giá trị nhân văn" },
+  { icon: "workspace_premium", text: "Hơn 12 năm kinh nghiệm triển khai hoạt động ngoại khóa dành cho học sinh, sinh viên" },
+  { icon: "groups", text: "Đội ngũ nhân sự chuyên nghiệp thiết kế chương trình phù hợp từng lứa tuổi" },
 ];
 
-const partnerGallery = [
-  {
-    name: "True North School",
-    image: "/school-activities/true-north.jpg",
-  },
-  {
-    name: "British University Vietnam (BUV)",
-    image: "/school-activities/buv.jpg",
-  },
-  {
-    name: "Delta Global School (DGS)",
-    image: "/school-activities/delta.jpg",
-  },
-  {
-    name: "RMIT Vietnam",
-    image: "/school-activities/rmit.jpg",
-  },
-  {
-    name: "Alfred Nobel School",
-    image: "/school-activities/alfred-nobel.jpg",
-  },
-  {
-    name: "Vinschool",
-    image: "/school-activities/vinschool-2.jpg",
-  },
-  {
-    name: "Greenfield School",
-    image: "/school-activities/greenfield.jpg",
-  },
-  {
-    name: "TH School",
-    image: "/school-activities/th-school.jpg",
-  },
+const _partnerGallery = [
+  { id: "pg1", name: "True North School", image: "/school-activities/true-north.jpg" },
+  { id: "pg2", name: "British University Vietnam (BUV)", image: "/school-activities/buv.jpg" },
+  { id: "pg3", name: "Delta Global School (DGS)", image: "/school-activities/delta.jpg" },
+  { id: "pg4", name: "RMIT Vietnam", image: "/school-activities/rmit.jpg" },
+  { id: "pg5", name: "Alfred Nobel School", image: "/school-activities/alfred-nobel.jpg" },
+  { id: "pg6", name: "Vinschool", image: "/school-activities/vinschool-2.jpg" },
+  { id: "pg7", name: "Greenfield School", image: "/school-activities/greenfield.jpg" },
+  { id: "pg8", name: "TH School", image: "/school-activities/th-school.jpg" },
 ];
 
-const challenges = [
+const _challenges = [
   {
+    id: "ch1",
     icon: "travel_explore",
     tone: "bg-amber-100 text-amber-700 ring-amber-200",
     title: "Nội dung thiếu tính đổi mới",
@@ -70,6 +41,7 @@ const challenges = [
       "Các hoạt động tham quan truyền thống dễ đi vào lối mòn, thiếu chiều sâu giáo dục và chưa bám sát định hướng riêng của nhà trường.",
   },
   {
+    id: "ch2",
     icon: "diversity_3",
     tone: "bg-orange-100 text-orange-700 ring-orange-200",
     title: "Thiếu tính bền vững và sự gắn kết",
@@ -77,6 +49,7 @@ const challenges = [
       "Dự án cộng đồng còn rời rạc, mang tính thời điểm, khó tạo giá trị dài hạn cho học sinh và địa phương.",
   },
   {
+    id: "ch3",
     icon: "health_and_safety",
     tone: "bg-red-50 text-red-600 ring-red-100",
     title: "Gánh nặng vận hành & an toàn",
@@ -84,6 +57,7 @@ const challenges = [
       "Nhà trường cần kiểm soát rủi ro, hậu cần, nhân sự điều phối và tiêu chuẩn an toàn khi đưa học sinh đi thực địa.",
   },
   {
+    id: "ch4",
     icon: "fact_check",
     tone: "bg-yellow-100 text-yellow-700 ring-yellow-200",
     title: "Khó khăn trong việc thực chứng kết quả",
@@ -92,14 +66,16 @@ const challenges = [
   },
 ];
 
-const schoolValues = [
+const _schoolValues = [
   {
+    id: "sv1",
     icon: "school",
     tone: "bg-sky-50 text-sky-700 ring-sky-100",
     title: "Hiện thực hoá mục tiêu giáo dục toàn diện",
     description: "Đồng hành cùng đối tác triển khai học tập trải nghiệm ngoài lớp học.",
   },
   {
+    id: "sv2",
     icon: "workspace_premium",
     tone: "bg-sky-50 text-sky-700 ring-sky-100",
     title: "Khẳng định vị thế của cơ sở giáo dục",
@@ -107,18 +83,21 @@ const schoolValues = [
       "Giúp nhà trường bắt kịp xu hướng giáo dục toàn cầu, phát triển bền vững và trách nhiệm xã hội.",
   },
   {
+    id: "sv3",
     icon: "experiment",
     tone: "bg-sky-50 text-sky-700 ring-sky-100",
     title: "Học tập qua trải nghiệm thực tế",
     description: "Chương trình bài bản, dễ triển khai, học qua thực hành và hoạt động cộng đồng.",
   },
   {
+    id: "sv4",
     icon: "explore",
     tone: "bg-sky-50 text-sky-700 ring-sky-100",
     title: "Mở rộng góc nhìn – định hướng tương lai",
     description: "Đồng hành cùng nhà trường hỗ trợ hướng nghiệp và phát triển cá nhân cho học sinh.",
   },
   {
+    id: "sv5",
     icon: "support_agent",
     tone: "bg-sky-50 text-sky-700 ring-sky-100",
     title: "Giải phóng nguồn lực nhân sự",
@@ -127,8 +106,9 @@ const schoolValues = [
   },
 ];
 
-const studentValues = [
+const _studentValues = [
   {
+    id: "stv1",
     icon: "assignment_ind",
     tone: "bg-indigo-50 text-indigo-700 ring-indigo-100",
     title: "Làm đẹp hồ sơ du học (Portfolio)",
@@ -136,6 +116,7 @@ const studentValues = [
       "Cung cấp chứng nhận tham gia dự án cộng đồng và tư liệu trải nghiệm giúp học sinh tạo dấu ấn cá nhân.",
   },
   {
+    id: "stv2",
     icon: "psychology",
     tone: "bg-indigo-50 text-indigo-700 ring-indigo-100",
     title: "Phát triển kỹ năng 4C của thế kỷ 21",
@@ -143,6 +124,7 @@ const studentValues = [
       "Rèn luyện tư duy phản biện, sáng tạo, giao tiếp và hợp tác thông qua hoạt động thực tế.",
   },
   {
+    id: "stv3",
     icon: "favorite",
     tone: "bg-indigo-50 text-indigo-700 ring-indigo-100",
     title: "Định hướng giá trị bản thân",
@@ -151,8 +133,9 @@ const studentValues = [
   },
 ];
 
-const parentValues = [
+const _parentValues = [
   {
+    id: "pv1",
     icon: "verified_user",
     tone: "bg-green-50 text-green-700 ring-green-100",
     title: "Cam kết an toàn tuyệt đối",
@@ -160,6 +143,7 @@ const parentValues = [
       "Phụ huynh yên tâm với tiêu chuẩn lưu trú, ăn uống, di chuyển và hệ thống quản lý rủi ro trong chuyến đi.",
   },
   {
+    id: "pv2",
     icon: "visibility",
     tone: "bg-green-50 text-green-700 ring-green-100",
     title: "Nhìn thấy sự thay đổi của con",
@@ -168,27 +152,32 @@ const parentValues = [
   },
 ];
 
-const solutions = [
+const _solutions = [
   {
+    id: "sol1",
     title: "Workshop phát triển kỹ năng và tư duy",
     description: "Mô hình đào tạo nhanh, gọn, quy mô lớn, tập trung kỹ năng và tư duy ứng dụng thực tế.",
   },
   {
+    id: "sol2",
     title: "Trại hè tình nguyện",
     description:
       "Hành trình 6 ngày 5 đêm giúp học sinh nhập vai công dân bản địa, thấu cảm sâu và tạo tác động thực chất tại cộng đồng.",
   },
   {
+    id: "sol3",
     title: "Hành trình vì cộng đồng",
     description:
       "Chương trình kết hợp trải nghiệm thực tế và hoạt động tình nguyện, giúp học sinh học qua trải nghiệm và đóng góp cho địa phương.",
   },
   {
+    id: "sol4",
     title: "Chương trình trải nghiệm định hướng nghề nghiệp",
     description:
       "Kiến tạo tư duy thông qua trải nghiệm thực tế, quan sát nghề nghiệp và giải quyết các vấn đề xã hội.",
   },
   {
+    id: "sol5",
     title: "Social Leader Program",
     description:
       "Chương trình kiến tạo dấu ấn cá nhân dành cho học sinh THPT qua dự án xã hội để chinh phục học bổng quốc tế.",
@@ -242,26 +231,30 @@ const projectCases = [
   },
 ];
 
-const process = [
+const _process = [
   {
+    id: "pr1",
     step: "01",
     title: "Tư vấn & phân tích nhu cầu đối tác",
     description:
       "Khảo sát mục tiêu giáo dục, độ tuổi và kỳ vọng của cơ sở giáo dục để tư vấn giải pháp trải nghiệm phù hợp nhất.",
   },
   {
+    id: "pr2",
     step: "02",
     title: "Thiết kế và đề xuất chương trình học tập",
     description:
       "Xây dựng giáo án trải nghiệm riêng, đảm bảo tính khoa học và lồng ghép giá trị thực tiễn vào chương trình.",
   },
   {
+    id: "pr3",
     step: "03",
     title: "Tổ chức hoạt động thực tế & giám sát",
     description:
       "Trực tiếp điều phối chương trình với quy trình giám sát chặt chẽ, ưu tiên an toàn và mục tiêu học tập.",
   },
   {
+    id: "pr4",
     step: "04",
     title: "Tổng kết & đánh giá kết quả",
     description:
@@ -269,50 +262,59 @@ const process = [
   },
 ];
 
-const safety = [
+const _safety = [
   {
+    id: "sf1",
     title: "Bảo hiểm & an toàn",
     description: "Quy trình quản lý rủi ro đạt chuẩn, đội ngũ hướng dẫn có kỹ năng sơ cấp cứu.",
   },
   {
+    id: "sf2",
     title: "Điều phối chuyên nghiệp",
     description: "Đội ngũ am hiểu tâm lý học sinh và có kinh nghiệm làm việc trong môi trường sư phạm.",
   },
   {
+    id: "sf3",
     title: "Hỗ trợ giáo viên",
     description: "VEO lo khâu vận hành để giáo viên tập trung quan sát, đồng hành và hướng dẫn học sinh.",
   },
 ];
 
-const veoStats = [
-  { value: "12+", label: "năm hoạt động" },
-  { value: "15+", label: "điểm dự án" },
-  { value: "120.000+", label: "tình nguyện viên" },
-  { value: "1.000+", label: "chuyến đi" },
+const _veoStats = [
+  { id: "st1", value: "12+", label: "năm hoạt động" },
+  { id: "st2", value: "15+", label: "điểm dự án" },
+  { id: "st3", value: "120.000+", label: "tình nguyện viên" },
+  { id: "st4", value: "1.000+", label: "chuyến đi" },
 ];
 
-const schoolActivityFaqs = [
+const _schoolActivityFaqs = [
   {
+    id: "faq1",
     q: "Nhà trường có thể đặt chương trình theo nhu cầu riêng không?",
     a: "Có. VEO thiết kế chương trình theo mục tiêu giáo dục, độ tuổi học sinh, thời lượng, ngân sách và yêu cầu vận hành riêng của từng trường.",
   },
   {
+    id: "faq2",
     q: "Chương trình phù hợp với học sinh độ tuổi nào?",
     a: "VEO có thể xây dựng chương trình cho nhiều cấp học, từ tiểu học, THCS, THPT đến sinh viên. Nội dung, mức độ hoạt động và phương án an toàn được điều chỉnh theo từng nhóm tuổi.",
   },
   {
+    id: "faq3",
     q: "VEO phụ trách những phần nào trong quá trình tổ chức?",
     a: "VEO hỗ trợ từ khảo sát địa phương, thiết kế nội dung, điều phối hậu cần, nhân sự hướng dẫn, quản trị rủi ro đến tổng kết sau chương trình.",
   },
   {
+    id: "faq4",
     q: "Nhà trường có nhận được báo cáo hoặc chứng nhận sau chương trình không?",
     a: "Có. Tùy gói triển khai, VEO có thể cung cấp hình ảnh, video, báo cáo tổng kết, chứng nhận tham gia và tư liệu giúp học sinh hoàn thiện portfolio.",
   },
   {
+    id: "faq5",
     q: "Làm sao để đảm bảo an toàn cho học sinh?",
     a: "Mỗi chương trình đều có phương án di chuyển, lưu trú, ăn uống, bảo hiểm, nhân sự phụ trách nhóm và quy trình xử lý tình huống rõ ràng.",
   },
   {
+    id: "faq6",
     q: "Nhà trường cần chuẩn bị gì trước khi làm việc với VEO?",
     a: "Nhà trường chỉ cần chia sẻ mục tiêu, số lượng học sinh, độ tuổi, thời lượng dự kiến và các yêu cầu đặc biệt. VEO sẽ tư vấn giải pháp phù hợp.",
   },
@@ -339,13 +341,31 @@ function SectionTitle({
 }
 
 export default function SchoolActivitiesPage() {
+  const cms = getSchoolContent();
+  const heroImage = cms.heroImage || "/about-veo/timeline-2019-kttv.webp";
+  const heroTitle = cms.heroTitle || "Giải pháp trải nghiệm hoạt động ngoại khóa khác biệt dành cho học sinh";
+  const heroSubtitle = cms.heroSubtitle || "VEO giúp nhà trường triển khai các chương trình trải nghiệm thực tế, kỹ năng và định hướng phù hợp với mục tiêu giáo dục.";
+  const heroPoints = cms.heroPoints.length > 0
+    ? cms.heroPoints.map((text) => ({ icon: "check_circle", text }))
+    : _heroPoints;
+  const partnerGallery = cms.partnerGallery.length > 0 ? cms.partnerGallery : _partnerGallery;
+  const challenges = cms.challenges.length > 0 ? cms.challenges : _challenges;
+  const schoolValues = cms.schoolValues.length > 0 ? cms.schoolValues : _schoolValues;
+  const studentValues = cms.studentValues.length > 0 ? cms.studentValues : _studentValues;
+  const parentValues = cms.parentValues.length > 0 ? cms.parentValues : _parentValues;
+  const solutions = cms.solutions.length > 0 ? cms.solutions : _solutions;
+  const process = cms.process.length > 0 ? cms.process : _process;
+  const safety = cms.safety.length > 0 ? cms.safety : _safety;
+  const veoStats = cms.veoStats.length > 0 ? cms.veoStats : _veoStats;
+  const schoolActivityFaqs = cms.faqs.length > 0 ? cms.faqs : _schoolActivityFaqs;
+
   return (
     <>
       <Header />
       <main className="bg-white">
         <section className="relative min-h-[560px] overflow-hidden">
           <Image
-            src="/about-veo/timeline-2019-kttv.webp"
+            src={heroImage}
             alt="Hoạt động ngoại khóa cho học sinh cùng VEO"
             fill
             priority
@@ -358,11 +378,10 @@ export default function SchoolActivitiesPage() {
               Giải pháp ngoại khóa chuyên biệt cho nhà trường
             </p>
             <h1 className="max-w-4xl text-4xl font-bold leading-tight text-white sm:text-5xl lg:text-6xl">
-              Giải pháp trải nghiệm hoạt động ngoại khóa khác biệt dành cho học sinh
+              {heroTitle}
             </h1>
             <p className="mt-5 max-w-3xl text-base leading-8 text-white/90 sm:text-lg">
-              VEO giúp nhà trường triển khai các chương trình trải nghiệm thực tế, kỹ năng và định hướng phù hợp
-              với mục tiêu giáo dục.
+              {heroSubtitle}
             </p>
             <div className="mt-8 grid gap-3 md:grid-cols-[1fr_1.08fr_1fr]">
               {heroPoints.map((point) => (
@@ -455,9 +474,9 @@ export default function SchoolActivitiesPage() {
                 <h3 className="mt-2 text-2xl font-bold text-primary">Nâng tầm vị thế & tối ưu vận hành</h3>
                 <div className="mt-6 grid gap-4 md:grid-cols-2 lg:grid-cols-5">
                   {schoolValues.map((item) => (
-                    <div key={item.title} className={`rounded-xl p-4 ring-1 ${item.tone}`}>
+                    <div key={item.title} className={`rounded-xl p-4 ring-1 ${item.tone ?? "bg-sky-50 text-sky-700 ring-sky-100"}`}>
                       <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-white shadow-sm ring-1 ring-current/15">
-                        <span className="material-symbols-outlined text-[24px]">{item.icon}</span>
+                        <span className="material-symbols-outlined text-[24px]">{item.icon ?? "school"}</span>
                       </div>
                       <h4 className="text-base font-bold text-on-surface">{item.title}</h4>
                       <p className="mt-2 text-sm leading-6 text-on-surface-variant">{item.description}</p>
@@ -474,9 +493,9 @@ export default function SchoolActivitiesPage() {
                   <h3 className="mt-2 text-2xl font-bold text-primary">Trưởng thành từ trải nghiệm thực tế</h3>
                   <div className="mt-6 grid gap-4 md:grid-cols-3">
                     {studentValues.map((item) => (
-                      <div key={item.title} className={`rounded-xl p-4 ring-1 ${item.tone}`}>
+                      <div key={item.title} className={`rounded-xl p-4 ring-1 ${item.tone ?? "bg-indigo-50 text-indigo-700 ring-indigo-100"}`}>
                         <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-white shadow-sm ring-1 ring-current/15">
-                          <span className="material-symbols-outlined text-[24px]">{item.icon}</span>
+                          <span className="material-symbols-outlined text-[24px]">{item.icon ?? "psychology"}</span>
                         </div>
                         <h4 className="text-base font-bold text-on-surface">{item.title}</h4>
                         <p className="mt-2 text-sm leading-6 text-on-surface-variant">{item.description}</p>
@@ -492,9 +511,9 @@ export default function SchoolActivitiesPage() {
                   <h3 className="mt-2 text-2xl font-bold text-primary">Sự an tâm và tự hào</h3>
                   <div className="mt-6 grid gap-4 md:grid-cols-2">
                     {parentValues.map((item) => (
-                      <div key={item.title} className={`rounded-xl p-4 ring-1 ${item.tone}`}>
+                      <div key={item.title} className={`rounded-xl p-4 ring-1 ${item.tone ?? "bg-green-50 text-green-700 ring-green-100"}`}>
                         <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-white shadow-sm ring-1 ring-current/15">
-                          <span className="material-symbols-outlined text-[24px]">{item.icon}</span>
+                          <span className="material-symbols-outlined text-[24px]">{item.icon ?? "verified_user"}</span>
                         </div>
                         <h4 className="text-base font-bold text-on-surface">{item.title}</h4>
                         <p className="mt-2 text-sm leading-6 text-on-surface-variant">{item.description}</p>

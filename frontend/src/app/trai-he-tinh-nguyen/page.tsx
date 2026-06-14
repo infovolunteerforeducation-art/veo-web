@@ -5,6 +5,7 @@ import Footer from "@/components/layout/Footer";
 import ScrollReveal from "@/components/layout/ScrollReveal";
 import FAQAccordion from "@/components/trai-he/FAQAccordion";
 import { camps } from "@/lib/trai-he-data";
+import { getCampContent } from "@/lib/cms-content";
 
 const heroImage = "/trai-he/volunteer-summer-camp-hero.png";
 const youtubeVideoId = "LCJqDRXphLk";
@@ -40,55 +41,64 @@ const youtubeSrcDoc = `
   </a>
 `;
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Trại hè tình nguyện VEO 2026 | Trải nghiệm mùa hè vì cộng đồng",
   description:
     "Trại hè tình nguyện VEO dành cho học sinh, sinh viên từ 10 đến 22 tuổi với hoạt động cộng đồng, trải nghiệm văn hóa và rèn luyện kỹ năng sống.",
 };
 
-const highlights = [
-  { icon: "groups", value: "10-22", label: "độ tuổi phù hợp" },
-  { icon: "calendar_month", value: "6N5Đ", label: "lịch trình trải nghiệm" },
-  { icon: "location_on", value: "3", label: "điểm đến tình nguyện" },
-  { icon: "volunteer_activism", value: "120K+", label: "cộng đồng VEO" },
+const _highlights = [
+  { id: "h1", icon: "groups", value: "10-22", label: "độ tuổi phù hợp" },
+  { id: "h2", icon: "calendar_month", value: "6N5Đ", label: "lịch trình trải nghiệm" },
+  { id: "h3", icon: "location_on", value: "3", label: "điểm đến tình nguyện" },
+  { id: "h4", icon: "volunteer_activism", value: "120K+", label: "cộng đồng VEO" },
 ];
 
 
-const pillars = [
+const _pillars = [
   {
+    id: "p1",
     icon: "school",
     title: "Học qua trải nghiệm",
     desc: "Học viên không chỉ nghe kể về cộng đồng mà trực tiếp tham gia dạy học, chuẩn bị học liệu, trồng cây và vận hành một dự án nhỏ theo nhóm.",
   },
   {
+    id: "p2",
     icon: "diversity_3",
     title: "Sống cùng tập thể",
     desc: "Các bạn rèn tính tự lập, kỷ luật cá nhân, giao tiếp và hợp tác qua sinh hoạt nhóm, phân vai nhiệm vụ và phiên phản tư cuối ngày.",
   },
   {
+    id: "p3",
     icon: "landscape",
     title: "Kết nối văn hóa bản địa",
     desc: "Chương trình đưa học viên đến gần đời sống địa phương qua bữa ăn, nghề truyền thống, giao lưu với trẻ em và người dân bản địa.",
   },
 ];
 
-const featureCards = [
+const _featureCards = [
   {
+    id: "f1",
     image: "/trai-he/feature-volunteer-work.png",
     title: "Tham gia hoạt động tình nguyện bền vững",
     desc: "Trực tiếp vận hành dự án dạy học, xây tủ sách và cải tạo trường học. Hành trình giúp các tình nguyện viên thấu hiểu tình nguyện là gì thông qua các hoạt động tình nguyện thực tế.",
   },
   {
+    id: "f2",
     image: "/trai-he/feature-soft-skills.png",
     title: "Rèn luyện kỹ năng mềm thực tế",
     desc: "Rèn luyện kỹ năng giao tiếp, làm việc nhóm và tư duy phản biện. Đây là nền tảng kỹ năng sống vững chắc giúp học sinh tự tin bứt phá.",
   },
   {
+    id: "f3",
     image: "/trai-he/feature-local-culture.png",
     title: "Hòa nhập văn hóa bản địa độc đáo",
     desc: "Sống cùng đồng bào, làm nghề truyền thống và thấu hiểu bản sắc địa phương. Một hành trình hoạt động ngoại khóa sinh động giúp học sinh mở rộng thế giới quan.",
   },
   {
+    id: "f4",
     image: "/trai-he/feature-experiential-learning.png",
     title: "Trải nghiệm mô hình sáng tạo đa chiều",
     desc: "Ứng dụng mô hình Học tập qua trải nghiệm qua chuỗi hoạt động ngoại khóa đa dạng. Từ dạy học cộng đồng đến sinh tồn thiên nhiên, giúp các em làm chủ kỹ năng sống.",
@@ -106,20 +116,23 @@ const universities = [
   { type: "edinburgh", rank: "Top 5 United Kingdom" },
 ] as const;
 
-const programs = [
+const _programs = [
   {
+    id: "pg1",
     title: "Khối cấp 2",
     age: "10 - 15 tuổi",
     image: "/trai-he/age-10-15-khoi-cap-2.png",
     desc: "Tập trung vào tự lập, thích nghi, giao tiếp cơ bản và tinh thần sẻ chia qua các thử thách vừa sức.",
   },
   {
+    id: "pg2",
     title: "Khối cấp 3",
     age: "16 - 18 tuổi",
     image: "/trai-he/age-16-18-khoi-cap-3.png",
     desc: "Tăng cường tư duy lãnh đạo, làm việc nhóm và khả năng trình bày một dự án cộng đồng có mục tiêu rõ ràng.",
   },
   {
+    id: "pg3",
     title: "Sinh viên",
     age: "19 - 22 tuổi",
     image: "/trai-he/age-19-22-sinh-vien.png",
@@ -127,16 +140,16 @@ const programs = [
   },
 ];
 
-const schedule = [
-  ["Ngày 1", "Làm quen đội nhóm, di chuyển đến điểm dự án, phổ biến quy tắc an toàn."],
-  ["Ngày 2", "Khảo sát nhu cầu địa phương, chuẩn bị học liệu và hoạt động cộng đồng."],
-  ["Ngày 3", "Dạy học, trồng cây hoặc cải tạo không gian học tập cùng trẻ em địa phương."],
-  ["Ngày 4", "Trải nghiệm văn hóa bản địa, học nghề truyền thống và sinh hoạt cùng người dân."],
-  ["Ngày 5", "Hoàn thiện dự án nhóm, chia sẻ kết quả và phản tư kỹ năng đã học."],
-  ["Ngày 6", "Tổng kết, trao chứng nhận, trở về điểm tập trung."],
+const _schedule = [
+  { id: "s1", day: "Ngày 1", text: "Làm quen đội nhóm, di chuyển đến điểm dự án, phổ biến quy tắc an toàn." },
+  { id: "s2", day: "Ngày 2", text: "Khảo sát nhu cầu địa phương, chuẩn bị học liệu và hoạt động cộng đồng." },
+  { id: "s3", day: "Ngày 3", text: "Dạy học, trồng cây hoặc cải tạo không gian học tập cùng trẻ em địa phương." },
+  { id: "s4", day: "Ngày 4", text: "Trải nghiệm văn hóa bản địa, học nghề truyền thống và sinh hoạt cùng người dân." },
+  { id: "s5", day: "Ngày 5", text: "Hoàn thiện dự án nhóm, chia sẻ kết quả và phản tư kỹ năng đã học." },
+  { id: "s6", day: "Ngày 6", text: "Tổng kết, trao chứng nhận, trở về điểm tập trung." },
 ];
 
-const outcomes = [
+const _outcomes = [
   "Tự lập và quản lý bản thân trong môi trường mới",
   "Giao tiếp, hợp tác và giải quyết vấn đề theo nhóm",
   "Hiểu hơn về trách nhiệm xã hội và phát triển bền vững",
@@ -144,20 +157,23 @@ const outcomes = [
   "Nhận chứng nhận tham gia chương trình tình nguyện VEO",
 ];
 
-const testimonials = [
+const _testimonials = [
   {
+    id: "t1",
     name: "Thanh An",
     role: "Học viên trại hè Mai Châu",
     quote:
       "Em học được cách chủ động hơn, biết lắng nghe bạn trong nhóm và thấy những việc nhỏ của mình thật sự có ích cho các em nhỏ ở bản.",
   },
   {
+    id: "t2",
     name: "Chị Hoàng Thương",
     role: "Phụ huynh học viên",
     quote:
       "Con trở về tự tin và biết quan tâm đến mọi người hơn. Điều tôi thích nhất là chương trình có kỷ luật nhưng vẫn rất ấm áp.",
   },
   {
+    id: "t3",
     name: "Minh Ngọc",
     role: "Tình nguyện viên sinh viên",
     quote:
@@ -410,13 +426,42 @@ function CampListingsSection() {
 }
 
 export default function TraiHeTinhNguyenPage() {
+  const cms = getCampContent();
+  // Use CMS data when populated, else fall back to static module-level arrays
+  const highlights = cms.highlights.length > 0 ? cms.highlights : _highlights;
+  const pillars = cms.pillars.length > 0 ? cms.pillars : _pillars;
+  const featureCards = cms.featureCards.length > 0 ? cms.featureCards : _featureCards;
+  const programs = cms.programs.length > 0 ? cms.programs : _programs;
+  const schedule = cms.schedule.length > 0 ? cms.schedule : _schedule;
+  const outcomes = cms.outcomes.length > 0 ? cms.outcomes : _outcomes;
+  const testimonials = cms.testimonials.length > 0 ? cms.testimonials : _testimonials;
+  const cmsHeroImage = cms.heroImage || heroImage;
+  const cmsYoutubeVideoId = cms.youtubeVideoId || youtubeVideoId;
+  const cmsYoutubeEmbedUrl = `https://www.youtube.com/embed/${cmsYoutubeVideoId}?autoplay=1`;
+  const cmsYoutubeThumbnailUrl = `https://img.youtube.com/vi/${cmsYoutubeVideoId}/hqdefault.jpg`;
+  const cmsYoutubeSrcDoc = `
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; background: #451e6b; }
+    a { position: absolute; inset: 0; display: block; color: white; text-decoration: none; }
+    img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .shade { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(69,30,107,0.10), rgba(69,30,107,0.45)); }
+    .play { position: absolute; left: 50%; top: 50%; width: 76px; height: 76px; transform: translate(-50%, -50%); border-radius: 999px; background: #fbb040; box-shadow: 0 18px 40px rgba(0,0,0,0.24); display: grid; place-items: center; font: 700 34px/1 Arial, sans-serif; padding-left: 5px; }
+  </style>
+  <a href="${cmsYoutubeEmbedUrl}" aria-label="Phát video trại hè tình nguyện VEO">
+    <img src="${cmsYoutubeThumbnailUrl}" alt="Thumbnail video trại hè tình nguyện VEO" />
+    <span class="shade"></span>
+    <span class="play">▶</span>
+  </a>
+`;
+
   return (
     <>
       <Header />
       <main>
         {/* Hero */}
         <section className="relative flex h-[calc(100svh-80px)] min-h-[480px] max-h-[680px] items-end overflow-hidden sm:h-[calc(100svh-160px)]">
-          <img src={heroImage} alt="Trại hè tình nguyện VEO" className="absolute inset-0 h-full w-full object-cover" />
+          <img src={cmsHeroImage} alt="Trại hè tình nguyện VEO" className="absolute inset-0 h-full w-full object-cover" />
           <div className="absolute inset-0 bg-[linear-gradient(to_top,rgba(69,30,107,0.92)_0%,rgba(69,30,107,0.55)_50%,rgba(69,30,107,0.18)_100%)] sm:bg-[linear-gradient(90deg,rgba(69,30,107,0.86),rgba(69,30,107,0.54)_45%,rgba(69,30,107,0.16))]" />
           <div className="relative mx-auto w-full max-w-[1200px] px-4 pb-8 sm:px-6 sm:pb-14">
             <div className="max-w-2xl">
@@ -558,14 +603,14 @@ export default function TraiHeTinhNguyenPage() {
               />
             </ScrollReveal>
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-              {schedule.map(([day, text], index) => (
-                <ScrollReveal key={day} delay={index * 70} className="flex gap-4 rounded-xl border border-white/15 bg-white/8 p-4 sm:p-5">
+              {schedule.map((item, index) => (
+                <ScrollReveal key={item.id ?? item.day} delay={index * 70} className="flex gap-4 rounded-xl border border-white/15 bg-white/8 p-4 sm:p-5">
                   <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-solar-orange text-sm font-black text-white sm:h-12 sm:w-12">
-                    {day.replace("Ngày ", "N")}
+                    {item.day.replace("Ngày ", "N")}
                   </div>
                   <div>
-                    <h3 className="font-bold text-white">{day}</h3>
-                    <p className="mt-1 text-sm leading-relaxed text-white/75">{text}</p>
+                    <h3 className="font-bold text-white">{item.day}</h3>
+                    <p className="mt-1 text-sm leading-relaxed text-white/75">{item.text}</p>
                   </div>
                 </ScrollReveal>
               ))}
@@ -638,8 +683,8 @@ export default function TraiHeTinhNguyenPage() {
               <div className="relative aspect-video bg-deep-amethyst">
                 <iframe
                   className="absolute inset-0 h-full w-full"
-                  src={`https://www.youtube.com/embed/${youtubeVideoId}`}
-                  srcDoc={youtubeSrcDoc}
+                  src={cmsYoutubeEmbedUrl}
+                  srcDoc={cmsYoutubeSrcDoc}
                   title="Video cảm nhận trại hè tình nguyện VEO"
                   loading="lazy"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"

@@ -3,6 +3,9 @@ import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import ConsultationButton from "@/components/school-activities/ConsultationButton";
 import FAQAccordion from "@/components/trai-he/FAQAccordion";
+import { getCsrContent } from "@/lib/cms-content";
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Chiến lược CSR cho doanh nghiệp | VEO",
@@ -10,162 +13,135 @@ export const metadata: Metadata = {
     "VEO đồng hành cùng doanh nghiệp triển khai hoạt động cộng đồng, đáp ứng tiêu chuẩn ESG và tạo tác động thực chất cho xã hội.",
 };
 
-const heroImage = "/csr/hero-csr.jpg";
+const _heroImage = "/csr/hero-csr.jpg";
 
-const partnerLogos = [
-  {
-    name: "Jellyfish Vietnam",
-    image: "/csr/logo-jellyfish-vietnam.png",
-  },
-  {
-    name: "TH School",
-    image: "/csr/logo-th-school.png",
-  },
-  {
-    name: "JW Marriott",
-    image: "/csr/logo-jw-marriott.svg",
-  },
-  {
-    name: "IVY IELTS",
-    image: "/csr/logo-ivy-ielts.png",
-  },
-  {
-    name: "Amazon Web Services",
-    image: "/csr/logo-aws.svg",
-  },
-  {
-    name: "One Mount",
-    image: "/csr/logo-one-mount.png",
-  },
-  {
-    name: "SACE",
-    image: "/csr/logo-sace.png",
-  },
-  {
-    name: "Greenfield School",
-    image: "/csr/logo-greenfield-school.png",
-  },
-  {
-    name: "MT-P Entertainment",
-    image: "/csr/logo-mtp-entertainment.jpg",
-  },
-  {
-    name: "Business & Finance Club",
-    image: "/csr/logo-business-finance-club.jpg",
-  },
+const _partnerLogos = [
+  { id: "l1", name: "Jellyfish Vietnam", image: "/csr/logo-jellyfish-vietnam.png" },
+  { id: "l2", name: "TH School", image: "/csr/logo-th-school.png" },
+  { id: "l3", name: "JW Marriott", image: "/csr/logo-jw-marriott.svg" },
+  { id: "l4", name: "IVY IELTS", image: "/csr/logo-ivy-ielts.png" },
+  { id: "l5", name: "Amazon Web Services", image: "/csr/logo-aws.svg" },
+  { id: "l6", name: "One Mount", image: "/csr/logo-one-mount.png" },
+  { id: "l7", name: "SACE", image: "/csr/logo-sace.png" },
+  { id: "l8", name: "Greenfield School", image: "/csr/logo-greenfield-school.png" },
+  { id: "l9", name: "MT-P Entertainment", image: "/csr/logo-mtp-entertainment.jpg" },
+  { id: "l10", name: "Business & Finance Club", image: "/csr/logo-business-finance-club.jpg" },
 ];
 
-const partnerGallery = [
-  {
-    name: "M-TP Entertainment",
-    image: "/csr/partner-mtp-entertainment.jpg",
-  },
-  {
-    name: "Dệt May Sông Hồng",
-    image: "/csr/partner-det-may-song-hong.jpg",
-  },
-  {
-    name: "Amazon Web Services Vietnam",
-    image: "/csr/partner-aws-vietnam.jpg",
-  },
-  {
-    name: "All Nippon Airways",
-    image: "/csr/partner-all-nippon-airways.png",
-  },
-  {
-    name: "Kansai Paint",
-    image: "/csr/partner-kansai-paint.jpg",
-  },
-  {
-    name: "Astellas Pharma Vietnam",
-    image: "/csr/partner-astellas-pharma.jpg",
-  },
-  {
-    name: "Hino Motor",
-    image: "/csr/partner-hino-motor.jpg",
-  },
-  {
-    name: "JW Marriott",
-    image: "/csr/partner-jw-marriott.jpg",
-  },
+const partnerLogoSizeClasses: Record<string, string> = {
+  "Jellyfish Vietnam": "max-h-12 max-w-[126px] sm:max-w-[136px]",
+  "TH School": "max-h-14 max-w-[142px] sm:max-h-[60px] sm:max-w-[150px]",
+  "JW Marriott": "max-h-[66px] max-w-[128px] sm:max-h-[74px]",
+  "IVY IELTS": "max-h-[66px] max-w-[98px] sm:max-h-[72px]",
+  "Amazon Web Services": "max-h-[54px] max-w-[118px] sm:max-h-[58px] sm:max-w-[124px]",
+  "One Mount": "w-[124px] max-w-[124px] sm:w-[132px] sm:max-w-[132px]",
+  SACE: "max-h-[68px] max-w-[88px] sm:max-h-[76px]",
+  "Greenfield School": "max-h-[62px] max-w-[108px] sm:max-h-[70px]",
+  "MT-P Entertainment": "max-h-[70px] max-w-[94px] sm:max-h-[78px]",
+  "Business & Finance Club": "max-h-[72px] max-w-[94px] sm:max-h-20",
+};
+
+const _partnerGallery = [
+  { id: "g1", name: "M-TP Entertainment", image: "/csr/partner-mtp-entertainment.jpg" },
+  { id: "g2", name: "Dệt May Sông Hồng", image: "/csr/partner-det-may-song-hong.jpg" },
+  { id: "g3", name: "Amazon Web Services Vietnam", image: "/csr/partner-aws-vietnam.jpg" },
+  { id: "g4", name: "All Nippon Airways", image: "/csr/partner-all-nippon-airways.png" },
+  { id: "g5", name: "Kansai Paint", image: "/csr/partner-kansai-paint.jpg" },
+  { id: "g6", name: "Astellas Pharma Vietnam", image: "/csr/partner-astellas-pharma.jpg" },
+  { id: "g7", name: "Hino Motor", image: "/csr/partner-hino-motor.jpg" },
+  { id: "g8", name: "JW Marriott", image: "/csr/partner-jw-marriott.jpg" },
 ];
 
-const challenges = [
+const _challenges = [
   {
+    id: "c1",
     title: "Khó chọn dự án thật sự phù hợp",
     description:
       "Doanh nghiệp muốn tạo tác động nhưng thiếu dữ liệu địa phương, đối tác tin cậy và tiêu chí rõ ràng để chọn đúng cộng đồng cần hỗ trợ.",
   },
   {
+    id: "c2",
     title: "Dễ bị xem là làm CSR hình thức",
     description:
       "Hoạt động ngắn hạn, thiếu chiều sâu hoặc không gắn với nhu cầu thực tế dễ khiến chương trình bị nhìn nhận như một chiến dịch truyền thông đơn thuần.",
   },
   {
+    id: "c3",
     title: "Khó kéo nhân sự tham gia thật",
     description:
       "Nếu trải nghiệm không đủ ý nghĩa, nhân viên dễ tham gia cho có, thiếu kết nối cảm xúc và khó chuyển hóa thành văn hóa doanh nghiệp.",
   },
   {
+    id: "c4",
     title: "Thiếu số liệu để báo cáo tác động",
     description:
       "Doanh nghiệp cần hình ảnh, câu chuyện và chỉ số rõ ràng để báo cáo ESG/CSR, truyền thông nội bộ và chứng minh hiệu quả sau chương trình.",
   },
 ];
 
-const solutions = [
+const _solutions = [
   {
+    id: "s1",
     title: "Tư vấn chiến lược CSR",
     description:
       "Làm rõ mục tiêu, ngân sách, nhóm nhân sự tham gia và thông điệp thương hiệu để xây dựng lộ trình CSR phù hợp, tránh triển khai rời rạc hoặc hình thức.",
   },
   {
+    id: "s2",
     title: "Thiết kế chương trình thực địa",
     description:
       "Kết nối doanh nghiệp với đúng cộng đồng, trường học và điểm dự án có nhu cầu thật; thiết kế hoạt động đủ ý nghĩa để nhân sự tham gia bằng trải nghiệm thực tế.",
   },
   {
+    id: "s3",
     title: "Vận hành trọn gói và an toàn",
     description:
       "VEO điều phối hậu cần, lịch trình, vật dụng, địa phương và đội ngũ dẫn đoàn để chương trình diễn ra chuyên nghiệp, đúng tiến độ và phù hợp văn hóa bản địa.",
   },
   {
+    id: "s4",
     title: "Đo lường và lan tỏa tác động",
     description:
       "Tổng hợp hình ảnh, câu chuyện, số liệu và báo cáo sau chương trình để doanh nghiệp có tư liệu minh bạch cho ESG/CSR, truyền thông nội bộ và thương hiệu.",
   },
 ];
 
-const values = [
+const _values = [
   {
+    id: "v1",
     title: "Nâng tầm vị thế thương hiệu",
     description:
       "Xây dựng hình ảnh doanh nghiệp nhân văn, tạo sự khác biệt và củng cố niềm tin bền vững với khách hàng, đối tác",
   },
   {
+    id: "v2",
     title: "Tối ưu chiến lược truyền thông",
     description:
       "Kiến tạo chất liệu truyền thông giàu cảm xúc, giúp lan tỏa thương hiệu và tạo lợi thế cạnh tranh đột phá.",
   },
   {
+    id: "v3",
     title: "Minh bạch báo cáo tác động",
     description:
       "Cung cấp số liệu và báo cáo tác động chi tiết dựa trên tiêu chuẩn ESG",
   },
   {
+    id: "v4",
     title: "Kiến tạo giá trị bền vững",
     description:
       "Đồng hành cùng các Mục tiêu Phát triển Bền vững (SDGs), tạo ra thay đổi tích cực và dài hạn cho xã hội.",
   },
   {
+    id: "v5",
     title: "Gắn kết nhân sự & Xây dựng văn hoá doanh nghiệp",
     description:
       "Các chuyên gia huấn luyện kỹ năng, lãnh đạo, nhà điều hành doanh nghiệp trong nhiều lĩnh vực",
   },
 ];
 
-const projects = [
+const _projects = [
   {
+    id: "p1",
     title: "Hành trình Chinh phục bầu trời",
     partner: "All Nippon Airways",
     image: "/csr/project-ref-ana.png",
@@ -178,6 +154,7 @@ const projects = [
     ],
   },
   {
+    id: "p2",
     title: "Dự án Dreams in the SKY",
     partner: "M-TP Entertainment",
     image: "/csr/project-ref-mtp.jpg",
@@ -191,6 +168,7 @@ const projects = [
     ],
   },
   {
+    id: "p3",
     title: "Hành trình Chắp cánh ước mơ",
     partner: "Amazon Web Services",
     image: "/csr/project-ref-aws.jpg",
@@ -204,6 +182,7 @@ const projects = [
     ],
   },
   {
+    id: "p4",
     title: "Dự án Cho em con chữ cùng One Mount",
     partner: "One Mount",
     image: "/csr/project-ref-one-mount.jpeg",
@@ -218,54 +197,63 @@ const projects = [
   },
 ];
 
-const reasons = [
+const _reasons = [
   {
+    id: "r1",
     title: "12+ năm kinh nghiệm CSR",
     description:
       "V.E.O đã triển khai nhiều chương trình cộng đồng cho doanh nghiệp, trường học và tổ chức, đảm bảo tính chuyên nghiệp, an toàn và tác động thực tế.",
   },
   {
+    id: "r2",
     title: "Thiết kế theo mục tiêu doanh nghiệp",
     description:
       "Mỗi chương trình được xây dựng theo ngân sách, thời gian, nhóm nhân sự tham gia và thông điệp thương hiệu riêng.",
   },
   {
+    id: "r3",
     title: "Am hiểu địa phương",
     description:
       "V.E.O kết nối trực tiếp với cộng đồng, trường học và đối tác bản địa để hoạt động phù hợp với nhu cầu thực tế.",
   },
   {
+    id: "r4",
     title: "Tạo tác động và chất liệu truyền thông",
     description:
       "Chương trình vừa mang lại giá trị cho cộng đồng, vừa giúp doanh nghiệp có câu chuyện CSR chân thực để lan tỏa thương hiệu.",
   },
   {
+    id: "r5",
     title: "Mạng lưới dự án toàn quốc",
     description:
       "V.E.O có mạng lưới điểm dự án tại nhiều địa phương, linh hoạt triển khai chương trình ngắn hạn hoặc dài hạn.",
   },
 ];
 
-const process = [
+const _process = [
   {
+    id: "pr1",
     step: "01",
     title: "Khảo sát & tư vấn giải pháp tối ưu",
     description:
       "Phân tích chuyên sâu mục tiêu chiến lược và giá trị cốt lõi của doanh nghiệp để xây dựng lộ trình CSR phù hợp nhất.",
   },
   {
+    id: "pr2",
     step: "02",
     title: "Thiết kế chương trình mang dấu ấn riêng",
     description:
       "Sáng tạo nội dung chương trình độc bản, lồng ghép khéo léo bản sắc thương hiệu vào các hoạt động vì cộng đồng",
   },
   {
+    id: "pr3",
     step: "03",
     title: "Vận hành & triển khai thực tế",
     description:
       "Trực tiếp điều phối, quản lý mọi khâu vận hành tại cộng đồng, đảm bảo tính an toàn, hiệu quả và đúng tiến độ.",
   },
   {
+    id: "pr4",
     step: "04",
     title: "Đo lường tác động & Đồng hành truyền thông",
     description:
@@ -273,28 +261,34 @@ const process = [
   },
 ];
 
-const csrFaqs = [
+const _csrFaqs = [
   {
+    id: "faq1",
     q: "VEO có thiết kế chương trình CSR theo mục tiêu riêng của doanh nghiệp không?",
     a: "Có. VEO bắt đầu bằng việc tìm hiểu mục tiêu thương hiệu, ngân sách, thời gian, nhóm nhân sự tham gia và thông điệp doanh nghiệp muốn lan tỏa. Từ đó, đội ngũ sẽ đề xuất chương trình CSR phù hợp với cộng đồng thụ hưởng và mục tiêu phát triển bền vững của doanh nghiệp.",
   },
   {
+    id: "faq2",
     q: "Một chương trình CSR thường kéo dài bao lâu?",
     a: "Tùy quy mô, chương trình có thể là chuyến đi trong ngày, hành trình 2-3 ngày hoặc dự án dài hạn theo quý/năm. VEO sẽ tư vấn lộ trình phù hợp để doanh nghiệp vừa đảm bảo vận hành nội bộ, vừa tạo được tác động thật tại địa phương.",
   },
   {
+    id: "faq3",
     q: "Doanh nghiệp có nhận được báo cáo tác động sau chương trình không?",
     a: "Có. Sau mỗi chương trình, VEO tổng hợp hình ảnh, số liệu hoạt động, câu chuyện tại cộng đồng và các kết quả nổi bật để doanh nghiệp có tư liệu báo cáo nội bộ, truyền thông thương hiệu và theo dõi tác động xã hội.",
   },
   {
+    id: "faq4",
     q: "VEO hỗ trợ những hạng mục nào trong quá trình triển khai?",
     a: "VEO đồng hành từ tư vấn ý tưởng, khảo sát điểm dự án, thiết kế hoạt động, điều phối hậu cần, kết nối địa phương, quản lý an toàn, vận hành thực địa đến tổng hợp báo cáo và tư liệu truyền thông sau chương trình.",
   },
   {
+    id: "faq5",
     q: "Chương trình CSR có thể kết hợp team building hoặc truyền thông nội bộ không?",
     a: "Có. Các hoạt động có thể được thiết kế để tăng gắn kết đội ngũ, giúp nhân sự cùng trải nghiệm, cùng đóng góp và hiểu rõ hơn giá trị phát triển bền vững mà doanh nghiệp đang theo đuổi.",
   },
   {
+    id: "faq6",
     q: "Làm thế nào để bắt đầu nhận tư vấn CSR?",
     a: "Doanh nghiệp chỉ cần để lại thông tin qua nút đăng ký tư vấn. Đội ngũ VEO sẽ liên hệ để trao đổi nhu cầu, mục tiêu, thời gian dự kiến và đề xuất hướng triển khai phù hợp nhất.",
   },
@@ -321,6 +315,18 @@ function SectionTitle({
 }
 
 export default function CsrPage() {
+  const cms = getCsrContent();
+  const heroImage = cms.heroImage || _heroImage;
+  const partnerLogos = cms.partnerLogos.length > 0 ? cms.partnerLogos : _partnerLogos;
+  const partnerGallery = cms.partnerGallery.length > 0 ? cms.partnerGallery : _partnerGallery;
+  const challenges = cms.challenges.length > 0 ? cms.challenges : _challenges;
+  const solutions = cms.solutions.length > 0 ? cms.solutions : _solutions;
+  const values = cms.values.length > 0 ? cms.values : _values;
+  const projects = cms.projects.length > 0 ? cms.projects : _projects;
+  const reasons = cms.reasons.length > 0 ? cms.reasons : _reasons;
+  const process = cms.process.length > 0 ? cms.process : _process;
+  const csrFaqs = cms.faqs.length > 0 ? cms.faqs : _csrFaqs;
+
   return (
     <>
       <Header />
@@ -365,13 +371,13 @@ export default function CsrPage() {
               description="Nhiều đơn vị doanh nghiệp đã đồng hành cùng V.E.O trong hành trình CSR bền vững, thể hiện sự gắn kết cộng đồng và trách nhiệm xã hội."
             />
             <div className="mt-10">
-              <div className="mx-auto grid max-w-[940px] grid-cols-2 items-center justify-items-center gap-x-8 gap-y-8 sm:grid-cols-3 lg:grid-cols-5">
+              <div className="mx-auto grid max-w-[940px] grid-cols-2 items-center justify-items-center gap-x-8 gap-y-7 sm:grid-cols-3 lg:grid-cols-5">
                 {partnerLogos.map((partner) => (
-                  <div key={partner.name} className="flex h-20 w-[132px] items-center justify-center">
+                  <div key={partner.name} className="flex h-[92px] w-[152px] items-center justify-center sm:h-24">
                     <img
                       src={partner.image}
                       alt={partner.name}
-                      className="max-h-full max-w-full object-contain"
+                      className={`object-contain ${partnerLogoSizeClasses[partner.name] ?? "max-h-16 max-w-[132px]"}`}
                       loading="lazy"
                     />
                   </div>

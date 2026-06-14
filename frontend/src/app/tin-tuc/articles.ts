@@ -9,6 +9,7 @@ export type Article = {
   excerpt: string;
   readTime: number;
   featured?: boolean;
+  bodyHtml?: string;
   body: ContentBlock[];
 };
 

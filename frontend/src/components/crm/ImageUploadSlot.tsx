@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
+import { getImageUrl } from "@/lib/storage";
 import ConfirmDialog from "./ConfirmDialog";
 
 type Meta = { width: number; height: number; sizeKb: number };
@@ -48,7 +49,7 @@ type Props = {
   value: string;
   onChange: (url: string) => void;
   /** Short label shown inside empty drop zone, e.g. "Ảnh nền" */
-  label: string;
+  label?: string;
   /** Dimension / ratio guidance, e.g. "1440 × 810px · Tỉ lệ 16:9" */
   hint: string;
   maxWidth?: number;
@@ -61,7 +62,7 @@ type Props = {
 export default function ImageUploadSlot({
   value,
   onChange,
-  label,
+  label = "",
   hint,
   maxWidth = 1440,
   maxHeight = 810,
@@ -101,7 +102,7 @@ export default function ImageUploadSlot({
       {value ? (
         <div className={`relative rounded-xl overflow-hidden ${previewHeight} bg-surface-container-low group`}>
           <img
-            src={value}
+            src={getImageUrl(value)}
             alt={label}
             className="w-full h-full object-cover"
             onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}

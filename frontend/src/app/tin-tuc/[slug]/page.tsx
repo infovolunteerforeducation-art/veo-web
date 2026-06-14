@@ -3,7 +3,45 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
-import { articles, type Article, type ContentBlock } from "../articles";
+import { articles, categoryMap, type Article, type ContentBlock } from "../articles";
+import { getBlogContent } from "@/lib/cms-content";
+
+function formatDateVN(iso: string): string {
+  const d = new Date(iso);
+  return `${String(d.getDate()).padStart(2, "0")}/${String(d.getMonth() + 1).padStart(2, "0")}/${d.getFullYear()}`;
+}
+
+function isHtmlContent(content: string): boolean {
+  return /<\/?[a-z][\s\S]*>/i.test(content);
+}
+
+function stripHtml(html: string): string {
+  return html.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
+}
+
+function findArticle(slug: string): Article | undefined {
+  const hardcoded = articles.find((a) => a.slug === slug);
+  if (hardcoded) return hardcoded;
+  const cms = getBlogContent();
+  const found = cms.articles.find((a) => a.slug === slug && a.status === "published");
+  if (!found) return undefined;
+  const cat = categoryMap[found.categorySlug] ?? { name: found.categorySlug, class: "bg-primary text-white" };
+  const hasHtml = isHtmlContent(found.content);
+  return {
+    slug: found.slug,
+    category: cat.name,
+    categorySlug: found.categorySlug,
+    categoryClass: cat.class,
+    date: formatDateVN(found.publishedAt ?? found.updatedAt),
+    image: found.coverImage || "/og-default.jpg",
+    title: found.title,
+    excerpt: found.excerpt,
+    readTime: found.readTime || 3,
+    featured: found.featured,
+    bodyHtml: hasHtml ? found.content : undefined,
+    body: hasHtml ? [] : found.content.split(/\n\n+/).filter(Boolean).map((text) => ({ type: "p" as const, text })),
+  };
+}
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -20,6 +58,34 @@ function slugifyHeading(text: string) {
     .replace(/[^a-z0-9-]/g, "");
 }
 
+function sanitizeArticleHtml(html: string): string {
+  return html
+    .replace(/<script[\s\S]*?<\/script>/gi, "")
+    .replace(/<style[\s\S]*?<\/style>/gi, "")
+    .replace(/\son\w+=(["']).*?\1/gi, "")
+    .replace(/\shref=(["'])javascript:[^"']*\1/gi, "")
+    .replace(/\ssrc=(["'])javascript:[^"']*\1/gi, "");
+}
+
+function extractHtmlHeadings(html: string): Array<{ type: "h2" | "h3"; text: string }> {
+  const headings: Array<{ type: "h2" | "h3"; text: string }> = [];
+  for (const match of html.matchAll(/<(h2|h3)(?:\s[^>]*)?>([\s\S]*?)<\/\1>/gi)) {
+    headings.push({ type: match[1].toLowerCase() as "h2" | "h3", text: stripHtml(match[2]) });
+  }
+  return headings;
+}
+
+function addHeadingIds(html: string): string {
+  return sanitizeArticleHtml(html).replace(
+    /<(h2|h3)([^>]*)>([\s\S]*?)<\/\1>/gi,
+    (full, tag: string, attrs: string, inner: string) => {
+      if (/\sid=/.test(attrs)) return full;
+      const id = slugifyHeading(stripHtml(inner));
+      return `<${tag}${attrs} id="${id}">${inner}</${tag}>`;
+    },
+  );
+}
+
 function parseDateVN(date: string): number {
   const [d, m, y] = date.split("/").map(Number);
   return new Date(y, m - 1, d).getTime();
@@ -27,7 +93,7 @@ function parseDateVN(date: string): number {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const article = articles.find((a) => a.slug === slug);
+  const article = findArticle(slug);
   if (!article) return {};
   return {
     title: `${article.title} – VEO`,
@@ -136,12 +202,12 @@ function ArticleCard({ article: a }: { article: Article }) {
 
 export default async function ArticlePage({ params }: Props) {
   const { slug } = await params;
-  const article = articles.find((a) => a.slug === slug);
+  const article = findArticle(slug);
   if (!article) notFound();
 
-  const tocBlocks = article.body.filter(
-    (b) => b.type === "h2" || b.type === "h3"
-  ) as Array<{ type: "h2" | "h3"; text: string }>;
+  const tocBlocks = article.bodyHtml
+    ? extractHtmlHeadings(article.bodyHtml)
+    : article.body.filter((b) => b.type === "h2" || b.type === "h3") as Array<{ type: "h2" | "h3"; text: string }>;
 
   const sameCategory = articles
     .filter((a) => a.slug !== slug && a.category === article.category)
@@ -263,7 +329,14 @@ export default async function ArticlePage({ params }: Props) {
           </p>
 
           {/* Body */}
-          <div>{article.body.map((block, i) => renderBlock(block, i))}</div>
+          {article.bodyHtml ? (
+            <div
+              className="cms-article-body text-on-surface [&_a]:font-semibold [&_a]:text-primary [&_a]:underline-offset-4 hover:[&_a]:underline [&_blockquote]:my-8 [&_blockquote]:rounded-r-xl [&_blockquote]:border-l-4 [&_blockquote]:border-solar-orange [&_blockquote]:bg-surface-container-low [&_blockquote]:py-5 [&_blockquote]:pl-6 [&_blockquote]:pr-6 [&_h2]:mb-4 [&_h2]:mt-10 [&_h2]:scroll-mt-24 [&_h2]:text-xl [&_h2]:font-bold [&_h2]:text-primary [&_h3]:mb-3 [&_h3]:mt-7 [&_h3]:scroll-mt-24 [&_h3]:text-lg [&_h3]:font-semibold [&_h3]:text-on-surface [&_img]:my-8 [&_img]:w-full [&_img]:rounded-2xl [&_img]:object-cover [&_li]:mb-2 [&_ol]:mb-5 [&_ol]:list-decimal [&_ol]:pl-6 [&_p]:mb-5 [&_p]:leading-relaxed [&_ul]:mb-5 [&_ul]:list-disc [&_ul]:pl-6"
+              dangerouslySetInnerHTML={{ __html: addHeadingIds(article.bodyHtml) }}
+            />
+          ) : (
+            <div>{article.body.map((block, i) => renderBlock(block, i))}</div>
+          )}
         </div>
 
         {/* Related articles – same category */}

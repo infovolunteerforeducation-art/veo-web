@@ -1,28 +1,32 @@
+"use client";
+
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import type { FooterContent } from "@/lib/cms-content";
 
-const programs = [
-  { label: "Du lịch tình nguyện", href: "/du-lich-tinh-nguyen" },
-  { label: "Trại hè tình nguyện", href: "/trai-he-tinh-nguyen" },
-  { label: "Hoạt động ngoại khóa trường học", href: "/hoat-dong-ngoai-khoa-truong-hoc" },
-  { label: "CSR", href: "/chien-luoc-csr-cho-doanh-nghiep" },
+const _programs = [
+  { label: "Du lịch tình nguyện", href: "/du-lich-tinh-nguyen", external: false },
+  { label: "Trại hè tình nguyện", href: "/trai-he-tinh-nguyen", external: false },
+  { label: "Hoạt động ngoại khóa trường học", href: "/hoat-dong-ngoai-khoa-truong-hoc", external: false },
+  { label: "CSR", href: "/chien-luoc-csr-cho-doanh-nghiep", external: false },
   { label: "Social Leader Program", href: "https://www.slp.edu.vn/", external: true },
 ];
 
-const about = [
-  { label: "Về VEO", href: "/ve-veo" },
-  { label: "Tin tức", href: "/tin-tuc" },
-  { label: "Liên hệ", href: "/lien-he" },
+const _about = [
+  { label: "Về VEO", href: "/ve-veo", external: false },
+  { label: "Tin tức", href: "/tin-tuc", external: false },
+  { label: "Liên hệ", href: "/lien-he", external: false },
 ];
 
-const support = [
-  { label: "Hướng dẫn tham gia", href: "/huong-dan-tham-gia" },
-  { label: "Chính sách bảo mật", href: "/chinh-sach-bao-mat" },
-  { label: "Chính sách hoàn hủy", href: "/chinh-sach-hoan-huy" },
-  { label: "Điều khoản sử dụng", href: "/dieu-khoan-su-dung" },
+const _support = [
+  { label: "Hướng dẫn tham gia", href: "/huong-dan-tham-gia", external: false },
+  { label: "Chính sách bảo mật", href: "/chinh-sach-bao-mat", external: false },
+  { label: "Chính sách hoàn hủy", href: "/chinh-sach-hoan-huy", external: false },
+  { label: "Điều khoản sử dụng", href: "/dieu-khoan-su-dung", external: false },
 ];
 
-const socials = [
+const _socials = [
   {
     label: "Facebook",
     href: "https://www.facebook.com/volunteerforeducation.veo",
@@ -63,6 +67,26 @@ const socials = [
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
+  const [cms, setCms] = useState<FooterContent | null>(null);
+
+  useEffect(() => {
+    fetch("/api/cms/footer")
+      .then((r) => r.json())
+      .then((d: FooterContent) => setCms(d))
+      .catch(() => {});
+  }, []);
+
+  const description = cms?.description || "Volunteer For Education (VEO) kết nối tình nguyện viên với những hành trình giáo dục, trải nghiệm và phát triển cộng đồng tại Việt Nam.";
+  const phone = cms?.phone || "070.508.1088";
+  const address = cms?.address || "Tầng 3, Tòa nhà D12 Giảng Võ, Ba Đình, Hà Nội";
+  const email = cms?.email || "info@volunteerforeducation.org";
+  const programs = cms && cms.programLinks.length > 0 ? cms.programLinks : _programs;
+  const about = cms && cms.aboutLinks.length > 0 ? cms.aboutLinks : _about;
+  const support = cms && cms.supportLinks.length > 0 ? cms.supportLinks : _support;
+  const socials = _socials.map((s) => {
+    const cmsHref = cms?.socials.find((c) => c.label === s.label)?.href;
+    return { ...s, href: cmsHref || s.href };
+  });
 
   return (
     <footer className="w-full bg-deep-amethyst">
@@ -76,20 +100,20 @@ export default function Footer() {
             className="h-12 w-auto object-contain"
           />
           <p className="text-sm text-pure-white/80 leading-relaxed">
-            Volunteer For Education (VEO) kết nối tình nguyện viên với những hành trình giáo dục, trải nghiệm và phát triển cộng đồng tại Việt Nam.
+            {description}
           </p>
           <div className="space-y-2 pt-2">
-            <a href="tel:0705081088" className="flex items-center gap-2 text-pure-white/80 hover:text-solar-orange transition-colors text-sm">
+            <a href={`tel:${phone.replace(/[^+\d]/g, "")}`} className="flex items-center gap-2 text-pure-white/80 hover:text-solar-orange transition-colors text-sm">
               <span className="material-symbols-outlined text-base">phone</span>
-              070.508.1088
+              {phone}
             </a>
             <div className="flex items-start gap-2 text-pure-white/80 text-sm">
               <span className="material-symbols-outlined text-base mt-0.5">location_on</span>
-              Tầng 3, Tòa nhà D12 Giảng Võ, Ba Đình, Hà Nội
+              {address}
             </div>
-            <a href="mailto:info@volunteerforeducation.org" className="flex items-center gap-2 text-pure-white/80 hover:text-solar-orange transition-colors text-sm">
+            <a href={`mailto:${email}`} className="flex items-center gap-2 text-pure-white/80 hover:text-solar-orange transition-colors text-sm">
               <span className="material-symbols-outlined text-base">mail</span>
-              info@volunteerforeducation.org
+              {email}
             </a>
           </div>
         </div>

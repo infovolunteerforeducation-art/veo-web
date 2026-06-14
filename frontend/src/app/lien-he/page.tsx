@@ -1,5 +1,8 @@
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
+import { getContactContent } from "@/lib/cms-content";
+
+export const dynamic = "force-dynamic";
 
 const contactInfo = [
   {
@@ -68,6 +71,24 @@ const socials = [
 ];
 
 export default function ContactPage() {
+  const cms = getContactContent();
+
+  const activeContactInfo = [
+    { icon: "phone", label: "Hotline", value: cms.phone, href: `tel:${cms.phone.replace(/\./g, "")}` },
+    { icon: "mail", label: "Email", value: cms.email, href: `mailto:${cms.email}` },
+    { icon: "location_on", label: "Địa chỉ", value: cms.address, href: `https://maps.google.com/?q=${encodeURIComponent(cms.address)}` },
+    { icon: "schedule", label: "Giờ làm việc", value: cms.hours, href: null as string | null },
+  ];
+
+  const activeSocials = socials.map((s) => ({
+    ...s,
+    href:
+      s.label === "Facebook" ? cms.facebook
+      : s.label === "TikTok" ? cms.tiktok
+      : s.label === "Instagram" ? cms.instagram
+      : cms.youtube,
+  }));
+
   return (
     <>
       <Header />
@@ -95,7 +116,7 @@ export default function ContactPage() {
             <div className="lg:col-span-3 rounded-2xl overflow-hidden border border-outline-variant/30 min-h-[480px]">
               <iframe
                 title="Bản đồ VEO"
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3724.0971578954877!2d105.8192!3d21.0278!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3135ab5b1a7b4c4f%3A0x1!2zR2nhuqNuZyBWw7MsIEJhIMSQw61uaCwgSMOgIE7hu5Np!5e0!3m2!1svi!2svn!4v1686000000000!5m2!1svi!2svn"
+                src={cms.mapEmbed}
                 width="100%"
                 height="100%"
                 style={{ border: 0, display: "block", minHeight: 480 }}
@@ -110,7 +131,7 @@ export default function ContactPage() {
               <div className="bg-deep-amethyst rounded-2xl p-8 text-pure-white h-full">
                 <h3 className="text-xl font-bold mb-8">Thông tin liên hệ</h3>
                 <div className="space-y-6">
-                  {contactInfo.map((item) => (
+                  {activeContactInfo.map((item) => (
                     <div key={item.label} className="flex items-start gap-4">
                       <div className="w-11 h-11 rounded-full bg-pure-white/10 flex items-center justify-center shrink-0">
                         <span className="material-symbols-outlined text-solar-orange text-xl">{item.icon}</span>
@@ -137,7 +158,7 @@ export default function ContactPage() {
                 <div className="border-t border-pure-white/10 mt-8 pt-6">
                   <p className="text-xs text-pure-white/60 mb-4">Theo dõi chúng tôi</p>
                   <div className="flex gap-3">
-                    {socials.map((s) => (
+                    {activeSocials.map((s) => (
                       <a
                         key={s.label}
                         href={s.href}
