@@ -19,7 +19,7 @@ const navLinks: NavLink[] = [
   {
     label: "B2B",
     children: [
-      { label: "CSR", href: "#" },
+      { label: "CSR", href: "/chien-luoc-csr-cho-doanh-nghiep" },
       { label: "Hoạt động ngoại khóa trường học", href: "/hoat-dong-ngoai-khoa-truong-hoc" },
     ],
   },

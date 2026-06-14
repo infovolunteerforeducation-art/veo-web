@@ -22,7 +22,7 @@ const programs = [
     description:
       "Chương trình tình nguyện thiết kế riêng, gắn kết nội bộ và đo lường tác động xã hội",
     image: "/about-veo/program-csr.webp",
-    href: "#",
+    href: "/chien-luoc-csr-cho-doanh-nghiep",
   },
   {
     title: "Hoạt động ngoại khóa trường học",

@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
@@ -16,6 +16,159 @@ const SORT_OPTIONS: { value: SortOption; label: string }[] = [
   { value: "price-desc", label: "Giá cao đến thấp" },
   { value: "price-asc", label: "Giá thấp đến cao" },
 ];
+
+function MobileTourControls({
+  filters,
+  onFiltersChange,
+  sortBy,
+  onSortChange,
+  resultCount,
+}: {
+  filters: TourFilterState;
+  onFiltersChange: (filters: TourFilterState) => void;
+  sortBy: SortOption;
+  onSortChange: (sortBy: SortOption) => void;
+  resultCount: number;
+}) {
+  const [filterModalOpen, setFilterModalOpen] = useState(false);
+  const [sortModalOpen, setSortModalOpen] = useState(false);
+  const activeFilterCount = filters.regions.length + filters.durations.length;
+
+  useEffect(() => {
+    const hasOpenModal = filterModalOpen || sortModalOpen;
+    if (!hasOpenModal) return;
+
+    function onKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") {
+        setFilterModalOpen(false);
+        setSortModalOpen(false);
+      }
+    }
+
+    document.addEventListener("keydown", onKeyDown);
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      document.removeEventListener("keydown", onKeyDown);
+      document.body.style.overflow = "";
+    };
+  }, [filterModalOpen, sortModalOpen]);
+
+  return (
+    <>
+      <div className="fixed bottom-5 left-1/2 z-[90] flex -translate-x-1/2 overflow-hidden rounded-full bg-white shadow-[0_10px_30px_rgba(35,18,55,0.22)] ring-1 ring-outline-variant/30 lg:hidden">
+        <button
+          type="button"
+          onClick={() => setFilterModalOpen(true)}
+          className="flex h-14 min-w-[132px] items-center justify-center gap-2 px-5 text-sm font-bold text-on-surface transition-colors hover:bg-surface-container-low"
+          aria-haspopup="dialog"
+        >
+          <span className="material-symbols-outlined text-primary" style={{ fontSize: 20 }}>tune</span>
+          Lọc
+          {activeFilterCount > 0 && (
+            <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-primary px-1.5 text-[11px] font-black text-white">
+              {activeFilterCount}
+            </span>
+          )}
+        </button>
+        <span className="my-3 w-px bg-outline-variant/50" />
+        <button
+          type="button"
+          onClick={() => setSortModalOpen(true)}
+          className="flex h-14 min-w-[132px] items-center justify-center gap-2 px-5 text-sm font-bold text-on-surface transition-colors hover:bg-surface-container-low"
+          aria-haspopup="dialog"
+        >
+          <span className="material-symbols-outlined text-primary" style={{ fontSize: 20 }}>sort</span>
+          Sắp xếp
+        </button>
+      </div>
+
+      {filterModalOpen && (
+        <div className="fixed inset-0 z-[100] flex items-end justify-center bg-black/45 px-4 pb-4 pt-20 lg:hidden" role="dialog" aria-modal="true">
+          <button
+            type="button"
+            aria-label="Đóng bộ lọc"
+            onClick={() => setFilterModalOpen(false)}
+            className="absolute inset-0"
+          />
+          <div className="relative max-h-[82vh] w-full max-w-md overflow-y-auto rounded-2xl bg-white p-4 shadow-2xl">
+            <div className="mb-3 flex items-center justify-between">
+              <p className="text-lg font-bold text-primary">Bộ lọc</p>
+              <button
+                type="button"
+                aria-label="Đóng"
+                onClick={() => setFilterModalOpen(false)}
+                className="flex h-9 w-9 items-center justify-center rounded-full bg-surface-container-low text-primary"
+              >
+                <span className="material-symbols-outlined text-[22px]">close</span>
+              </button>
+            </div>
+            <TourFilters
+              filters={filters}
+              onChange={onFiltersChange}
+              showTitle={false}
+              className="w-full space-y-5"
+            />
+            <button
+              type="button"
+              onClick={() => setFilterModalOpen(false)}
+              className="mt-4 h-12 w-full rounded-xl bg-primary text-sm font-bold text-white transition-colors hover:bg-primary/90"
+            >
+              Xem kết quả ({resultCount})
+            </button>
+          </div>
+        </div>
+      )}
+
+      {sortModalOpen && (
+        <div className="fixed inset-0 z-[100] flex items-end justify-center bg-black/45 px-4 pb-4 pt-20 lg:hidden" role="dialog" aria-modal="true">
+          <button
+            type="button"
+            aria-label="Đóng sắp xếp"
+            onClick={() => setSortModalOpen(false)}
+            className="absolute inset-0"
+          />
+          <div className="relative w-full max-w-md rounded-2xl bg-white p-4 shadow-2xl">
+            <div className="mb-3 flex items-center justify-between">
+              <p className="text-lg font-bold text-primary">Sắp xếp</p>
+              <button
+                type="button"
+                aria-label="Đóng"
+                onClick={() => setSortModalOpen(false)}
+                className="flex h-9 w-9 items-center justify-center rounded-full bg-surface-container-low text-primary"
+              >
+                <span className="material-symbols-outlined text-[22px]">close</span>
+              </button>
+            </div>
+            <div className="space-y-2">
+              {SORT_OPTIONS.map((option) => {
+                const selected = sortBy === option.value;
+                return (
+                  <button
+                    key={option.value}
+                    type="button"
+                    onClick={() => {
+                      onSortChange(option.value);
+                      setSortModalOpen(false);
+                    }}
+                    className={`flex w-full items-center justify-between rounded-xl border px-4 py-3 text-left text-sm font-bold transition-colors ${
+                      selected
+                        ? "border-primary bg-primary/10 text-primary"
+                        : "border-outline-variant text-on-surface hover:border-primary/40 hover:bg-primary/5"
+                    }`}
+                  >
+                    <span>{option.label}</span>
+                    {selected && <span className="material-symbols-outlined text-[20px]">check</span>}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      )}
+    </>
+  );
+}
 
 function formatPricePerPerson(price: number) {
   return `${new Intl.NumberFormat("vi-VN").format(price)}đ/ người`;
@@ -76,6 +229,7 @@ export default function ToursPage() {
   const [sortBy, setSortBy] = useState<SortOption>("departure-asc");
   const [sortOpen, setSortOpen] = useState(false);
   const [openFaq, setOpenFaq] = useState<number | null>(0);
+  const currentSortLabel = SORT_OPTIONS.find((option) => option.value === sortBy)?.label;
 
   const filteredTours = useMemo(() => {
     const matched = tours.filter((tour) => {
@@ -103,11 +257,11 @@ export default function ToursPage() {
   return (
     <>
       <Header />
-      <main className="max-w-[1200px] mx-auto px-4 sm:px-6 py-8 sm:py-10">
+      <main className="max-w-[1200px] mx-auto px-4 sm:px-6 py-8 pb-24 sm:py-10 lg:pb-10">
         <div className="grid grid-cols-1 lg:grid-cols-[290px_minmax(0,1fr)] gap-6">
 
           {/* ── Sidebar Filters ── */}
-          <aside className="w-full">
+          <aside className="hidden w-full lg:block">
             <TourFilters filters={filters} onChange={setFilters} />
           </aside>
 
@@ -117,12 +271,12 @@ export default function ToursPage() {
               <h1 className="text-3xl sm:text-4xl lg:text-3xl font-bold text-primary mb-2">
                   Tour du lịch tình nguyện
               </h1>
-              <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
                 <p className="text-base sm:text-lg text-on-surface-variant">
                   Chọn hành trình phù hợp và bắt đầu tạo ra sự thay đổi.
                 </p>
               <div
-                className="relative w-full sm:w-52 shrink-0"
+                className="relative hidden w-full shrink-0 lg:block lg:w-52"
                 onBlur={(e) => {
                   if (!e.currentTarget.contains(e.relatedTarget)) setSortOpen(false);
                 }}
@@ -135,7 +289,7 @@ export default function ToursPage() {
                   aria-expanded={sortOpen}
                 >
                   <span className="material-symbols-outlined pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-primary" style={{ fontSize: 16 }}>sort</span>
-                  {SORT_OPTIONS.find((option) => option.value === sortBy)?.label}
+                  {currentSortLabel}
                   <span className={`material-symbols-outlined pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-primary transition-transform ${sortOpen ? "rotate-180" : ""}`} style={{ fontSize: 16 }}>expand_more</span>
                 </button>
 
@@ -280,6 +434,14 @@ export default function ToursPage() {
             )}
           </section>
         </div>
+
+        <MobileTourControls
+          filters={filters}
+          onFiltersChange={setFilters}
+          sortBy={sortBy}
+          onSortChange={setSortBy}
+          resultCount={filteredTours.length}
+        />
 
         {/* ── Divider ── */}
         <div className="mt-20 flex items-center gap-4">

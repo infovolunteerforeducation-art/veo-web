@@ -4,7 +4,8 @@ import Link from "next/link";
 const programs = [
   { label: "Du lịch tình nguyện", href: "/du-lich-tinh-nguyen" },
   { label: "Trại hè tình nguyện", href: "/trai-he-tinh-nguyen" },
-  { label: "CSR", href: "#" },
+  { label: "Hoạt động ngoại khóa trường học", href: "/hoat-dong-ngoai-khoa-truong-hoc" },
+  { label: "CSR", href: "/chien-luoc-csr-cho-doanh-nghiep" },
   { label: "Social Leader Program", href: "https://www.slp.edu.vn/", external: true },
 ];
 
@@ -61,6 +62,8 @@ const socials = [
 ];
 
 export default function Footer() {
+  const currentYear = new Date().getFullYear();
+
   return (
     <footer className="w-full bg-deep-amethyst">
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6 py-10 px-6 max-w-[1200px] mx-auto">
@@ -75,20 +78,6 @@ export default function Footer() {
           <p className="text-sm text-pure-white/80 leading-relaxed">
             Volunteer For Education (VEO) kết nối tình nguyện viên với những hành trình giáo dục, trải nghiệm và phát triển cộng đồng tại Việt Nam.
           </p>
-          <div className="flex gap-3">
-            {socials.map((item) => (
-              <a
-                key={item.label}
-                href={item.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={item.label}
-                className="flex h-9 w-9 items-center justify-center rounded-full bg-pure-white/10 text-pure-white transition-colors hover:bg-solar-orange"
-              >
-                {item.icon}
-              </a>
-            ))}
-          </div>
           <div className="space-y-2 pt-2">
             <a href="tel:0705081088" className="flex items-center gap-2 text-pure-white/80 hover:text-solar-orange transition-colors text-sm">
               <span className="material-symbols-outlined text-base">phone</span>
@@ -101,21 +90,6 @@ export default function Footer() {
             <a href="mailto:info@volunteerforeducation.org" className="flex items-center gap-2 text-pure-white/80 hover:text-solar-orange transition-colors text-sm">
               <span className="material-symbols-outlined text-base">mail</span>
               info@volunteerforeducation.org
-            </a>
-            <a
-              href="http://online.gov.vn/"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Đã thông báo Bộ Công Thương"
-              className="inline-flex pt-1 transition-opacity hover:opacity-85"
-            >
-              <Image
-                src="/bct.png"
-                alt="Đã thông báo Bộ Công Thương"
-                width={120}
-                height={40}
-                className="h-10 w-auto object-contain sm:h-11 lg:h-[50px]"
-              />
             </a>
           </div>
         </div>
@@ -167,13 +141,44 @@ export default function Footer() {
               </li>
             ))}
           </ul>
+          <div className="pt-2">
+            <div className="flex gap-3">
+              {socials.map((item) => (
+                <a
+                  key={item.label}
+                  href={item.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={item.label}
+                  className="flex h-9 w-9 items-center justify-center rounded-full bg-pure-white/10 text-pure-white transition-colors hover:bg-solar-orange"
+                >
+                  {item.icon}
+                </a>
+              ))}
+            </div>
+            <a
+              href="http://online.gov.vn/"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Đã thông báo Bộ Công Thương"
+              className="mt-4 inline-flex transition-opacity hover:opacity-85"
+            >
+              <Image
+                src="/bct.png"
+                alt="Đã thông báo Bộ Công Thương"
+                width={120}
+                height={40}
+                className="h-10 w-auto object-contain sm:h-11 lg:h-[50px]"
+              />
+            </a>
+          </div>
         </div>
       </div>
 
       <div className="border-t border-pure-white/10 py-6 px-6">
-        <div className="max-w-[1200px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-sm text-pure-white/60">
-            © 2026 Volunteer For Education (VEO). All rights reserved.
+        <div className="max-w-[1200px] mx-auto flex items-center justify-center">
+          <p className="text-center text-sm text-pure-white/60">
+            © {currentYear} Volunteer For Education (VEO). All rights reserved.
           </p>
         </div>
       </div>

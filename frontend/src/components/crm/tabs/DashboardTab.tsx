@@ -35,11 +35,11 @@ function pctDelta(cur: number, prev: number): Delta {
 
 const ACTIVITY_CARDS: {
   label: string; value: string; unit: string; icon: string; iconCls: string;
-  delta: Delta | null;
+  delta: Delta | null; negativeMetric?: boolean;
 }[] = [
   { label: "Đăng ký mới hôm nay", value: `${todayNew}`,       unit: "lượt", icon: "how_to_reg",      iconCls: "bg-primary/10 text-primary",              delta: numDelta(todayNew, prevDay.bookings) },
   { label: "Chờ xác nhận",        value: `${todayPending}`,   unit: "đơn",  icon: "pending_actions", iconCls: "bg-solar-orange/10 text-solar-orange",     delta: null },
-  { label: "Đã hủy hôm nay",      value: `${todayCancelled}`, unit: "đơn",  icon: "cancel",          iconCls: "bg-error/10 text-error",                  delta: numDelta(todayCancelled, 0) },
+  { label: "Đã hủy hôm nay",      value: `${todayCancelled}`, unit: "đơn",  icon: "cancel",          iconCls: "bg-error/10 text-error",                  delta: numDelta(todayCancelled, 0), negativeMetric: true },
   { label: "Doanh thu hôm nay",   value: fmt(todayRevenue),   unit: "",     icon: "payments",        iconCls: "bg-blue-100 text-blue-700",               delta: pctDelta(todayRevenue, prevDay.revenue) },
 ];
 
@@ -59,8 +59,9 @@ const PERIOD_TABS: { value: Period; label: string }[] = [
 ];
 
 // ── Sub-components ─────────────────────────────────────────────────────
-function DeltaBadge({ delta }: { delta: Delta }) {
-  const cls  = delta.neutral ? "text-on-surface-variant" : delta.up ? "text-green-600" : "text-error";
+function DeltaBadge({ delta, negativeMetric }: { delta: Delta; negativeMetric?: boolean }) {
+  const isGood = negativeMetric ? !delta.up : delta.up;
+  const cls  = delta.neutral ? "text-on-surface-variant" : isGood ? "text-green-600" : "text-error";
   const icon = delta.neutral ? "remove" : delta.up ? "trending_up" : "trending_down";
   return (
     <p className={`text-xs flex items-center gap-1 mt-1 ${cls}`}>
@@ -198,7 +199,7 @@ export default function DashboardTab({ onNavigateToPending }: { onNavigateToPend
                   {card.unit && <span className="text-sm font-normal text-on-surface-variant ml-1">{card.unit}</span>}
                 </p>
                 {card.delta
-                  ? <DeltaBadge delta={card.delta} />
+                  ? <DeltaBadge delta={card.delta} negativeMetric={card.negativeMetric} />
                   : (
                     <p className="text-xs text-on-surface-variant mt-1 flex items-center gap-1">
                       Tổng đang chờ xử lý

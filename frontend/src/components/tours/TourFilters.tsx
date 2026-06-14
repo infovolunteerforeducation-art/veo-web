@@ -55,9 +55,16 @@ export const EMPTY_TOUR_FILTERS: TourFilterState = {
 type Props = {
   filters: TourFilterState;
   onChange: (filters: TourFilterState) => void;
+  showTitle?: boolean;
+  className?: string;
 };
 
-export default function TourFilters({ filters, onChange }: Props) {
+export default function TourFilters({
+  filters,
+  onChange,
+  showTitle = true,
+  className = "w-full bg-pure-white p-4 sm:p-6 rounded-xl shadow-sm space-y-5 lg:sticky lg:top-24",
+}: Props) {
   const toggle = (field: keyof TourFilterState, item: string) => {
     const list = filters[field];
     onChange({
@@ -69,12 +76,14 @@ export default function TourFilters({ filters, onChange }: Props) {
   const clearAll = () => onChange(EMPTY_TOUR_FILTERS);
 
   return (
-    <div className="w-full bg-pure-white p-4 sm:p-6 rounded-xl shadow-sm space-y-5 lg:sticky lg:top-24">
+    <div className={className}>
       <div>
-        <h3 className="text-lg font-semibold text-primary mb-4 flex items-center gap-2">
-          <span className="material-symbols-outlined">filter_list</span>
-          Bộ lọc
-        </h3>
+        {showTitle && (
+          <h3 className="text-lg font-semibold text-primary mb-4 flex items-center gap-2">
+            <span className="material-symbols-outlined">filter_list</span>
+            Bộ lọc
+          </h3>
+        )}
 
         {/* Regions */}
         <div className="mb-5">

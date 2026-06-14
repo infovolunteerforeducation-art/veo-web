@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState } from "react";
 import { ManagedTour, ItineraryDay, ItineraryActivity } from "@/lib/crm-data";
 import ConfirmDialog from "../ConfirmDialog";
+import ImageUploadSlot from "../ImageUploadSlot";
 
 type ContentForm = {
   heroImage: string;
@@ -15,11 +16,9 @@ type ContentForm = {
 type EditorTab = "hero" | "goals" | "itinerary";
 
 type DeleteRequest =
-  | { type: "hero-image" }
   | { type: "goal"; index: number }
   | { type: "day"; index: number }
-  | { type: "activity"; dayIndex: number; activityIndex: number }
-  | { type: "activity-image"; dayIndex: number; activityIndex: number; imageIndex: number };
+  | { type: "activity"; dayIndex: number; activityIndex: number };
 
 type Props = {
   tour: ManagedTour;
@@ -35,71 +34,6 @@ function formatTimeDigits(value: string) {
   return `${digits.slice(0, 2)}:${digits.slice(2)}`;
 }
 
-// ── Small reusable image-upload slot ───────────────────────────────────────────
-function ImageSlot({
-  value,
-  onChange,
-  label,
-}: {
-  value: string;
-  onChange: (v: string) => void;
-  label: string;
-}) {
-  const [dragOver, setDragOver] = useState(false);
-  const [confirmOpen, setConfirmOpen] = useState(false);
-  const fileRef = useRef<HTMLInputElement>(null);
-
-  function pickFile(file: File) {
-    if (file.type.startsWith("image/")) onChange(URL.createObjectURL(file));
-  }
-
-  return (
-    <div>
-      {value ? (
-        <div className="relative rounded-lg overflow-hidden h-32 bg-surface-container-low group">
-          <img src={value} alt={label} className="w-full h-full object-cover" onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }} />
-          <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
-            <button type="button" onClick={() => fileRef.current?.click()}
-              className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-white text-xs font-semibold text-on-surface hover:bg-surface-container transition-colors">
-              <span className="material-symbols-outlined" style={{ fontSize: 14 }}>upload</span>Đổi
-            </button>
-            <button type="button" onClick={() => setConfirmOpen(true)}
-              className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-error text-white text-xs font-semibold hover:bg-error/90 transition-colors">
-              <span className="material-symbols-outlined" style={{ fontSize: 14 }}>delete</span>Xóa
-            </button>
-          </div>
-        </div>
-      ) : (
-        <div
-          onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
-          onDragLeave={() => setDragOver(false)}
-          onDrop={(e) => { e.preventDefault(); setDragOver(false); const f = e.dataTransfer.files?.[0]; if (f) pickFile(f); }}
-          onClick={() => fileRef.current?.click()}
-          className={`h-24 rounded-lg border-2 border-dashed flex flex-col items-center justify-center gap-1 transition-colors cursor-pointer ${
-            dragOver ? "border-primary bg-primary/5" : "border-outline-variant hover:border-primary/50 hover:bg-surface-container-low/50"
-          }`}
-        >
-          <span className="material-symbols-outlined text-on-surface-variant" style={{ fontSize: 24 }}>add_photo_alternate</span>
-          <p className="text-xs text-on-surface-variant">{label}</p>
-        </div>
-      )}
-      <input ref={fileRef} type="file" accept="image/*" className="hidden"
-        onChange={(e) => { const f = e.target.files?.[0]; if (f) pickFile(f); e.target.value = ""; }} />
-      <ConfirmDialog
-        open={confirmOpen}
-        message="Bạn có chắc muốn xóa ảnh minh họa này?"
-        onCancel={() => setConfirmOpen(false)}
-        onConfirm={() => {
-          onChange("");
-          setConfirmOpen(false);
-        }}
-      />
-    </div>
-  );
-}
-
-// ──────────────────────────────────────────────────────────────────────────────
-
 export default function TourContentEditor({ tour, onSave, onBack }: Props) {
   const [tab, setTab] = useState<EditorTab>("hero");
   const [form, setForm] = useState<ContentForm>({
@@ -111,9 +45,7 @@ export default function TourContentEditor({ tour, onSave, onBack }: Props) {
       ? tour.itinerary.map((d) => ({ ...d, activities: d.activities?.map((a) => ({ ...a, images: [...(a.images ?? [])] })) ?? [] }))
       : [{ day: 1, title: "Ngày 1", activities: [] }],
   });
-  const [dragOver, setDragOver] = useState(false);
   const [deleteRequest, setDeleteRequest] = useState<DeleteRequest | null>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
   function save() {
     const cleanItinerary = form.itinerary
@@ -133,19 +65,6 @@ export default function TourContentEditor({ tour, onSave, onBack }: Props) {
       itinerary: cleanItinerary.length > 0 ? cleanItinerary : undefined,
     });
     onBack();
-  }
-
-  // Hero image helpers
-  function handleFileDrop(e: React.DragEvent) {
-    e.preventDefault();
-    setDragOver(false);
-    const file = e.dataTransfer.files?.[0];
-    if (file && file.type.startsWith("image/")) setForm((f) => ({ ...f, heroImage: URL.createObjectURL(file) }));
-  }
-  function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
-    if (file) setForm((f) => ({ ...f, heroImage: URL.createObjectURL(file) }));
-    e.target.value = "";
   }
 
   // Goals helpers
@@ -217,25 +136,19 @@ export default function TourContentEditor({ tour, onSave, onBack }: Props) {
 
   function getDeleteMessage(request: DeleteRequest | null): string {
     if (!request) return "";
-    if (request.type === "hero-image") return "Bạn có chắc muốn xóa ảnh nền của chương trình này?";
     if (request.type === "goal") return "Bạn có chắc muốn xóa mục tiêu này?";
     if (request.type === "day") return "Bạn có chắc muốn xóa ngày này cùng toàn bộ khung giờ bên trong?";
-    if (request.type === "activity") return "Bạn có chắc muốn xóa khung giờ hoạt động này?";
-    return "Bạn có chắc muốn xóa ảnh minh họa này?";
+    return "Bạn có chắc muốn xóa khung giờ hoạt động này?";
   }
 
   function confirmDeleteRequest() {
     if (!deleteRequest) return;
-    if (deleteRequest.type === "hero-image") {
-      setForm((f) => ({ ...f, heroImage: "" }));
-    } else if (deleteRequest.type === "goal") {
+    if (deleteRequest.type === "goal") {
       removeGoal(deleteRequest.index);
     } else if (deleteRequest.type === "day") {
       removeItineraryDay(deleteRequest.index);
     } else if (deleteRequest.type === "activity") {
       removeActivity(deleteRequest.dayIndex, deleteRequest.activityIndex);
-    } else {
-      setActivityImage(deleteRequest.dayIndex, deleteRequest.activityIndex, deleteRequest.imageIndex, "");
     }
     setDeleteRequest(null);
   }
@@ -293,42 +206,15 @@ export default function TourContentEditor({ tour, onSave, onBack }: Props) {
             <div className="space-y-5">
               <div>
                 <label className="block text-sm font-semibold text-on-surface-variant mb-2">Ảnh nền</label>
-
-                {form.heroImage ? (
-                  <div className="relative rounded-xl overflow-hidden h-52 bg-surface-container-low group">
-                    <img
-                      src={form.heroImage}
-                      alt="Preview"
-                      className="w-full h-full object-cover"
-                      onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
-                    />
-                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3">
-                      <button type="button" onClick={() => fileInputRef.current?.click()}
-                        className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-white text-sm font-semibold text-on-surface hover:bg-surface-container transition-colors">
-                        <span className="material-symbols-outlined" style={{ fontSize: 16 }}>upload</span>Đổi ảnh
-                      </button>
-                      <button type="button" onClick={() => setDeleteRequest({ type: "hero-image" })}
-                        className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-error text-white text-sm font-semibold hover:bg-error/90 transition-colors">
-                        <span className="material-symbols-outlined" style={{ fontSize: 16 }}>delete</span>Xóa ảnh
-                      </button>
-                    </div>
-                  </div>
-                ) : (
-                  <div
-                    onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
-                    onDragLeave={() => setDragOver(false)}
-                    onDrop={handleFileDrop}
-                    onClick={() => fileInputRef.current?.click()}
-                    className={`h-40 rounded-xl border-2 border-dashed flex flex-col items-center justify-center gap-2 transition-colors cursor-pointer ${
-                      dragOver ? "border-primary bg-primary/5" : "border-outline-variant hover:border-primary/50 hover:bg-surface-container-low/50"
-                    }`}
-                  >
-                    <span className="material-symbols-outlined text-on-surface-variant" style={{ fontSize: 36 }}>cloud_upload</span>
-                    <p className="text-sm font-semibold text-on-surface-variant">Kéo & thả ảnh vào đây</p>
-                    <p className="text-xs text-on-surface-variant/70">hoặc click để chọn file</p>
-                  </div>
-                )}
-                <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handleFileChange} />
+                <ImageUploadSlot
+                  value={form.heroImage}
+                  onChange={(url) => setForm((f) => ({ ...f, heroImage: url }))}
+                  label="Ảnh nền chương trình"
+                  hint="1440 × 810px · Tỉ lệ 16:9"
+                  maxWidth={1440}
+                  maxHeight={810}
+                  previewHeight="h-52"
+                />
               </div>
 
               <div>
@@ -477,19 +363,27 @@ export default function TourContentEditor({ tour, onSave, onBack }: Props) {
                           />
                         </div>
 
-                        {/* Images — drag & drop upload, max 2 */}
+                        {/* Images */}
                         <div>
                           <label className="block text-xs font-semibold text-on-surface-variant mb-2">Ảnh minh họa (tối đa 2)</label>
                           <div className="grid grid-cols-2 gap-3">
-                            <ImageSlot
+                            <ImageUploadSlot
                               value={act.images?.[0] ?? ""}
                               onChange={(v) => setActivityImage(di, ai, 0, v)}
-                              label="Ảnh 1"
+                              label="Ảnh hoạt động 1"
+                              hint="800 × 533px · Tỉ lệ 3:2"
+                              maxWidth={800}
+                              maxHeight={533}
+                              previewHeight="h-28"
                             />
-                            <ImageSlot
+                            <ImageUploadSlot
                               value={act.images?.[1] ?? ""}
                               onChange={(v) => setActivityImage(di, ai, 1, v)}
-                              label="Ảnh 2"
+                              label="Ảnh hoạt động 2"
+                              hint="800 × 533px · Tỉ lệ 3:2"
+                              maxWidth={800}
+                              maxHeight={533}
+                              previewHeight="h-28"
                             />
                           </div>
                         </div>
